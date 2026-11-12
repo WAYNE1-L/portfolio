@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wayne Liang Portfolio</title>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Wayne Liang, level designer">
+<meta property="og:description" content="Photo01: an interconnected shortcut level in Unreal Engine 5, with the full design breakdown.">
+<meta property="og:url" content="https://wayne1-l.github.io/portfolio/">
+<meta property="og:image" content="https://wayne1-l.github.io/portfolio/img/b8.jpg">
+<meta name="description" content="Wayne Liang, level designer. Photo01: an interconnected shortcut level in Unreal Engine 5, with the full design breakdown.">
+<style>
+@font-face{font-family:"Barlow";font-weight:400;font-display:swap;src:url(fonts/barlow-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Barlow";font-weight:500;font-display:swap;src:url(fonts/barlow-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Barlow";font-weight:600;font-display:swap;src:url(fonts/barlow-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Barlow Condensed";font-weight:500;font-display:swap;src:url(fonts/barlow-condensed-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Barlow Condensed";font-weight:600;font-display:swap;src:url(fonts/barlow-condensed-latin-600-normal.woff2) format("woff2")}
+:root{
+  /* Layout idea: one left-aligned plan sheet. The level plan is the hero; everything around it stays quiet. */
+  --greybox:#E3E6E9;   /* page: a lit blockout wall */
+  --sheet:#F7F8F9;     /* drawing paper: the plan, panels */
+  --shade:#B9C7D8;     /* the lower layer, rules */
+  --ink:#152133;       /* text and walls */
+  --mute:#4C5B73;      /* secondary text */
+  --sky:#2458A6;       /* links and actions: the editor sky */
+  --lantern:#F0A030;   /* the goal lantern: current beat, focus */
+  --r1:#178F82; --r2:#D9582E; --r3:#7440BD;      /* route phases */
+  --gold:#B8881C; --redk:#B5362B; --bronze:#2F8573; /* the three lock and key pairs */
+  --display:"Barlow Condensed","Arial Narrow","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  --body:"Barlow","Helvetica Neue",Arial,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+}
+*{box-sizing:border-box}
+html{color-scheme:light;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--greybox);color:var(--ink);font:400 17px/1.55 var(--body)}
+img{max-width:100%;height:auto;display:block}
+[hidden]{display:none!important}
+html[data-lang="en"] [data-l="zh"],html[data-lang="zh"] [data-l="en"]{display:none!important}
+a{color:var(--sky);text-underline-offset:.2em;text-decoration-thickness:1px}
+a:hover{text-decoration-thickness:2px}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--lantern);outline-offset:3px}
+h1,h2{font-family:var(--display);font-weight:600;line-height:1;margin:0;text-wrap:balance}
+h1{font-size:clamp(46px,5.4vw,72px);letter-spacing:-.01em}
+h2{font-size:clamp(31px,3.5vw,44px)}
+h3{font:600 19px/1.3 var(--body);margin:0;text-wrap:balance}
+html[data-lang="zh"] h1{font-size:clamp(38px,4.6vw,58px);line-height:1.15;letter-spacing:0}
+html[data-lang="zh"] h2{font-size:clamp(27px,3vw,36px);line-height:1.2}
+p{margin:0}
+.wrap{max-width:1240px;margin:0 auto;padding:0 clamp(18px,4vw,44px)}
+.mute{color:var(--mute)}
+.small{font-size:15px;line-height:1.5}
+
+/* top bar */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px 24px;flex-wrap:wrap;padding:18px 0}
+.bar .name{font:600 22px/1 var(--display);color:var(--ink);text-decoration:none;letter-spacing:.01em}
+.bar nav{display:flex;gap:4px;margin-left:auto}
+.bar nav button{background:none;border:0;padding:8px 12px;font-weight:500;font-size:16px}
+.bar nav button:hover{text-decoration:underline;text-underline-offset:.25em}
+.lang{display:flex;border:1px solid var(--ink)}
+.lang button{background:none;border:0;padding:6px 12px;font-weight:500;font-size:15px;line-height:1.3}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:20px clamp(24px,4vw,56px);align-items:end;padding:clamp(14px,2.2vw,28px) 0 clamp(28px,3.6vw,48px)}
+.hero-head{display:flex;flex-direction:column;gap:14px}
+.hero-side{display:flex;flex-direction:column;gap:14px;padding-bottom:6px}
+.role{font-weight:500;color:var(--mute)}
+.lede{font-size:19px;line-height:1.5;max-width:30em}
+.hero-links{display:flex;flex-wrap:wrap;gap:8px 22px;font-weight:500}
+.open{display:inline-flex;align-items:center;gap:9px;font-weight:500}
+.open::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--lantern);box-shadow:0 0 0 3px #f0a03040}
+
+/* walkthrough viewer: the plan on the left, the current beat on the right */
+.walk{padding:0 0 clamp(40px,6vw,72px)}
+.walk-head{margin-bottom:16px}
+.walk-head p{color:var(--mute);max-width:44em;margin-top:8px}
+.viewer{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);grid-template-rows:auto auto 1fr;grid-template-areas:"tabs tabs" "plan beats" "key beats";background:var(--sheet);border:1px solid var(--ink)}
+.tabs{grid-area:tabs;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));border-bottom:1px solid var(--ink)}
+.tabs button{background:none;border:0;border-right:1px solid var(--ink);padding:10px 10px 9px;text-align:left;display:flex;flex-direction:column;gap:2px;min-height:58px;font-size:15px;line-height:1.25}
+.tabs button:last-child{border-right:0}
+.tabs button b{font:600 20px/1 var(--display)}
+.tabs button:hover{background:#fff}
+.tabs button[aria-selected="true"]{background:var(--lantern)}
+.tabs .p1{box-shadow:inset 0 4px 0 var(--r1)} .tabs .p2{box-shadow:inset 0 4px 0 var(--r2)} .tabs .p3{box-shadow:inset 0 4px 0 var(--r3)}
+.sheet{grid-area:plan;border-right:1px solid var(--ink);padding:8px 8px 0}
+.key{grid-area:key;border-right:1px solid var(--ink);padding:6px 20px 20px;display:flex;flex-direction:column;gap:10px}
+.key strong{font:600 22px/1 var(--display);letter-spacing:.01em}
+.key .hint{font-size:15px;color:var(--mute);margin-top:4px}
+.legend{display:grid;grid-auto-flow:column;grid-template-rows:repeat(3,auto);justify-content:start;gap:6px 36px;margin:0;padding:0;list-style:none;font-size:14.5px;line-height:1.4;color:var(--mute)}
+.legend li{display:flex;align-items:center;gap:8px}
+.legend svg{flex:none}
+.plan{display:block;width:100%;height:auto}
+.plan .l{fill:var(--shade)}
+.plan .u{fill:var(--sheet)}
+.plan .s{fill:#DCE3EC;stroke:var(--shade);stroke-width:.6}
+.plan .w{fill:var(--ink);stroke:var(--ink);stroke-width:.9}
+.plan .rt{fill:none;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;transition:opacity .2s}
+.plan .r1{stroke:var(--r1)} .plan .r2{stroke:var(--r2)} .plan .r3{stroke:var(--r3)}
+.plan .dash{stroke-dasharray:.1 6.5}
+#plan[data-phase="1"] .rt:not(.r1),#plan[data-phase="2"] .rt:not(.r2),#plan[data-phase="3"] .rt:not(.r3){opacity:.18}
+.plan .g{stroke:#fff;stroke-width:1.2;transform-box:fill-box;transform-origin:center}
+.plan .ow{fill:#fff;stroke:var(--ink);stroke-width:2.2}
+.plan .gold{fill:var(--gold)} .plan .red{fill:var(--redk)} .plan .bronze{fill:var(--bronze)}
+.plan .cp{fill:#fff;stroke:var(--ink);stroke-width:1.8}
+.plan .goal{fill:var(--lantern);stroke:var(--ink);stroke-width:1}
+.plan .bm{cursor:pointer;transform-box:fill-box;transform-origin:center;transition:transform .15s}
+.plan .bm circle{fill:var(--ink);stroke:#fff;stroke-width:2}
+.plan .bm text{fill:#fff;font:600 17px var(--body);text-anchor:middle;pointer-events:none}
+.plan .bm:hover circle{stroke:var(--lantern);stroke-width:3}
+.plan .bm.on circle{fill:var(--lantern);stroke:var(--ink);stroke-width:2.5}
+.plan .bm.on text{fill:var(--ink)}
+.plan .bm:focus-visible{outline:none}
+.plan .bm:focus-visible circle{stroke:var(--lantern);stroke-width:4}
+.plan .scale path{stroke:var(--ink);stroke-width:2;fill:none}
+.plan .scale text{font:500 16px var(--body);fill:var(--ink);text-anchor:middle}
+.plan .scale .north{stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.beats{grid-area:beats;display:flex;min-width:0}
+.beat{display:flex;flex-direction:column;width:100%;min-width:0}
+.beat figure{margin:0;background:var(--ink)}
+.beat img{width:100%;aspect-ratio:16/9;object-fit:cover}
+.beat figcaption{color:#d3dbe6;font-size:14px;line-height:1.4;padding:8px 16px 10px}
+.beat-text{padding:clamp(16px,2vw,24px) clamp(16px,2.2vw,26px) clamp(18px,2.2vw,26px);display:flex;flex-direction:column;gap:10px;flex:1}
+.beat-text .count{font-weight:500;color:var(--mute);font-size:15px}
+.beat-text h3{font:600 clamp(25px,2.4vw,31px)/1.08 var(--display)}
+html[data-lang="zh"] .beat-text h3{font-size:clamp(21px,2vw,26px);line-height:1.25}
+.pager{display:flex;gap:10px;margin-top:auto;padding-top:10px}
+.pager button{background:var(--ink);color:var(--sheet);border:0;padding:10px 18px;font-weight:500}
+.pager button:hover{background:var(--sky)}
+.pager button:disabled{background:none;color:var(--mute);box-shadow:inset 0 0 0 1px var(--shade);cursor:default}
+
+/* level list */
+.levels{padding-top:clamp(22px,3vw,34px);padding-bottom:clamp(26px,3.4vw,40px)}
+.lv{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
+.lv li{display:grid;grid-template-columns:220px minmax(0,1fr) minmax(0,260px);gap:14px 28px;align-items:start;background:var(--sheet);border:1px solid var(--ink);padding:14px}
+.lv .thumb{padding:0;border:0;background:none;display:block}
+.lv .thumb img{width:100%;aspect-ratio:16/9;object-fit:cover;border:1px solid var(--ink)}
+.lv h3{font:600 30px/1 var(--display)}
+.lv .kind{color:var(--mute);font-size:15px;margin:3px 0 8px}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.btn{display:inline-block;background:var(--ink);color:var(--sheet);padding:9px 16px;font-weight:500;text-decoration:none}
+.btn:hover{background:var(--sky)}
+.btn.alt{background:none;color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.btn.alt:hover{background:#fff}
+.lv .thumb video,.beat video{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--ink)}
+.lv .thumb video{border:1px solid var(--ink)}
+.jump{display:flex;flex-wrap:wrap;gap:2px 18px;margin-top:8px;font-size:15.5px}
+.jump button{background:none;border:0;padding:5px 0;color:var(--sky);font-weight:500;text-decoration:underline;text-underline-offset:.22em;text-decoration-thickness:1px}
+.jump button:hover{text-decoration-thickness:2px}
+.lv dl{margin:0;display:grid;gap:6px}
+.lv dt{font-size:14px;color:var(--mute);font-weight:500}
+.lv dd{margin:0;font-weight:500;line-height:1.35}
+.sub,.walk{scroll-margin-top:16px}
+
+/* sections */
+section.block{padding:clamp(36px,5vw,64px) 0;border-top:1px solid var(--ink)}
+.block>h2{margin-bottom:clamp(18px,2.4vw,28px)}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:0;border:1px solid var(--ink);background:var(--sheet)}
+.facts div{padding:14px 16px;border-right:1px solid var(--shade);border-bottom:1px solid var(--shade)}
+.facts dt{font-size:14px;color:var(--mute);font-weight:500}
+.facts dd{margin:2px 0 0;font-weight:500;line-height:1.4}
+.plan .lb{font:600 22px var(--body);fill:var(--ink);paint-order:stroke;stroke:var(--sheet);stroke-width:6px;stroke-linejoin:round}
+.plan.ba .rec{fill:none;stroke:var(--r2);stroke-width:4.5;stroke-linecap:round;stroke-linejoin:round}
+.plan.ba .rec.ok{stroke:var(--r1);stroke-width:22;opacity:.35}
+.plan.ba .x{stroke:var(--redk);stroke-width:3.5;stroke-linecap:round;fill:none}
+.plan.ba .sight{stroke:var(--lantern);stroke-width:3.5;stroke-dasharray:8 6;fill:none}
+.plan.ba .eye{fill:var(--ink);stroke:var(--sheet);stroke-width:2}
+.plan.ba .pole{fill:var(--lantern);stroke:var(--ink);stroke-width:2}
+.plan.sec .cut{fill:var(--ink)}
+.plan.sec .lb{font:500 13px var(--body);stroke-width:3px}
+.plan.sec .lb.inv{fill:var(--sheet);stroke:none}
+.plan.sec .lad{stroke:var(--r1);stroke-width:2;fill:none}
+.plan.sec .dim{stroke:var(--ink);stroke-width:1.2;fill:none}
+.plan.sec .dim.dash{stroke-dasharray:4 3}
+.plan.sec .sight{stroke:var(--lantern);stroke-width:2.5;stroke-dasharray:6 4;fill:none}
+.plan.sec .eye{fill:var(--ink);stroke:var(--sheet);stroke-width:1.5}
+.plan.sec .x{stroke:var(--redk);stroke-width:2.5;stroke-linecap:round;fill:none}
+.plan.sec .g{stroke:var(--sheet);stroke-width:1}
+.views{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:20px 16px;margin-top:18px;align-items:start}
+.views figure{margin:0}
+.views img,.views .plan{border:1px solid var(--ink);background:var(--sheet);width:100%}
+.views figcaption{font-size:14.5px;line-height:1.45;color:var(--mute);padding-top:6px}
+img.zoomable{cursor:zoom-in}
+dialog.zoom{border:0;padding:0;background:none;max-width:96vw;max-height:94vh}
+dialog.zoom::backdrop{background:#152133e6}
+dialog.zoom img{display:block;max-width:96vw;max-height:94vh;width:auto;height:auto;background:#fff;cursor:zoom-out}
+.paper{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 16px;margin-top:18px;align-items:start}
+.paper figure,.ba figure{margin:0}
+.paper img,.paper .plan,.ba .plan{border:1px solid var(--ink);background:var(--sheet);width:100%}
+.paper img{background:#fff}
+.paper figcaption,.ba figcaption{font-size:14.5px;line-height:1.45;color:var(--mute);padding-top:6px}
+.paper .notes h4{font:600 18px/1.3 var(--body);margin:0 0 8px}
+.paper .notes ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
+.ba{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:20px}
+.ba figcaption b{color:var(--ink);font-weight:600}
+.sub{margin-top:clamp(32px,4.4vw,52px)}
+.sub>h3,.h3d{font:600 clamp(24px,2.4vw,30px)/1.1 var(--display);margin-bottom:14px}
+html[data-lang="zh"] .sub>h3,html[data-lang="zh"] .h3d{font-size:clamp(21px,2vw,25px);line-height:1.3}
+.stack .h3d{margin-bottom:2px}
+.stack p+.h3d{margin-top:14px}
+.goals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(18px,2.6vw,36px);margin:0;padding:0;list-style:none;counter-reset:g}
+.goals li{counter-increment:g;display:flex;flex-direction:column;gap:6px;border-top:3px solid var(--ink);padding-top:12px}
+.goals h4{font:600 18px/1.3 var(--body);margin:0}
+.goals p{color:var(--mute)}
+.intro{max-width:46em}
+.audit{margin:18px 0 0;padding:0;list-style:none;border:1px solid var(--ink);background:var(--sheet)}
+.audit li{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,2fr) minmax(0,7fr);gap:6px 24px;padding:14px 16px;border-bottom:1px solid var(--shade)}
+.audit li:last-child{border-bottom:0}
+.audit .head{font-size:14px;font-weight:500;color:var(--mute);padding-top:10px;padding-bottom:10px;border-bottom:1px solid var(--ink)}
+.audit .rule{font-weight:500}
+.audit .fix{font-weight:500}
+.kept{margin-top:16px;border-left:5px solid var(--lantern);background:var(--sheet);padding:14px 18px;max-width:46em}
+.figs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:20px}
+.figs figure{margin:0}
+.figs img{width:100%;border:1px solid var(--ink)}
+.figs figcaption{font-size:14.5px;color:var(--mute);padding-top:6px}
+.figs .wide{grid-column:1/-1}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,4vw,56px)}
+table.metrics{border-collapse:collapse;width:100%;background:var(--sheet);border:1px solid var(--ink);font-variant-numeric:tabular-nums}
+.metrics th,.metrics td{text-align:left;padding:9px 14px;border-bottom:1px solid var(--shade);vertical-align:top;font-size:16px}
+.metrics th{font-weight:400;color:var(--mute);width:46%}
+.metrics td{font-weight:500}
+.metrics tr:last-child th,.metrics tr:last-child td{border-bottom:0}
+.next{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;max-width:40em}
+.stack{display:flex;flex-direction:column;gap:12px}
+
+/* more work */
+.works{margin:0;padding:0;list-style:none}
+.works li{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr) minmax(0,3fr);gap:8px 28px;padding:20px 0;border-top:1px solid var(--shade)}
+.works li:first-child{border-top:0;padding-top:0}
+.works h3{font:600 26px/1.05 var(--display)}
+.works .kind{color:var(--mute);font-size:15px;margin-top:4px}
+.works .meta{font-size:15px;color:var(--mute)}
+
+/* about */
+.about p+p{margin-top:12px}
+.about .lead{font-size:19px;line-height:1.5}
+.kit{margin:8px 0 0;padding:0;list-style:none;border-top:1px solid var(--ink)}
+.kit li{padding:8px 0;border-bottom:1px solid var(--shade);font-weight:500}
+.edu{margin-top:18px}
+
+/* contact */
+.contact{background:var(--ink);color:var(--sheet);padding:clamp(28px,4vw,52px);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px 40px;align-items:end;margin-bottom:28px}
+.contact h2{color:var(--sheet)}
+.contact .mail{font:600 clamp(24px,3.4vw,42px)/1.1 var(--display);color:var(--lantern);text-decoration:none;overflow-wrap:anywhere;display:inline-block;margin-top:14px}
+.contact .mail:hover{text-decoration:underline}
+.contact ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.contact ul a{color:var(--sheet);font-weight:500}
+footer{padding:0 0 32px;font-size:14.5px;color:var(--mute);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+@media (max-width:920px){
+  .hero{grid-template-columns:minmax(0,1fr);align-items:start}
+  .lv li{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .lv li>dl{grid-column:1/-1;grid-template-columns:repeat(4,minmax(0,1fr))}
+  .viewer{grid-template-columns:minmax(0,1fr);grid-template-rows:auto;grid-template-areas:"tabs" "plan" "beats" "key"}
+  .tabs{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .tabs button{border-bottom:1px solid var(--ink)}
+  .tabs button:nth-child(4n){border-right:0}
+  .tabs button:nth-child(n+5){border-bottom:0}
+  .sheet{border-right:0;border-bottom:1px solid var(--ink);padding:6px 6px 2px}
+  .key{border-right:0;border-top:1px solid var(--ink);padding:16px}
+  .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .goals{grid-template-columns:minmax(0,1fr)}
+  .audit li{grid-template-columns:minmax(0,1fr)}
+  .audit .head{display:none}
+  .audit .rule{color:var(--mute);font-size:15px}
+  .two{grid-template-columns:minmax(0,1fr)}
+  .views{grid-template-columns:minmax(0,1fr)}
+  .ba{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .works li{grid-template-columns:minmax(0,1fr)}
+  .contact{grid-template-columns:minmax(0,1fr);align-items:start}
+}
+@media (max-width:700px){
+  /* small plan: only the current beat keeps its number */
+  .plan .bm{transform:scale(.5)}
+  .plan .bm text{display:none}
+  .plan .bm.on{transform:scale(1.55)}
+  .plan .bm.on text{display:block}
+  .plan .g{transform:scale(1.5)}
+  .plan .rt{stroke-width:4.4}
+  .plan .w{stroke-width:1.6}
+  .plan .scale text{font-size:20px}
+  .plan .lb{font-size:30px}
+}
+@media (max-width:520px){
+  body{font-size:16px}
+  .bar nav{order:3;width:100%;margin-left:-12px}
+  .tabs button{font-size:14px;padding:9px 8px 8px}
+  .lv li{grid-template-columns:minmax(0,1fr)}
+  .lv li>dl{grid-template-columns:minmax(0,1fr)}
+  .legend{grid-auto-flow:row;grid-template-rows:none;grid-template-columns:minmax(0,1fr)}
+  .facts{grid-template-columns:minmax(0,1fr)}
+  .figs{grid-template-columns:minmax(0,1fr)}
+  .paper{grid-template-columns:minmax(0,1fr)}
+  .lede,.about .lead{font-size:17.5px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="bar">
+  <a class="name" href="#" id="home-link">Wayne Liang</a>
+  <nav aria-label="Sections">
+    <button type="button" data-go="work"><span data-l="en">Work</span><span data-l="zh" lang="zh-CN">作品</span></button>
+    <button type="button" data-go="about"><span data-l="en">About</span><span data-l="zh" lang="zh-CN">关于</span></button>
+    <button type="button" data-go="contact"><span data-l="en">Contact</span><span data-l="zh" lang="zh-CN">联系</span></button>
+  </nav>
+  <div class="lang" role="group" aria-label="Language">
+    <button type="button" id="lang-en" data-setlang="en" aria-pressed="true">EN</button>
+    <button type="button" id="lang-zh" data-setlang="zh" aria-pressed="false" lang="zh-CN">中文</button>
+  </div>
+</header>
+
+<main>
+<section class="hero" aria-labelledby="hero-h">
+  <div class="hero-head">
+    <p class="role"><span data-l="en">Level and technical designer</span><span data-l="zh" lang="zh-CN">关卡与技术设计</span></p>
+    <h1 id="hero-h"><span data-l="en">Turning spaces into decisions.</span><span data-l="zh" lang="zh-CN">把空间变成选择。</span></h1>
+  </div>
+  <div class="hero-side">
+    <p class="lede" data-l="en">I'm Wayne, a Games student at the University of Utah, graduating May 2027. I plan routes, locks and sightlines, then block them out and test them in Unreal Engine.</p>
+    <p class="lede" data-l="zh" lang="zh-CN">我是 Wayne Liang，犹他大学游戏专业在读，2027 年 5 月毕业。我先规划路线、门锁和视线，再到 Unreal Engine 里搭灰盒、做测试。</p>
+    <p class="open"><span data-l="en">Open to level design roles</span><span data-l="zh" lang="zh-CN">正在找关卡设计方向的工作</span></p>
+    <p class="hero-links">
+      <a href="mailto:liangweijun1103@gmail.com">liangweijun1103@gmail.com</a>
+      <a href="https://www.linkedin.com/in/weijun-liang-2b437a2a6/">LinkedIn</a>
+      <a href="Wayne_Liang_Resume.pdf"><span data-l="en">Resume (PDF)</span><span data-l="zh" lang="zh-CN">简历（PDF）</span></a>
+    </p>
+  </div>
+  </section>
+
+<section class="block levels" id="work" aria-labelledby="levels-h">
+  <h2 id="levels-h"><span data-l="en">Level design</span><span data-l="zh" lang="zh-CN">关卡设计</span></h2>
+  <ul class="lv">
+    <li>
+      <button type="button" class="thumb" data-go="photo01" aria-label="Photo01 walkthrough"><img src="img/b8.jpg" width="1221" height="688" alt="The player character facing blue and red wall-run panels over a pit in Photo01."></button>
+      <div>
+        <h3>Photo01</h3>
+        <p class="kind"><span data-l="en">Interconnected shortcut level, single-player</span><span data-l="zh" lang="zh-CN">单人箱庭关卡，以捷径回环为核心</span></p>
+        <p data-l="en">Two layers, three keys and three shortcuts. One-way doors, keyed locks and a kick-down ladder make every route bend back toward spawn.</p>
+        <p data-l="zh" lang="zh-CN">上下两层、三把钥匙、三条捷径。单向门、带锁的门和一架可以踹下的梯子，让每条路线最后都绕回出生点。</p>
+        <p class="cta" id="cta" hidden>
+          <a class="btn" id="play-link" hidden><span data-l="en">Download the build (Windows)</span><span data-l="zh" lang="zh-CN">下载试玩包（Windows）</span></a>
+          <a class="btn alt" id="video-link" hidden><span data-l="en">Watch the full run</span><span data-l="zh" lang="zh-CN">看完整通关视频</span></a>
+        </p>
+        <p class="jump">
+          <button type="button" data-go="photo01"><span data-l="en">Walkthrough</span><span data-l="zh" lang="zh-CN">八步走查</span></button>
+          <button type="button" data-go="goals"><span data-l="en">Design goals</span><span data-l="zh" lang="zh-CN">设计目标</span></button>
+          <button type="button" data-go="paper"><span data-l="en">Paper plans</span><span data-l="zh" lang="zh-CN">手绘纸图</span></button>
+          <button type="button" data-go="views"><span data-l="en">Other views</span><span data-l="zh" lang="zh-CN">其他视角</span></button>
+          <button type="button" data-go="audit"><span data-l="en">Iteration</span><span data-l="zh" lang="zh-CN">迭代</span></button>
+          <button type="button" data-go="metrics"><span data-l="en">Metrics</span><span data-l="zh" lang="zh-CN">尺度</span></button>
+        </p>
+      </div>
+      <dl>
+        <div><dt><span data-l="en">Role</span><span data-l="zh" lang="zh-CN">角色</span></dt><dd><span data-l="en">Level design, solo</span><span data-l="zh" lang="zh-CN">关卡设计，独立完成</span></dd></div>
+        <div><dt><span data-l="en">Engine</span><span data-l="zh" lang="zh-CN">引擎</span></dt><dd>Unreal Engine 5.8</dd></div>
+        <div><dt><span data-l="en">Duration</span><span data-l="zh" lang="zh-CN">周期</span></dt><dd><span data-l="en">About one month</span><span data-l="zh" lang="zh-CN">约一个月</span></dd></div>
+        <div><dt><span data-l="en">Status</span><span data-l="zh" lang="zh-CN">状态</span></dt><dd><span data-l="en">Playable blockout, placeholder art</span><span data-l="zh" lang="zh-CN">可玩的灰盒版本，美术为占位</span></dd></div>
+      </dl>
+    </li>
+  </ul>
+</section>
+
+<section class="walk" id="photo01" aria-labelledby="walk-h">
+  <div class="walk-head">
+    <h2 id="walk-h"><span data-l="en">Walk Photo01 in eight beats</span><span data-l="zh" lang="zh-CN">分八步走完 Photo01</span></h2>
+  </div>
+  <div class="viewer">
+  <div class="tabs" role="tablist" aria-label="Beats" id="tabs">
+    <button type="button" role="tab" class="p1" data-beat="1" aria-selected="true"><b>1</b><span data-l="en">Spawn</span><span data-l="zh" lang="zh-CN">出生点</span></button>
+    <button type="button" role="tab" class="p1" data-beat="2" aria-selected="false" tabindex="-1"><b>2</b><span data-l="en">Pistons</span><span data-l="zh" lang="zh-CN">活塞走廊</span></button>
+    <button type="button" role="tab" class="p1" data-beat="3" aria-selected="false" tabindex="-1"><b>3</b><span data-l="en">Gold lock</span><span data-l="zh" lang="zh-CN">金锁门</span></button>
+    <button type="button" role="tab" class="p1" data-beat="4" aria-selected="false" tabindex="-1"><b>4</b><span data-l="en">Hidden key</span><span data-l="zh" lang="zh-CN">藏起的钥匙</span></button>
+    <button type="button" role="tab" class="p2" data-beat="5" aria-selected="false" tabindex="-1"><b>5</b><span data-l="en">Shortcut A</span><span data-l="zh" lang="zh-CN">捷径 A</span></button>
+    <button type="button" role="tab" class="p2" data-beat="6" aria-selected="false" tabindex="-1"><b>6</b><span data-l="en">Wall boots</span><span data-l="zh" lang="zh-CN">行壁靴</span></button>
+    <button type="button" role="tab" class="p2" data-beat="7" aria-selected="false" tabindex="-1"><b>7</b><span data-l="en">Cellar</span><span data-l="zh" lang="zh-CN">暗室</span></button>
+    <button type="button" role="tab" class="p3" data-beat="8" aria-selected="false" tabindex="-1"><b>8</b><span data-l="en">Goal</span><span data-l="zh" lang="zh-CN">终点</span></button>
+  </div>
+  <div class="sheet">
+    <svg id="plan" class="plan" viewBox="0 0 940 550" role="img" aria-labelledby="plan-t"><title id="plan-t">Top-down plan of Photo01, north up, with the route in three phases and eight numbered beats</title><g class="floors"><rect class="l" x="510.0" y="24.0" width="238.0" height="60.0"/><rect class="l" x="41.5" y="233.0" width="57.0" height="152.0"/><rect class="l" x="748.0" y="24.0" width="72.0" height="60.0"/><rect class="l" x="760.0" y="83.8" width="60.0" height="121.2"/><rect class="l" x="385.0" y="24.0" width="125.0" height="70.0"/><rect class="l" x="730.0" y="245.0" width="88.5" height="140.0"/><rect class="l" x="778.5" y="205.0" width="40.0" height="40.0"/><rect class="l" x="730.0" y="245.0" width="48.5" height="3.1"/><rect class="l" x="821.5" y="205.0" width="100.0" height="100.0"/><rect class="l" x="788.5" y="200.5" width="20.0" height="7.0"/><rect class="l" x="817.0" y="206.5" width="6.0" height="34.0"/><rect class="l" x="584.0" y="426.5" width="76.0" height="37.0"/><rect class="l" x="658.5" y="428.0" width="31.5" height="34.0"/><rect class="l" x="690.0" y="385.0" width="120.0" height="120.0"/><rect class="s" x="774.8" y="205.0" width="3.7" height="40.0"/><rect class="s" x="771.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="767.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="763.6" y="205.0" width="3.7" height="40.0"/><rect class="s" x="759.9" y="205.0" width="3.7" height="40.0"/><rect class="s" x="756.2" y="205.0" width="3.7" height="40.0"/><rect class="s" x="752.5" y="205.0" width="3.7" height="40.0"/><rect class="s" x="748.8" y="205.0" width="3.7" height="40.0"/><rect class="s" x="745.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="741.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="737.6" y="205.0" width="3.7" height="40.0"/><rect class="s" x="560.0" y="426.5" width="4.0" height="37.0"/><rect class="l" x="564.0" y="426.5" width="20.0" height="37.0"/><rect class="s" x="733.9" y="205.0" width="3.7" height="40.0"/><rect class="s" x="556.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="730.2" y="205.0" width="3.7" height="40.0"/><rect class="s" x="552.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="726.5" y="205.0" width="3.7" height="40.0"/><rect class="s" x="710.5" y="205.0" width="16.0" height="40.0"/><rect class="s" x="548.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="706.8" y="205.0" width="3.7" height="40.0"/><rect class="s" x="544.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="703.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="540.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="699.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="536.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="695.6" y="205.0" width="3.7" height="40.0"/><rect class="l" x="818.5" y="202.0" width="106.0" height="106.0"/><rect class="s" x="532.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="691.9" y="205.0" width="3.7" height="40.0"/><rect class="l" x="502.0" y="426.5" width="30.0" height="37.0"/><rect class="s" x="498.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="688.2" y="205.0" width="3.7" height="40.0"/><rect class="l" x="788.5" y="202.0" width="20.0" height="3.0"/><rect class="s" x="494.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="684.5" y="205.0" width="3.7" height="40.0"/><rect class="s" x="490.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="680.8" y="205.0" width="3.7" height="40.0"/><rect class="u" x="757.0" y="83.8" width="66.0" height="118.1"/><rect class="u" x="455.0" y="23.8" width="55.2" height="70.2"/><rect class="s" x="486.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="677.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="482.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="673.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="478.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="669.6" y="205.0" width="3.7" height="40.0"/><rect class="s" x="474.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="665.9" y="205.0" width="3.7" height="40.0"/><rect class="s" x="470.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="662.2" y="205.0" width="3.7" height="40.0"/><rect class="u" x="597.0" y="423.4" width="36.0" height="3.1"/><rect class="u" x="578.4" y="205.0" width="80.1" height="40.0"/><rect class="s" x="658.5" y="205.0" width="3.7" height="40.0"/><rect class="u" x="410.0" y="105.0" width="20.0" height="96.9"/><rect class="u" x="430.0" y="94.0" width="8.0" height="107.9"/><rect class="u" x="402.0" y="94.0" width="8.0" height="107.9"/><rect class="u" x="410.0" y="94.0" width="20.0" height="11.0"/><rect class="u" x="760.0" y="201.8" width="60.0" height="3.2"/><rect class="u" x="24.0" y="179.0" width="90.0" height="54.0"/><rect class="u" x="597.0" y="463.5" width="36.0" height="3.1"/><rect class="u" x="658.4" y="424.9" width="33.2" height="40.2"/><rect class="u" x="578.4" y="466.6" width="80.0" height="40.0"/><rect class="u" x="578.4" y="383.4" width="80.0" height="40.0"/><rect class="u" x="578.4" y="248.1" width="80.0" height="135.3"/><rect class="u" x="470.0" y="466.6" width="108.4" height="40.0"/><rect class="u" x="470.0" y="383.4" width="108.4" height="40.0"/><rect class="u" x="470.0" y="248.1" width="108.4" height="135.3"/><rect class="u" x="470.0" y="201.9" width="108.4" height="46.2"/><rect class="u" x="811.6" y="386.5" width="9.9" height="36.9"/><rect class="u" x="438.0" y="94.0" width="17.0" height="107.9"/><rect class="u" x="385.0" y="94.0" width="17.0" height="107.9"/><rect class="u" x="41.5" y="385.0" width="57.0" height="38.4"/><rect class="u" x="41.5" y="201.9" width="57.0" height="31.1"/><rect class="u" x="687.6" y="248.1" width="39.4" height="135.3"/><rect class="u" x="688.4" y="248.1" width="3.2" height="135.3"/><rect class="u" x="660.0" y="466.6" width="28.4" height="40.0"/><rect class="u" x="660.0" y="465.1" width="28.4" height="1.5"/><rect class="u" x="660.0" y="423.4" width="28.4" height="1.5"/><rect class="u" x="660.0" y="383.4" width="28.4" height="40.0"/><rect class="u" x="660.0" y="248.1" width="28.4" height="135.3"/><rect class="u" x="658.4" y="466.6" width="1.6" height="40.0"/><rect class="u" x="658.4" y="383.4" width="1.6" height="40.0"/><rect class="u" x="658.4" y="248.1" width="1.6" height="135.3"/><rect class="u" x="241.5" y="386.5" width="89.5" height="85.5"/><rect class="u" x="404.0" y="298.5" width="6.0" height="5.0"/><rect class="u" x="431.0" y="299.5" width="6.5" height="6.0"/><rect class="u" x="284.0" y="424.0" width="12.0" height="12.0"/><rect class="u" x="416.0" y="301.0" width="7.5" height="5.0"/><rect class="u" x="62.5" y="187.0" width="15.0" height="12.0"/><rect class="u" x="401.0" y="288.5" width="12.5" height="10.0"/><rect class="u" x="620.0" y="319.5" width="20.0" height="3.0"/><rect class="u" x="558.5" y="235.0" width="3.0" height="20.0"/><rect class="u" x="238.5" y="355.0" width="3.0" height="20.0"/><rect class="u" x="279.0" y="383.5" width="24.0" height="3.0"/><rect class="u" x="426.0" y="289.0" width="13.0" height="10.5"/><rect class="u" x="413.5" y="288.5" width="12.5" height="12.5"/><rect class="u" x="128.5" y="399.0" width="3.0" height="32.0"/><rect class="u" x="408.0" y="123.5" width="24.0" height="3.0"/><rect class="u" x="398.5" y="93.8" width="43.0" height="32.7"/><rect class="u" x="382.0" y="21.0" width="76.0" height="76.0"/></g><g class="walls"><rect class="w" x="921.5" y="202.0" width="3.0" height="106.0"/><rect class="w" x="821.5" y="305.0" width="100.0" height="3.0"/><rect class="w" x="821.5" y="202.0" width="100.0" height="3.0"/><rect class="w" x="661.5" y="462.0" width="28.5" height="3.0"/><rect class="w" x="661.5" y="425.0" width="28.5" height="3.0"/><rect class="w" x="410.0" y="94.0" width="20.0" height="3.0"/><rect class="w" x="820.0" y="84.0" width="3.0" height="3.0"/><rect class="w" x="510.0" y="84.0" width="250.0" height="3.0"/><rect class="w" x="820.0" y="21.0" width="3.0" height="66.0"/><rect class="w" x="820.0" y="84.0" width="3.0" height="117.9"/><rect class="w" x="757.0" y="84.0" width="3.0" height="117.9"/><rect class="w" x="385.0" y="21.0" width="125.0" height="3.0"/><rect class="w" x="510.0" y="84.0" width="3.0" height="13.0"/><rect class="w" x="808.5" y="202.0" width="11.5" height="3.0"/><rect class="w" x="760.0" y="202.0" width="28.5" height="3.0"/><rect class="w" x="98.5" y="233.0" width="3.0" height="152.0"/><rect class="w" x="38.5" y="233.0" width="3.0" height="152.0"/><rect class="w" x="470.0" y="463.5" width="190.0" height="3.0"/><rect class="w" x="470.0" y="423.5" width="130.0" height="3.0"/><rect class="w" x="600.0" y="423.5" width="60.0" height="3.0"/><rect class="w" x="818.5" y="240.5" width="3.0" height="146.0"/><rect class="w" x="727.0" y="245.0" width="3.0" height="138.5"/><rect class="w" x="816.5" y="201.9" width="2.0" height="3.1"/><rect class="w" x="578.4" y="245.0" width="31.6" height="3.1"/><rect class="w" x="578.4" y="201.9" width="31.6" height="3.1"/><rect class="w" x="610.0" y="245.0" width="51.5" height="3.1"/><rect class="w" x="610.0" y="201.9" width="51.5" height="3.1"/><rect class="w" x="430.0" y="94.0" width="80.0" height="3.0"/><rect class="w" x="385.0" y="93.0" width="25.0" height="3.0"/><rect class="w" x="778.5" y="201.9" width="2.0" height="3.1"/><rect class="w" x="818.5" y="201.9" width="3.0" height="4.6"/><rect class="w" x="818.5" y="206.5" width="3.0" height="34.0"/><rect class="w" x="41.5" y="385.0" width="57.0" height="3.0"/><rect class="w" x="770.0" y="383.5" width="48.5" height="3.0"/><rect class="w" x="690.0" y="383.5" width="40.0" height="3.0"/><rect class="w" x="808.5" y="383.5" width="3.0" height="123.0"/><rect class="w" x="690.0" y="503.5" width="120.0" height="3.0"/><rect class="w" x="688.5" y="462.0" width="3.0" height="43.0"/><rect class="w" x="688.5" y="385.0" width="3.0" height="43.0"/><rect class="w" x="38.5" y="233.0" width="3.0" height="233.5"/><rect class="w" x="38.5" y="463.5" width="203.0" height="3.0"/><rect class="w" x="518.5" y="183.5" width="3.0" height="43.0"/><rect class="w" x="438.5" y="183.5" width="83.0" height="3.0"/><rect class="w" x="98.5" y="233.0" width="3.0" height="133.5"/><rect class="w" x="98.5" y="363.5" width="63.0" height="3.0"/><rect class="w" x="633.0" y="466.5" width="3.0" height="63.5"/><rect class="w" x="594.0" y="466.5" width="3.0" height="63.5"/><rect class="w" x="594.0" y="530.0" width="42.0" height="3.0"/><rect class="w" x="158.5" y="303.5" width="3.0" height="63.0"/><rect class="w" x="658.5" y="163.5" width="3.0" height="41.5"/><rect class="w" x="640.0" y="319.5" width="18.5" height="3.0"/><rect class="w" x="601.5" y="319.5" width="18.5" height="3.0"/><rect class="w" x="558.5" y="255.0" width="3.0" height="8.5"/><rect class="w" x="158.5" y="303.5" width="143.0" height="3.0"/><rect class="w" x="558.5" y="226.5" width="3.0" height="8.5"/><rect class="w" x="298.5" y="123.5" width="3.0" height="183.0"/><rect class="w" x="298.5" y="123.5" width="43.0" height="3.0"/><rect class="w" x="338.5" y="123.5" width="3.0" height="63.0"/><rect class="w" x="661.5" y="245.0" width="117.0" height="3.1"/><rect class="w" x="661.5" y="201.9" width="117.0" height="3.1"/><rect class="w" x="238.5" y="383.5" width="3.0" height="91.5"/><rect class="w" x="338.5" y="183.5" width="63.0" height="3.0"/><rect class="w" x="238.5" y="375.0" width="3.0" height="8.5"/><rect class="w" x="238.5" y="346.5" width="3.0" height="8.5"/><rect class="w" x="398.5" y="123.5" width="3.0" height="63.0"/><rect class="w" x="438.5" y="123.5" width="3.0" height="63.0"/><rect class="w" x="238.5" y="343.5" width="163.0" height="3.0"/><rect class="w" x="331.0" y="386.5" width="3.0" height="88.5"/><rect class="w" x="398.5" y="243.5" width="3.0" height="103.0"/><rect class="w" x="238.5" y="472.0" width="95.5" height="3.0"/><rect class="w" x="238.5" y="383.5" width="40.5" height="3.0"/><rect class="w" x="338.5" y="243.5" width="63.0" height="3.0"/><rect class="w" x="338.5" y="243.5" width="3.0" height="103.0"/><rect class="w" x="438.5" y="223.5" width="3.0" height="123.0"/><rect class="w" x="98.5" y="366.5" width="3.0" height="20.0"/><rect class="w" x="438.5" y="343.5" width="23.0" height="3.0"/><rect class="w" x="114.0" y="176.0" width="3.0" height="57.0"/><rect class="w" x="21.0" y="176.0" width="3.0" height="57.0"/><rect class="w" x="21.0" y="176.0" width="96.0" height="3.0"/><rect class="w" x="98.5" y="231.5" width="18.5" height="3.0"/><rect class="w" x="21.0" y="231.5" width="20.5" height="3.0"/><rect class="w" x="303.0" y="383.5" width="98.5" height="3.0"/><rect class="w" x="458.5" y="343.5" width="3.0" height="83.0"/><rect class="w" x="458.5" y="423.5" width="143.0" height="3.0"/><rect class="w" x="598.5" y="263.5" width="3.0" height="163.0"/><rect class="w" x="478.5" y="263.5" width="123.0" height="3.0"/><rect class="w" x="478.5" y="233.5" width="3.0" height="33.0"/><rect class="w" x="438.5" y="233.5" width="43.0" height="3.0"/><rect class="w" x="398.5" y="383.5" width="3.0" height="83.0"/><rect class="w" x="398.5" y="463.5" width="198.5" height="3.0"/><rect class="w" x="633.0" y="463.5" width="28.5" height="3.0"/><rect class="w" x="558.5" y="163.5" width="103.0" height="3.0"/><rect class="w" x="658.5" y="462.0" width="3.0" height="4.5"/><rect class="w" x="658.5" y="245.0" width="3.0" height="183.0"/><rect class="w" x="658.5" y="428.0" width="3.0" height="34.0"/><rect class="w" x="558.5" y="163.5" width="3.0" height="63.0"/><rect class="w" x="518.5" y="223.5" width="43.0" height="3.0"/><rect class="w" x="128.5" y="431.0" width="3.0" height="35.5"/><rect class="w" x="128.5" y="363.5" width="3.0" height="35.5"/><rect class="w" x="432.0" y="123.5" width="9.5" height="3.0"/><rect class="w" x="398.5" y="123.5" width="9.5" height="3.0"/><rect class="w" x="382.0" y="21.0" width="3.0" height="76.0"/><rect class="w" x="455.0" y="21.0" width="3.0" height="73.0"/><rect class="w" x="430.0" y="94.0" width="28.0" height="3.0"/><rect class="w" x="382.0" y="94.0" width="28.0" height="3.0"/><rect class="w" x="438.0" y="97.0" width="3.0" height="26.5"/><rect class="w" x="399.0" y="97.0" width="3.0" height="26.5"/><rect class="w" x="385.0" y="21.0" width="73.0" height="3.0"/></g><g class="routes"><path class="rt r1" d="M259.0 364.0 L391.0 364.0 L455.0 432.0 L743.0 434.0 L759.0 450.0 M759.0 450.0 L759.0 278.0 L785.0 252.0 L785.0 242.0 L635.0 240.0 L619.0 224.0 M619.0 224.0 L619.0 310.0 L625.0 316.0 L625.0 416.0 L615.0 426.0 M615.0 466.0 L615.0 510.0 M615.0 510.0 L615.0 466.0 M615.0 426.0 L615.0 336.0 L625.0 326.0 L623.0 276.0 L605.0 258.0 L589.0 258.0 L575.0 244.0"/><path class="rt r1 dash" d="M615.0 426.0 L615.0 466.0 M615.0 466.0 L615.0 426.0"/><path class="rt r2" d="M575.0 244.0 L501.0 244.0 L485.0 228.0 L455.0 228.0 L445.0 218.0 L405.0 218.0 L387.0 236.0 L337.0 236.0 L333.0 240.0 L333.0 284.0 L305.0 312.0 L261.0 312.0 L233.0 340.0 L233.0 356.0 L225.0 364.0 M225.0 364.0 L225.0 348.0 L235.0 338.0 L279.0 338.0 L307.0 310.0 L307.0 266.0 L335.0 238.0 L361.0 236.0 L407.0 190.0 L407.0 136.0 L413.0 130.0 L413.0 110.0 L419.0 104.0 M419.0 104.0 L425.0 88.0 L461.0 88.0 L485.0 64.0 M485.0 64.0 L499.0 64.0 L509.0 54.0 M779.0 54.0 L809.0 54.0 M809.0 54.0 L809.0 192.0 L803.0 198.0 L803.0 208.0 L813.0 210.0 L841.0 238.0 L859.0 238.0 L885.0 264.0"/><path class="rt r2 dash" d="M509.0 54.0 L779.0 54.0"/><path class="rt r3" d="M885.0 264.0 L855.0 264.0 L825.0 234.0 L699.0 234.0 L693.0 240.0 L497.0 240.0 L485.0 228.0 L455.0 228.0 L445.0 218.0 L355.0 218.0 L333.0 240.0 L333.0 284.0 L305.0 312.0 L261.0 312.0 L233.0 340.0 L235.0 360.0 L279.0 360.0 L291.0 372.0 M291.0 372.0 L289.0 420.0 M289.0 420.0 L289.0 384.0 L283.0 378.0 L253.0 378.0 L245.0 370.0 L183.0 370.0 L139.0 414.0 M139.0 414.0 L77.0 414.0 L69.0 422.0"/></g><g class="glyphs"><rect class="g ow" x="235.5" y="360.5" width="9" height="9"/><rect class="g ow" x="794.0" y="199.9" width="9" height="9"/><rect class="g ow" x="610.5" y="425.7" width="9" height="9"/><path class="g gold" d="M560.0 237.0L568.0 245.0L560.0 253.0L552.0 245.0Z"/><g class="g gold"><circle cx="610.0" cy="511.0" r="4.8"/><rect x="614.0" y="509.3" width="12.5" height="3.4"/><rect x="622.5" y="511.0" width="2.6" height="4.8"/></g><path class="g red" d="M291.0 376.1L299.0 384.1L291.0 392.1L283.0 384.1Z"/><g class="g red"><circle cx="880.0" cy="265.0" r="4.8"/><rect x="884.0" y="263.3" width="12.5" height="3.4"/><rect x="892.5" y="265.0" width="2.6" height="4.8"/></g><path class="g bronze" d="M130.0 407.0L138.0 415.0L130.0 423.0L122.0 415.0Z"/><g class="g bronze"><circle cx="285.0" cy="430.0" r="4.8"/><rect x="289.0" y="428.3" width="12.5" height="3.4"/><rect x="297.5" y="430.0" width="2.6" height="4.8"/></g><circle class="g cp" cx="760.0" cy="450.0" r="5"/><circle class="g cp" cx="450.0" cy="55.0" r="5"/><circle class="g cp" cx="70.0" cy="423.0" r="5"/><path class="g goal" d="M70.0 182.0L72.6 188.2L79.0 188.2L73.8 192.4L75.6 199.0L70.0 195.0L64.4 199.0L66.2 192.4L61.0 188.2L67.4 188.2Z"/></g><g class="beats"><g class="bm" data-beat="1" tabindex="0" role="button" aria-label="Beat 1"><circle cx="270.0" cy="365.0" r="16"/><text x="270.0" y="371.2">1</text></g><g class="bm" data-beat="2" tabindex="0" role="button" aria-label="Beat 2"><circle cx="775.0" cy="320.0" r="16"/><text x="775.0" y="326.2">2</text></g><g class="bm" data-beat="3" tabindex="0" role="button" aria-label="Beat 3"><circle cx="592.0" cy="231.0" r="16"/><text x="592.0" y="237.2">3</text></g><g class="bm" data-beat="4" tabindex="0" role="button" aria-label="Beat 4"><circle cx="615.0" cy="471.0" r="16"/><text x="615.0" y="477.2">4</text></g><g class="bm" data-beat="5" tabindex="0" role="button" aria-label="Beat 5"><circle cx="208.0" cy="365.0" r="16"/><text x="208.0" y="371.2">5</text></g><g class="bm" data-beat="6" tabindex="0" role="button" aria-label="Beat 6"><circle cx="640.0" cy="54.0" r="16"/><text x="640.0" y="60.2">6</text></g><g class="bm" data-beat="7" tabindex="0" role="button" aria-label="Beat 7"><circle cx="863.0" cy="239.0" r="16"/><text x="863.0" y="245.2">7</text></g><g class="bm" data-beat="8" tabindex="0" role="button" aria-label="Beat 8"><circle cx="70.0" cy="223.0" r="16"/><text x="70.0" y="229.2">8</text></g></g><g class="scale"><path d="M28 528h100M28 523v10M128 523v10"/><text x="78" y="516">10 m</text><path class="north" d="M168 533V505M162 513l6-9 6 9"/><text x="186" y="525">N</text></g></svg>
+  </div>
+  <div class="beats">
+
+  <article class="beat" role="tabpanel" aria-label="Beat 1" data-beat="1" data-phase="1">
+    <figure><img src="img/b1.jpg" width="1280" height="720" alt="A closed wooden double door between grey walls, seen from the spawn corridor.">
+      <figcaption><span data-l="en">One-way door A, seen from spawn. This face is plain boards, with no rings to pull.</span><span data-l="zh" lang="zh-CN">从出生点看单向门 A。这一面只有门板，没有门环。</span></figcaption></figure>
+    <div class="beat-text">
+      <p class="count"><span data-l="en">Beat 1 of 8</span><span data-l="zh" lang="zh-CN">第 1 步，共 8 步</span></p>
+      <h3><span data-l="en">Spawn: three ways out, all shut</span><span data-l="zh" lang="zh-CN">出生点：三条路都走不通</span></h3>
+      <p class="body" data-l="en">A one-way door behind you, a red-locked door beside you, rubble to the north. The only way on is a 2.2 m drop you can't climb back up. Players take it last, and they remember three places they will come back to.</p>
+      <p class="body" data-l="zh" lang="zh-CN">身后是单向门，旁边是挂着红锁的门，北边被碎石堵住。唯一的出路是一个 2.2 米的落差，跳下去就回不来。玩家会最后才走它，也会记住这三个以后要回来的地方。</p>
+      <div class="pager"><button type="button" data-step="-1" disabled><span data-l="en">Back</span><span data-l="zh" lang="zh-CN">上一步</span></button><button type="button" data-step="1"><span data-l="en">Next beat</span><span data-l="zh" lang="zh-CN">下一步</span></button></div>
+    </div>
+  </article>
+
+  <article class="beat" role="tabpanel" aria-label="Beat 2" data-beat="2" data-phase="1" hidden>
+    <figure><img src="img/b2.jpg" width="1280" height="720" alt="A barred wooden door at the end of a grey corridor, with steps to the left.">
+      <figcaption><span data-l="en">The end of the piston corridor: door B, barred from the far side.</span><span data-l="zh" lang="zh-CN">活塞走廊尽头：从另一侧闩住的单向门 B。</span></figcaption></figure>
+    <div class="beat-text">
+      <p class="count"><span data-l="en">Beat 2 of 8</span><span data-l="zh" lang="zh-CN">第 2 步，共 8 步</span></p>
+      <h3><span data-l="en">Down: a checkpoint, then the pistons</span><span data-l="zh" lang="zh-CN">下层：先给检查点，再给活塞</span></h3>
+      <p class="body" data-l="en">The lower layer opens with a checkpoint, then a corridor of pistons. At its far end sit two setups for later: a door barred from the other side, and a wall with a crack in it.</p>
+      <p class="body" data-l="zh" lang="zh-CN">下层从一个检查点开始，接着是活塞走廊。走廊尽头埋了两个伏笔：一扇从另一侧闩住的门，和一面带裂缝的墙。</p>
+      <div class="pager"><button type="button" data-step="-1"><span data-l="en">Back</span><span data-l="zh" lang="zh-CN">上一步</span></button><button type="button" data-step="1"><span data-l="en">Next beat</span><span data-l="zh" lang="zh-CN">下一步</span></button></div>
+    </div>
+  </article>
+
+  <article class="beat" role="tabpanel" aria-label="Beat 3" data-beat="3" data-phase="1" hidden>
+    <figure><img src="img/b3.jpg" width="1280" height="720" alt="A wooden door with a gold padlock at the top of the return stairs.">
+      <figcaption><span data-l="en">The gold-locked door at the top of the return stairs.</span><span data-l="zh" lang="zh-CN">回程楼梯顶端，挂着金锁的门。</span></figcaption></figure>
+    <div class="beat-text">
+      <p class="count"><span data-l="en">Beat 3 of 8</span><span data-l="zh" lang="zh-CN">第 3 步，共 8 步</span></p>
+      <h3><span data-l="en">Back up: the lock before the key</span><span data-l="zh" lang="zh-CN">回到上层：先见锁，再找钥匙</span></h3>
+      <p class="body" data-l="en">The return stairs end facing a gold-locked door. Players meet the lock first, so the key hunt has a purpose. A side door, unlocked, leads toward the key.</p>
+      <p class="body" data-l="zh" lang="zh-CN">回程楼梯的尽头正对一扇挂金锁的门。玩家先看到锁，找钥匙才有目的。旁边一扇没上锁的门，通向钥匙的方向。</p>
+      <div class="pager"><button type="button" data-step="-1"><span data-l="en">Back</span><span data-l="zh" lang="zh-CN">上一步</span></button><button type="button" data-step="1"><span data-l="en">Next beat</span><span data-l="zh" lang="zh-CN">下一步</span></button></div>
+    </div>
+  </article>
+
+  <article class="beat" role="tabpanel" aria-label="Beat 4" data-beat="4" data-phase="1" hidden>
+    <figure><img src="img/b4.jpg" data-en="img/b4.jpg" data-zh="img/zh/b4.jpg" width="1280" height="720" alt="Looking back across a gap between two grey ledges, with the top of a ladder in the foreground.">
+      <figcaption><span data-l="en">The key gap: the ladder at the near edge, the key across the drop.</span><span data-l="zh" lang="zh-CN">钥匙缺口：近处是梯子，钥匙在落差对面。</span></figcaption></figure>
+    <div class="beat-text">
+      <p class="count"><span data-l="en">Beat 4 of 8</span><span data-l="zh" lang="zh-CN">第 4 步，共 8 步</span></p>
+      <h3><span data-l="en">The hidden key and the ladder</span><span data-l="zh" lang="zh-CN">藏起来的钥匙和梯子</span></h3>
+      <p class="body" data-l="en">The gold key sits across a 3.7 m gap over a 5.2 m fall, out of sight from below. A retracted ladder at the edge can be kicked down from above, so a missed jump costs a short climb, not a second run through the pistons.</p>
+      <p class="body" data-l="zh" lang="zh-CN">金钥匙在一个 3.7 米宽的缺口对面，缺口下方是 5.2 米的落差，从下层看不到它。缺口边有一架收起的梯子，可以从上面踹下去。这样跳失败只需要爬一段梯子，不用再走一遍活塞走廊。</p>
+      <div class="pager"><button type="button" data-step="-1"><span data-l="en">Back</span><span data-l="zh" lang="zh-CN">上一步</span></button><button type="button" data-step="1"><span data-l="en">Next beat</span><span data-l="zh" lang="zh-CN">下一步</span></button></div>
+    </div>
+  </article>
+
+  <article class="beat" role="tabpanel" aria-label="Beat 5" data-beat="5" data-phase="2" hidden>
+    <figure><img src="img/b5.jpg" width="1280" height="720" alt="A wooden double door pushed open, showing the spawn corridor beyond.">
+      <figcaption><span data-l="en">Door A pushed open from the courtyard side. Spawn is straight ahead.</span><span data-l="zh" lang="zh-CN">从庭院一侧推开单向门 A，正前方就是出生点。</span></figcaption></figure>
+    <div class="beat-text">
+      <p class="count"><span data-l="en">Beat 5 of 8</span><span data-l="zh" lang="zh-CN">第 5 步，共 8 步</span></p>
+      <h3><span data-l="en">First shortcut: back at spawn</span><span data-l="zh" lang="zh-CN">第一条捷径：回到出生点</span></h3>
+      <p class="body" data-l="en">Through the gold door, the north loop circles round to the courtyard. Push one-way door A from its barred side and the bar drops away. You are standing at spawn.</p>
+      <p class="body" data-l="zh" lang="zh-CN">过了金锁门，沿北环绕到庭院。从闩着的一侧推开单向门 A，门闩落下，眼前就是出生点。</p>
+      <div class="pager"><button type="button" data-step="-1"><span data-l="en">Back</span><span data-l="zh" lang="zh-CN">上一步</span></button><button type="button" data-step="1"><span data-l="en">Next beat</span><span data-l="zh" lang="zh-CN">下一步</span></button></div>
+    </div>
+  </article>
+
+  <article class="beat" role="tabpanel" aria-label="Beat 6" data-beat="6" data-phase="2" hidden>
+    <figure data-clip-en="Picking up the wall boots, then the first panels of the wall-run. Each panel asks for one timed key press." data-clip-zh="拿到行壁靴，接着是附墙路线的头几块板。每块板要在限时内按对一个键。"><img src="img/b6.jpg" data-en="img/b6.jpg" data-zh="img/zh/b6.jpg" width="1280" height="720" alt="A pedestal with a green switch and an on-screen prompt.">
+      <figcaption><span data-l="en">The switch at the end of the wall-run. Its only message: a wall cracks somewhere to the south.</span><span data-l="zh" lang="zh-CN">附墙路线尽头的按钮，提示：南边传来墙体碎裂的声音。</span></figcaption></figure>
+    <div class="beat-text">
+      <p class="count"><span data-l="en">Beat 6 of 8</span><span data-l="zh" lang="zh-CN">第 6 步，共 8 步</span></p>
+      <h3><span data-l="en">Wall boots over the void</span><span data-l="zh" lang="zh-CN">行壁靴：越过虚空</span></h3>
+      <p class="body" data-l="en">A shaft ladder leads down to the wall boots. The wall-run crosses a void panel by panel, with a timed key press at each one, and ends at a switch. All it tells you: a wall cracks somewhere to the south.</p>
+      <p class="body" data-l="zh" lang="zh-CN">顺竖井的梯子下去，拿到行壁靴。附墙路线一块板一块板地越过虚空，每块板都要在限时内按对一个键，尽头是一个按钮。按下后只有一句提示：南边传来墙体碎裂的声音。</p>
+      <div class="pager"><button type="button" data-step="-1"><span data-l="en">Back</span><span data-l="zh" lang="zh-CN">上一步</span></button><button type="button" data-step="1"><span data-l="en">Next beat</span><span data-l="zh" lang="zh-CN">下一步</span></button></div>
+    </div>
+  </article>
+
+  <article class="beat" role="tabpanel" aria-label="Beat 7" data-beat="7" data-phase="2" hidden>
+    <figure><img src="img/b7.jpg" data-en="img/b7.jpg" data-zh="img/zh/b7.jpg" width="1280" height="720" alt="A red key floating in a dim room, with a name prompt under it.">
+      <figcaption><span data-l="en">The red key in the cellar behind the collapsed wall.</span><span data-l="zh" lang="zh-CN">塌墙后面的暗室，里面是红钥匙。</span></figcaption></figure>
+    <div class="beat-text">
+      <p class="count"><span data-l="en">Beat 7 of 8</span><span data-l="zh" lang="zh-CN">第 7 步，共 8 步</span></p>
+      <h3><span data-l="en">Second shortcut and the payoff</span><span data-l="zh" lang="zh-CN">第二条捷径，伏笔回收</span></h3>
+      <p class="body" data-l="en">The way out is one-way door B, the one that wouldn't open in beat 2. Beside it the cracked wall has collapsed, and light from the cellar behind it spills into the corridor. Inside is the red key.</p>
+      <p class="body" data-l="zh" lang="zh-CN">出口是单向门 B，就是第 2 步里打不开的那扇。门旁的裂墙已经塌了，暗室里的灯光照到走廊上。里面放着红钥匙。</p>
+      <div class="pager"><button type="button" data-step="-1"><span data-l="en">Back</span><span data-l="zh" lang="zh-CN">上一步</span></button><button type="button" data-step="1"><span data-l="en">Next beat</span><span data-l="zh" lang="zh-CN">下一步</span></button></div>
+    </div>
+  </article>
+
+  <article class="beat" role="tabpanel" aria-label="Beat 8" data-beat="8" data-phase="3" hidden>
+    <figure data-clip-en="The bronze gate opens onto the final wall-run." data-clip-zh="青铜锁的庭院门打开，后面就是最后一段附墙路线。"><img src="img/b8.jpg" width="1221" height="688" alt="The player character at the edge of a pit, facing blue and red wall-run panels, with the goal on a platform beyond.">
+      <figcaption><span data-l="en">The final wall-run. The goal sits on the far platform.</span><span data-l="zh" lang="zh-CN">最后一段附墙路线，终点在对面的平台上。</span></figcaption></figure>
+    <div class="beat-text">
+      <p class="count"><span data-l="en">Beat 8 of 8</span><span data-l="zh" lang="zh-CN">第 8 步，共 8 步</span></p>
+      <h3><span data-l="en">Home stretch</span><span data-l="zh" lang="zh-CN">收尾</span></h3>
+      <p class="body" data-l="en">The red key opens the door beside spawn, which holds the bronze key for the courtyard gate. Behind the gate a last wall-run leads to the goal, marked by a lantern pole you have been able to see since the north loop.</p>
+      <p class="body" data-l="zh" lang="zh-CN">红钥匙打开出生点旁的门，里面是庭院门的青铜钥匙。门后是最后一段附墙路线，通向终点。终点立着一根挂灯笼的旗杆，从北环起就能看到。</p>
+      <div class="pager"><button type="button" data-step="-1"><span data-l="en">Back</span><span data-l="zh" lang="zh-CN">上一步</span></button><button type="button" data-step="1" disabled><span data-l="en">Next beat</span><span data-l="zh" lang="zh-CN">下一步</span></button></div>
+    </div>
+  </article>
+  </div>
+  <div class="key">
+    <strong>Photo01</strong>
+    <ul class="legend">
+        <li><svg width="26" height="8" aria-hidden="true"><path d="M1 4h24" stroke="var(--r1)" stroke-width="3" stroke-linecap="round"/></svg><span data-l="en">Out and down</span><span data-l="zh" lang="zh-CN">出发，下到下层</span></li>
+        <li><svg width="26" height="8" aria-hidden="true"><path d="M1 4h24" stroke="var(--r2)" stroke-width="3" stroke-linecap="round"/></svg><span data-l="en">The long loop</span><span data-l="zh" lang="zh-CN">绕一大圈</span></li>
+        <li><svg width="26" height="8" aria-hidden="true"><path d="M1 4h24" stroke="var(--r3)" stroke-width="3" stroke-linecap="round"/></svg><span data-l="en">Home stretch</span><span data-l="zh" lang="zh-CN">收尾</span></li>
+        <li><svg width="14" height="14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" fill="var(--sheet)" stroke="var(--ink)" stroke-width="2.4"/></svg><span data-l="en">Shortcut</span><span data-l="zh" lang="zh-CN">捷径</span></li>
+        <li><svg width="30" height="14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="var(--gold)"/><circle cx="19" cy="7" r="3.6" fill="var(--gold)"/><rect x="22" y="5.7" width="7" height="2.6" fill="var(--gold)"/></svg><span data-l="en">Lock and its key (gold, red, bronze)</span><span data-l="zh" lang="zh-CN">锁和对应的钥匙（金、红、青铜）</span></li>
+        <li><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.4" fill="var(--sheet)" stroke="var(--ink)" stroke-width="2"/></svg><span data-l="en">Checkpoint</span><span data-l="zh" lang="zh-CN">检查点</span></li>
+        <li><svg width="16" height="14" aria-hidden="true"><rect x="1" y="2" width="14" height="10" fill="var(--shade)"/></svg><span data-l="en">Lower layer, 5.2 m down</span><span data-l="zh" lang="zh-CN">下层，低 5.2 米</span></li>
+      </ul>
+    <p class="hint"><span data-l="en">Select a number on the plan, or a tab above, to step through the level.</span><span data-l="zh" lang="zh-CN">点平面图上的数字或上方的标签，逐步查看关卡。</span></p>
+  </div>
+  </div>
+  <!-- Walkthrough video: once recorded, save it as media/photo01.mp4 next to this file and add
+       <video controls preload="metadata" poster="img/b5.jpg" src="media/photo01.mp4" style="width:100%;margin-top:16px;border:1px solid var(--ink)"></video> here. -->
+</section>
+
+<section class="block" aria-labelledby="design-h">
+  <h2 id="design-h"><span data-l="en">How Photo01 was designed</span><span data-l="zh" lang="zh-CN">Photo01 的设计过程</span></h2>
+  <dl class="facts">
+    <div><dt><span data-l="en">Role</span><span data-l="zh" lang="zh-CN">角色</span></dt><dd><span data-l="en">Level design, solo</span><span data-l="zh" lang="zh-CN">关卡设计，独立完成</span></dd></div>
+    <div><dt><span data-l="en">Engine</span><span data-l="zh" lang="zh-CN">引擎</span></dt><dd><span data-l="en">Unreal Engine 5.8, C++ and Blueprints</span><span data-l="zh" lang="zh-CN">Unreal Engine 5.8，C++ 与蓝图</span></dd></div>
+    <div><dt><span data-l="en">Duration</span><span data-l="zh" lang="zh-CN">周期</span></dt><dd><span data-l="en">About one month</span><span data-l="zh" lang="zh-CN">约一个月</span></dd></div>
+    <div><dt><span data-l="en">Status</span><span data-l="zh" lang="zh-CN">状态</span></dt><dd><span data-l="en">Playable blockout with placeholder art, checked in a packaged build</span><span data-l="zh" lang="zh-CN">可玩的灰盒版本，美术为占位，已在打包版本中验证</span></dd></div>
+    <div><dt><span data-l="en">Size</span><span data-l="zh" lang="zh-CN">规模</span></dt><dd><span data-l="en">Two layers 5.2 m apart, about 420 m on the critical path</span><span data-l="zh" lang="zh-CN">上下两层，高差 5.2 米；主线步行约 420 米</span></dd></div>
+    <div><dt><span data-l="en">Contents</span><span data-l="zh" lang="zh-CN">内容</span></dt><dd><span data-l="en">3 checkpoints, 3 keys, 6 doors, 3 shortcuts, 1 hidden loop</span><span data-l="zh" lang="zh-CN">3 个检查点、3 把钥匙、6 扇门、3 条捷径、1 条隐藏回环</span></dd></div>
+    <div><dt><span data-l="en">In-game text</span><span data-l="zh" lang="zh-CN">游戏内文字</span></dt><dd><span data-l="en">English and Chinese, switchable</span><span data-l="zh" lang="zh-CN">中英双语，可切换</span></dd></div>
+    <div><dt><span data-l="en">Reference</span><span data-l="zh" lang="zh-CN">参考</span></dt><dd><span data-l="en">A study of the interconnected layouts in Phantom Blade Zero</span><span data-l="zh" lang="zh-CN">对《影之刃零》箱庭结构的拆解练习</span></dd></div>
+  </dl>
+
+  <div class="sub" id="goals">
+    <h3><span data-l="en">Design goals</span><span data-l="zh" lang="zh-CN">设计目标</span></h3>
+    <ol class="goals">
+      <li><h4><span data-l="en">See a shortcut before you open it</span><span data-l="zh" lang="zh-CN">捷径先见后开</span></h4>
+        <p data-l="en">Each shortcut is first met from the side that won't open. Players loop round and open it from the other side, so the level explains its own shape.</p>
+        <p data-l="zh" lang="zh-CN">每条捷径，玩家都先从打不开的一侧见到它，绕一圈后再从另一侧打开。关卡的结构由玩家自己走明白。</p></li>
+      <li><h4><span data-l="en">Locks you can read at a glance</span><span data-l="zh" lang="zh-CN">门锁一眼能读懂</span></h4>
+        <p data-l="en">A door tells you whether it pushes open, needs a detour, or needs one specific key. Each lock shares a color and a motif with its key.</p>
+        <p data-l="zh" lang="zh-CN">看到一扇门，就知道它是能推开、要绕路，还是要找某一把钥匙。每把锁和它的钥匙用同一种颜色和纹样。</p></li>
+      <li><h4><span data-l="en">An ability that leads back to old ground</span><span data-l="zh" lang="zh-CN">新能力带玩家回到旧地方</span></h4>
+        <p data-l="en">The wall boots arrive late. They carry the player across two voids and back to places first seen from the other side.</p>
+        <p data-l="zh" lang="zh-CN">行壁靴出现得比较晚。它带玩家越过两处虚空，回到之前只从另一侧见过的地方。</p></li>
+    </ol>
+  </div>
+
+  <div class="sub" id="paper">
+    <h3><span data-l="en">Paper first</span><span data-l="zh" lang="zh-CN">先画纸图</span></h3>
+    <p class="intro" data-l="en">I worked the layout out on paper before blocking it out. The sketches are drawn north up, the same way as the plan.</p>
+    <p class="intro" data-l="zh" lang="zh-CN">搭灰盒之前，我先在纸上把布局画出来。纸图和平面图一样，都是北朝上。</p>
+    <div class="paper">
+      <figure><img src="img/sketch-b.jpg" width="1382" height="1030" loading="lazy" alt="Hand-drawn top-down sketch of the level with notes for three keys, a switch, a door and hidden doors.">
+        <figcaption><span data-l="en">Paper sketch: three keys, the switch (“knob”) and the hidden door.</span><span data-l="zh" lang="zh-CN">纸图：三把钥匙、按钮（knob）和暗门。</span></figcaption></figure>
+      <figure><img src="img/sketch-a.jpg" width="1200" height="745" loading="lazy" alt="Hand-drawn top-down sketch of the level with spawn, goal, checkpoint, moving platforms and a sideways climb marked.">
+        <figcaption><span data-l="en">Paper sketch: spawn, goal, the checkpoint and the sideways climb.</span><span data-l="zh" lang="zh-CN">纸图：出生点、终点、检查点和横向攀爬的一段。</span></figcaption></figure>
+      <figure><svg class="plan" viewBox="0 -24 940 580" role="img" aria-label="Top-down plan of the built level, north up"><g class="floors"><rect class="l" x="510.0" y="24.0" width="238.0" height="60.0"/><rect class="l" x="41.5" y="233.0" width="57.0" height="152.0"/><rect class="l" x="748.0" y="24.0" width="72.0" height="60.0"/><rect class="l" x="760.0" y="83.8" width="60.0" height="121.2"/><rect class="l" x="385.0" y="24.0" width="125.0" height="70.0"/><rect class="l" x="730.0" y="245.0" width="88.5" height="140.0"/><rect class="l" x="778.5" y="205.0" width="40.0" height="40.0"/><rect class="l" x="730.0" y="245.0" width="48.5" height="3.1"/><rect class="l" x="821.5" y="205.0" width="100.0" height="100.0"/><rect class="l" x="788.5" y="200.5" width="20.0" height="7.0"/><rect class="l" x="817.0" y="206.5" width="6.0" height="34.0"/><rect class="l" x="584.0" y="426.5" width="76.0" height="37.0"/><rect class="l" x="658.5" y="428.0" width="31.5" height="34.0"/><rect class="l" x="690.0" y="385.0" width="120.0" height="120.0"/><rect class="s" x="774.8" y="205.0" width="3.7" height="40.0"/><rect class="s" x="771.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="767.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="763.6" y="205.0" width="3.7" height="40.0"/><rect class="s" x="759.9" y="205.0" width="3.7" height="40.0"/><rect class="s" x="756.2" y="205.0" width="3.7" height="40.0"/><rect class="s" x="752.5" y="205.0" width="3.7" height="40.0"/><rect class="s" x="748.8" y="205.0" width="3.7" height="40.0"/><rect class="s" x="745.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="741.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="737.6" y="205.0" width="3.7" height="40.0"/><rect class="s" x="560.0" y="426.5" width="4.0" height="37.0"/><rect class="l" x="564.0" y="426.5" width="20.0" height="37.0"/><rect class="s" x="733.9" y="205.0" width="3.7" height="40.0"/><rect class="s" x="556.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="730.2" y="205.0" width="3.7" height="40.0"/><rect class="s" x="552.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="726.5" y="205.0" width="3.7" height="40.0"/><rect class="s" x="710.5" y="205.0" width="16.0" height="40.0"/><rect class="s" x="548.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="706.8" y="205.0" width="3.7" height="40.0"/><rect class="s" x="544.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="703.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="540.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="699.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="536.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="695.6" y="205.0" width="3.7" height="40.0"/><rect class="l" x="818.5" y="202.0" width="106.0" height="106.0"/><rect class="s" x="532.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="691.9" y="205.0" width="3.7" height="40.0"/><rect class="l" x="502.0" y="426.5" width="30.0" height="37.0"/><rect class="s" x="498.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="688.2" y="205.0" width="3.7" height="40.0"/><rect class="l" x="788.5" y="202.0" width="20.0" height="3.0"/><rect class="s" x="494.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="684.5" y="205.0" width="3.7" height="40.0"/><rect class="s" x="490.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="680.8" y="205.0" width="3.7" height="40.0"/><rect class="u" x="757.0" y="83.8" width="66.0" height="118.1"/><rect class="u" x="455.0" y="23.8" width="55.2" height="70.2"/><rect class="s" x="486.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="677.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="482.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="673.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="478.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="669.6" y="205.0" width="3.7" height="40.0"/><rect class="s" x="474.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="665.9" y="205.0" width="3.7" height="40.0"/><rect class="s" x="470.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="662.2" y="205.0" width="3.7" height="40.0"/><rect class="u" x="597.0" y="423.4" width="36.0" height="3.1"/><rect class="u" x="578.4" y="205.0" width="80.1" height="40.0"/><rect class="s" x="658.5" y="205.0" width="3.7" height="40.0"/><rect class="u" x="410.0" y="105.0" width="20.0" height="96.9"/><rect class="u" x="430.0" y="94.0" width="8.0" height="107.9"/><rect class="u" x="402.0" y="94.0" width="8.0" height="107.9"/><rect class="u" x="410.0" y="94.0" width="20.0" height="11.0"/><rect class="u" x="760.0" y="201.8" width="60.0" height="3.2"/><rect class="u" x="24.0" y="179.0" width="90.0" height="54.0"/><rect class="u" x="597.0" y="463.5" width="36.0" height="3.1"/><rect class="u" x="658.4" y="424.9" width="33.2" height="40.2"/><rect class="u" x="578.4" y="466.6" width="80.0" height="40.0"/><rect class="u" x="578.4" y="383.4" width="80.0" height="40.0"/><rect class="u" x="578.4" y="248.1" width="80.0" height="135.3"/><rect class="u" x="470.0" y="466.6" width="108.4" height="40.0"/><rect class="u" x="470.0" y="383.4" width="108.4" height="40.0"/><rect class="u" x="470.0" y="248.1" width="108.4" height="135.3"/><rect class="u" x="470.0" y="201.9" width="108.4" height="46.2"/><rect class="u" x="811.6" y="386.5" width="9.9" height="36.9"/><rect class="u" x="438.0" y="94.0" width="17.0" height="107.9"/><rect class="u" x="385.0" y="94.0" width="17.0" height="107.9"/><rect class="u" x="41.5" y="385.0" width="57.0" height="38.4"/><rect class="u" x="41.5" y="201.9" width="57.0" height="31.1"/><rect class="u" x="687.6" y="248.1" width="39.4" height="135.3"/><rect class="u" x="688.4" y="248.1" width="3.2" height="135.3"/><rect class="u" x="660.0" y="466.6" width="28.4" height="40.0"/><rect class="u" x="660.0" y="465.1" width="28.4" height="1.5"/><rect class="u" x="660.0" y="423.4" width="28.4" height="1.5"/><rect class="u" x="660.0" y="383.4" width="28.4" height="40.0"/><rect class="u" x="660.0" y="248.1" width="28.4" height="135.3"/><rect class="u" x="658.4" y="466.6" width="1.6" height="40.0"/><rect class="u" x="658.4" y="383.4" width="1.6" height="40.0"/><rect class="u" x="658.4" y="248.1" width="1.6" height="135.3"/><rect class="u" x="241.5" y="386.5" width="89.5" height="85.5"/><rect class="u" x="404.0" y="298.5" width="6.0" height="5.0"/><rect class="u" x="431.0" y="299.5" width="6.5" height="6.0"/><rect class="u" x="284.0" y="424.0" width="12.0" height="12.0"/><rect class="u" x="416.0" y="301.0" width="7.5" height="5.0"/><rect class="u" x="62.5" y="187.0" width="15.0" height="12.0"/><rect class="u" x="401.0" y="288.5" width="12.5" height="10.0"/><rect class="u" x="620.0" y="319.5" width="20.0" height="3.0"/><rect class="u" x="558.5" y="235.0" width="3.0" height="20.0"/><rect class="u" x="238.5" y="355.0" width="3.0" height="20.0"/><rect class="u" x="279.0" y="383.5" width="24.0" height="3.0"/><rect class="u" x="426.0" y="289.0" width="13.0" height="10.5"/><rect class="u" x="413.5" y="288.5" width="12.5" height="12.5"/><rect class="u" x="128.5" y="399.0" width="3.0" height="32.0"/><rect class="u" x="408.0" y="123.5" width="24.0" height="3.0"/><rect class="u" x="398.5" y="93.8" width="43.0" height="32.7"/><rect class="u" x="382.0" y="21.0" width="76.0" height="76.0"/></g><g class="walls"><rect class="w" x="921.5" y="202.0" width="3.0" height="106.0"/><rect class="w" x="821.5" y="305.0" width="100.0" height="3.0"/><rect class="w" x="821.5" y="202.0" width="100.0" height="3.0"/><rect class="w" x="661.5" y="462.0" width="28.5" height="3.0"/><rect class="w" x="661.5" y="425.0" width="28.5" height="3.0"/><rect class="w" x="410.0" y="94.0" width="20.0" height="3.0"/><rect class="w" x="820.0" y="84.0" width="3.0" height="3.0"/><rect class="w" x="510.0" y="84.0" width="250.0" height="3.0"/><rect class="w" x="820.0" y="21.0" width="3.0" height="66.0"/><rect class="w" x="820.0" y="84.0" width="3.0" height="117.9"/><rect class="w" x="757.0" y="84.0" width="3.0" height="117.9"/><rect class="w" x="385.0" y="21.0" width="125.0" height="3.0"/><rect class="w" x="510.0" y="84.0" width="3.0" height="13.0"/><rect class="w" x="808.5" y="202.0" width="11.5" height="3.0"/><rect class="w" x="760.0" y="202.0" width="28.5" height="3.0"/><rect class="w" x="98.5" y="233.0" width="3.0" height="152.0"/><rect class="w" x="38.5" y="233.0" width="3.0" height="152.0"/><rect class="w" x="470.0" y="463.5" width="190.0" height="3.0"/><rect class="w" x="470.0" y="423.5" width="130.0" height="3.0"/><rect class="w" x="600.0" y="423.5" width="60.0" height="3.0"/><rect class="w" x="818.5" y="240.5" width="3.0" height="146.0"/><rect class="w" x="727.0" y="245.0" width="3.0" height="138.5"/><rect class="w" x="816.5" y="201.9" width="2.0" height="3.1"/><rect class="w" x="578.4" y="245.0" width="31.6" height="3.1"/><rect class="w" x="578.4" y="201.9" width="31.6" height="3.1"/><rect class="w" x="610.0" y="245.0" width="51.5" height="3.1"/><rect class="w" x="610.0" y="201.9" width="51.5" height="3.1"/><rect class="w" x="430.0" y="94.0" width="80.0" height="3.0"/><rect class="w" x="385.0" y="93.0" width="25.0" height="3.0"/><rect class="w" x="778.5" y="201.9" width="2.0" height="3.1"/><rect class="w" x="818.5" y="201.9" width="3.0" height="4.6"/><rect class="w" x="818.5" y="206.5" width="3.0" height="34.0"/><rect class="w" x="41.5" y="385.0" width="57.0" height="3.0"/><rect class="w" x="770.0" y="383.5" width="48.5" height="3.0"/><rect class="w" x="690.0" y="383.5" width="40.0" height="3.0"/><rect class="w" x="808.5" y="383.5" width="3.0" height="123.0"/><rect class="w" x="690.0" y="503.5" width="120.0" height="3.0"/><rect class="w" x="688.5" y="462.0" width="3.0" height="43.0"/><rect class="w" x="688.5" y="385.0" width="3.0" height="43.0"/><rect class="w" x="38.5" y="233.0" width="3.0" height="233.5"/><rect class="w" x="38.5" y="463.5" width="203.0" height="3.0"/><rect class="w" x="518.5" y="183.5" width="3.0" height="43.0"/><rect class="w" x="438.5" y="183.5" width="83.0" height="3.0"/><rect class="w" x="98.5" y="233.0" width="3.0" height="133.5"/><rect class="w" x="98.5" y="363.5" width="63.0" height="3.0"/><rect class="w" x="633.0" y="466.5" width="3.0" height="63.5"/><rect class="w" x="594.0" y="466.5" width="3.0" height="63.5"/><rect class="w" x="594.0" y="530.0" width="42.0" height="3.0"/><rect class="w" x="158.5" y="303.5" width="3.0" height="63.0"/><rect class="w" x="658.5" y="163.5" width="3.0" height="41.5"/><rect class="w" x="640.0" y="319.5" width="18.5" height="3.0"/><rect class="w" x="601.5" y="319.5" width="18.5" height="3.0"/><rect class="w" x="558.5" y="255.0" width="3.0" height="8.5"/><rect class="w" x="158.5" y="303.5" width="143.0" height="3.0"/><rect class="w" x="558.5" y="226.5" width="3.0" height="8.5"/><rect class="w" x="298.5" y="123.5" width="3.0" height="183.0"/><rect class="w" x="298.5" y="123.5" width="43.0" height="3.0"/><rect class="w" x="338.5" y="123.5" width="3.0" height="63.0"/><rect class="w" x="661.5" y="245.0" width="117.0" height="3.1"/><rect class="w" x="661.5" y="201.9" width="117.0" height="3.1"/><rect class="w" x="238.5" y="383.5" width="3.0" height="91.5"/><rect class="w" x="338.5" y="183.5" width="63.0" height="3.0"/><rect class="w" x="238.5" y="375.0" width="3.0" height="8.5"/><rect class="w" x="238.5" y="346.5" width="3.0" height="8.5"/><rect class="w" x="398.5" y="123.5" width="3.0" height="63.0"/><rect class="w" x="438.5" y="123.5" width="3.0" height="63.0"/><rect class="w" x="238.5" y="343.5" width="163.0" height="3.0"/><rect class="w" x="331.0" y="386.5" width="3.0" height="88.5"/><rect class="w" x="398.5" y="243.5" width="3.0" height="103.0"/><rect class="w" x="238.5" y="472.0" width="95.5" height="3.0"/><rect class="w" x="238.5" y="383.5" width="40.5" height="3.0"/><rect class="w" x="338.5" y="243.5" width="63.0" height="3.0"/><rect class="w" x="338.5" y="243.5" width="3.0" height="103.0"/><rect class="w" x="438.5" y="223.5" width="3.0" height="123.0"/><rect class="w" x="98.5" y="366.5" width="3.0" height="20.0"/><rect class="w" x="438.5" y="343.5" width="23.0" height="3.0"/><rect class="w" x="114.0" y="176.0" width="3.0" height="57.0"/><rect class="w" x="21.0" y="176.0" width="3.0" height="57.0"/><rect class="w" x="21.0" y="176.0" width="96.0" height="3.0"/><rect class="w" x="98.5" y="231.5" width="18.5" height="3.0"/><rect class="w" x="21.0" y="231.5" width="20.5" height="3.0"/><rect class="w" x="303.0" y="383.5" width="98.5" height="3.0"/><rect class="w" x="458.5" y="343.5" width="3.0" height="83.0"/><rect class="w" x="458.5" y="423.5" width="143.0" height="3.0"/><rect class="w" x="598.5" y="263.5" width="3.0" height="163.0"/><rect class="w" x="478.5" y="263.5" width="123.0" height="3.0"/><rect class="w" x="478.5" y="233.5" width="3.0" height="33.0"/><rect class="w" x="438.5" y="233.5" width="43.0" height="3.0"/><rect class="w" x="398.5" y="383.5" width="3.0" height="83.0"/><rect class="w" x="398.5" y="463.5" width="198.5" height="3.0"/><rect class="w" x="633.0" y="463.5" width="28.5" height="3.0"/><rect class="w" x="558.5" y="163.5" width="103.0" height="3.0"/><rect class="w" x="658.5" y="462.0" width="3.0" height="4.5"/><rect class="w" x="658.5" y="245.0" width="3.0" height="183.0"/><rect class="w" x="658.5" y="428.0" width="3.0" height="34.0"/><rect class="w" x="558.5" y="163.5" width="3.0" height="63.0"/><rect class="w" x="518.5" y="223.5" width="43.0" height="3.0"/><rect class="w" x="128.5" y="431.0" width="3.0" height="35.5"/><rect class="w" x="128.5" y="363.5" width="3.0" height="35.5"/><rect class="w" x="432.0" y="123.5" width="9.5" height="3.0"/><rect class="w" x="398.5" y="123.5" width="9.5" height="3.0"/><rect class="w" x="382.0" y="21.0" width="3.0" height="76.0"/><rect class="w" x="455.0" y="21.0" width="3.0" height="73.0"/><rect class="w" x="430.0" y="94.0" width="28.0" height="3.0"/><rect class="w" x="382.0" y="94.0" width="28.0" height="3.0"/><rect class="w" x="438.0" y="97.0" width="3.0" height="26.5"/><rect class="w" x="399.0" y="97.0" width="3.0" height="26.5"/><rect class="w" x="385.0" y="21.0" width="73.0" height="3.0"/></g><g class="glyphs"><rect class="g ow" x="235.5" y="360.5" width="9" height="9"/><rect class="g ow" x="794.0" y="199.9" width="9" height="9"/><rect class="g ow" x="610.5" y="425.7" width="9" height="9"/><path class="g gold" d="M560.0 237.0L568.0 245.0L560.0 253.0L552.0 245.0Z"/><g class="g gold"><circle cx="610.0" cy="511.0" r="4.8"/><rect x="614.0" y="509.3" width="12.5" height="3.4"/><rect x="622.5" y="511.0" width="2.6" height="4.8"/></g><path class="g red" d="M291.0 376.1L299.0 384.1L291.0 392.1L283.0 384.1Z"/><g class="g red"><circle cx="880.0" cy="265.0" r="4.8"/><rect x="884.0" y="263.3" width="12.5" height="3.4"/><rect x="892.5" y="265.0" width="2.6" height="4.8"/></g><path class="g bronze" d="M130.0 407.0L138.0 415.0L130.0 423.0L122.0 415.0Z"/><g class="g bronze"><circle cx="285.0" cy="430.0" r="4.8"/><rect x="289.0" y="428.3" width="12.5" height="3.4"/><rect x="297.5" y="430.0" width="2.6" height="4.8"/></g><circle class="g cp" cx="760.0" cy="450.0" r="5"/><circle class="g cp" cx="450.0" cy="55.0" r="5"/><circle class="g cp" cx="70.0" cy="423.0" r="5"/><path class="g goal" d="M70.0 182.0L72.6 188.2L79.0 188.2L73.8 192.4L75.6 199.0L70.0 195.0L64.4 199.0L66.2 192.4L61.0 188.2L67.4 188.2Z"/></g><g class="labels"><text class="lb" data-l="en" x="262" y="352" text-anchor="middle">Spawn</text><text class="lb" data-l="zh" lang="zh-CN" x="262" y="352" text-anchor="middle">出生点</text><text class="lb" data-l="en" x="122" y="186" text-anchor="start">Goal</text><text class="lb" data-l="zh" lang="zh-CN" x="122" y="186" text-anchor="start">终点</text><text class="lb" data-l="en" x="470" y="14" text-anchor="middle">Wall boots</text><text class="lb" data-l="zh" lang="zh-CN" x="470" y="14" text-anchor="middle">行壁靴</text><text class="lb" data-l="en" x="815" y="14" text-anchor="middle">Switch</text><text class="lb" data-l="zh" lang="zh-CN" x="815" y="14" text-anchor="middle">按钮</text><text class="lb" data-l="en" x="932" y="332" text-anchor="end">Hidden cellar</text><text class="lb" data-l="zh" lang="zh-CN" x="932" y="332" text-anchor="end">暗室</text><text class="lb" data-l="en" x="640" y="518" text-anchor="start">Hidden key</text><text class="lb" data-l="zh" lang="zh-CN" x="640" y="518" text-anchor="start">藏起的钥匙</text></g></svg>
+        <figcaption><span data-l="en">The built level, at the same orientation.</span><span data-l="zh" lang="zh-CN">搭出来的关卡，朝向相同。</span></figcaption></figure>
+      <div class="notes">
+        <h4><span data-l="en">What the paper already had</span><span data-l="zh" lang="zh-CN">纸图上已经有的</span></h4>
+        <ul data-l="en">
+          <li>Spawn near the middle, with the goal on the west side.</li>
+          <li>The wall boots (“shoes”) and a sideways climb along the north edge, with a checkpoint before it.</li>
+          <li>A switch tied to a hidden door.</li>
+          <li>Three keys spread across the map.</li>
+        </ul>
+        <ul data-l="zh" lang="zh-CN">
+          <li>出生点在中间，终点在西侧。</li>
+          <li>行壁靴（shoes）和沿北边的横向攀爬，前面有一个检查点。</li>
+          <li>一个按钮，对应一扇暗门。</li>
+          <li>三把钥匙，分散在地图各处。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub" id="views">
+    <h3><span data-l="en">The blockout from other angles</span><span data-l="zh" lang="zh-CN">换几个角度看灰盒</span></h3>
+    <p class="intro" data-l="en">The plan at the top shows routes. These two drawings show height: the two layers, the drop and the gap.</p>
+    <p class="intro" data-l="zh" lang="zh-CN">顶部的平面图讲的是路线。这两张图讲高度：上下两层、落差和缺口。</p>
+    <div class="views">
+      <figure><img src="img/axo.jpg" width="1400" height="788" loading="lazy" alt="Axonometric drawing of the whole level: walls standing on the upper layer, with the lower layer showing as blue-grey trenches.">
+        <figcaption><span data-l="en">Axonometric drawing, generated from the saved map. The upper layer is white and the lower layer blue-grey. Most of the lower layer runs under the upper floor, so only its open parts show.</span><span data-l="zh" lang="zh-CN">轴测图，由存盘的地图数据生成。上层是白色，下层是蓝灰色。下层大部分压在上层地面底下，这里只露出敞开的部分。</span></figcaption></figure>
+      <figure><svg class="plan sec" viewBox="0 0 498 306" role="img" aria-label="Section through the key gap: a 3.7 metre gap over a 5.2 metre drop to the lower corridor, with a ladder on the near wall and the key out of sight from below"><rect class="cut" x="0.0" y="116.1" width="157.5" height="189.9"/><rect class="cut" x="157.5" y="117.6" width="9.0" height="188.4"/><rect class="cut" x="166.5" y="272.4" width="111.0" height="33.6"/><rect class="cut" x="277.5" y="116.4" width="9.3" height="189.6"/><rect class="cut" x="286.8" y="116.1" width="211.2" height="189.9"/><rect class="cut" x="477.0" y="36.0" width="9.0" height="80.1"/><path class="lad" d="M175.5 116.1V272.4M182.1 116.1V272.4M175.5 258.0H182.1M175.5 242.4H182.1M175.5 226.8H182.1M175.5 211.2H182.1M175.5 195.6H182.1M175.5 180.0H182.1M175.5 164.4H182.1M175.5 148.8H182.1M175.5 133.2H182.1M175.5 117.6H182.1"/><g class="g gold"><circle cx="414.0" cy="88.5" r="5.5"/><rect x="419.0" y="86.5" width="14" height="4"/><rect x="428.5" y="88.5" width="3" height="5.5"/></g><path class="sight" d="M207.0 225.6L277.5 180.2"/><circle class="eye" cx="207.0" cy="225.6" r="5"/><path class="x" d="M272.5 175.2l10 10m0 -10l-10 10"/><path class="dim" d="M166.5 82.1H277.5M166.5 77.1v10M277.5 77.1v10"/><text class="lb" data-l="en" x="222.0" y="74.1" text-anchor="middle">3.7 m gap</text><text class="lb" data-l="zh" lang="zh-CN" x="222.0" y="74.1" text-anchor="middle">缺口 3.7 米</text><path class="dim" d="M255.0 116.1V272.4M250.0 116.1h10M250.0 272.4h10"/><text class="lb" data-l="en" x="248.0" y="171.0" text-anchor="end">5.2 m</text><text class="lb" data-l="zh" lang="zh-CN" x="248.0" y="171.0" text-anchor="end">5.2 米</text><path class="dim dash" d="M58.0 78.0H110.0"/><text class="lb" data-l="en" x="84.0" y="71.0" text-anchor="middle">Jump apex 1.27 m</text><text class="lb" data-l="zh" lang="zh-CN" x="84.0" y="71.0" text-anchor="middle">跳跃最高 1.27 米</text><text class="lb inv" data-l="en" x="75.0" y="138.1" text-anchor="middle">Upper layer</text><text class="lb inv" data-l="zh" lang="zh-CN" x="75.0" y="138.1" text-anchor="middle">上层</text><text class="lb inv" data-l="en" x="222.0" y="296.4" text-anchor="middle">Lower corridor</text><text class="lb inv" data-l="zh" lang="zh-CN" x="222.0" y="296.4" text-anchor="middle">下层走廊</text><text class="lb inv" data-l="en" x="384.0" y="138.1" text-anchor="middle">Key alcove</text><text class="lb inv" data-l="zh" lang="zh-CN" x="384.0" y="138.1" text-anchor="middle">钥匙壁龛</text><text class="lb" data-l="en" x="188.1" y="255.0" text-anchor="start">Ladder</text><text class="lb" data-l="zh" lang="zh-CN" x="188.1" y="255.0" text-anchor="start">梯子</text></svg>
+        <figcaption><span data-l="en">Section through the key gap, north on the left. From the lower corridor the sightline to the key (dashed) stops at the far wall, so the key stays hidden until the player is up top.</span><span data-l="zh" lang="zh-CN">钥匙缺口的剖面，左边是北。从下层走廊望向钥匙的视线（虚线）被对面的墙挡住，玩家上到上层之前看不到钥匙。</span></figcaption></figure>
+    </div>
+  </div>
+
+  <div class="sub" id="audit">
+    <h3><span data-l="en">Iteration: a guidance audit</span><span data-l="zh" lang="zh-CN">迭代：一次引导审查</span></h3>
+    <p class="intro" data-l="en">With the blockout playable, I audited it against 16 player-behavior rules: visibility, forward bias, caution at irreversible drops, attraction to light and others. I used an AI agent to walk the saved map and check sightlines. It flagged six guidance problems. Each one was fixed and then checked again in the build.</p>
+    <p class="intro" data-l="zh" lang="zh-CN">灰盒能玩之后，我按 16 条玩家行为规律（可见性、向前性、慎落性、趋光性等）做了一次审查，用 AI 代理读取存盘的地图、逐区检查视线，找出 6 处引导问题。每一处都改了，改完再到游戏里复查。</p>
+    <ul class="audit">
+      <li class="head" aria-hidden="true"><span><span data-l="en">Problem</span><span data-l="zh" lang="zh-CN">问题</span></span><span><span data-l="en">Rule</span><span data-l="zh" lang="zh-CN">对应规律</span></span><span><span data-l="en">Change</span><span data-l="zh" lang="zh-CN">改法</span></span></li>
+      <li><span><span data-l="en">One-way doors gave no feedback from the locked side.</span><span data-l="zh" lang="zh-CN">从锁住的一侧走近单向门，没有任何反馈。</span></span>
+        <span class="rule"><span data-l="en">Visibility</span><span data-l="zh" lang="zh-CN">可见性</span></span>
+        <span class="fix"><span data-l="en">The locked face is bare boards and shows a prompt. The other face carries door rings and a crossbar that drops away when pushed.</span><span data-l="zh" lang="zh-CN">锁住的一面只有门板，走近会弹提示；另一面有门环和门闩，推开时门闩落下。</span></span></li>
+      <li><span><span data-l="en">Two keys and four doors were nearly the same color.</span><span data-l="zh" lang="zh-CN">两把钥匙几乎同色，四扇门也几乎同色。</span></span>
+        <span class="rule"><span data-l="en">Visibility</span><span data-l="zh" lang="zh-CN">可见性</span></span>
+        <span class="fix"><span data-l="en">Padlocks on the keyed doors. Lock and key share a color and a motif: gold cloud, red lozenge, bronze bamboo.</span><span data-l="zh" lang="zh-CN">带锁的门挂上挂锁，锁和钥匙同色、同纹样：金色云纹、朱红方胜、青铜竹节。</span></span></li>
+      <li><span><span data-l="en">A missed jump at the key gap meant redoing the whole piston corridor.</span><span data-l="zh" lang="zh-CN">跳缺口失败，要把活塞走廊重走一遍。</span></span>
+        <span class="rule"><span data-l="en">Caution at drops</span><span data-l="zh" lang="zh-CN">慎落性</span></span>
+        <span class="fix"><span data-l="en">A retracted ladder at the gap, kicked down from above. A fall now costs one short climb.</span><span data-l="zh" lang="zh-CN">缺口边加一架收起的梯子，从上面踹下。掉下去只需要爬一段梯子。</span></span></li>
+      <li><span><span data-l="en">The secret cellar was darker than the corridor outside it.</span><span data-l="zh" lang="zh-CN">暗室比外面的走廊还暗。</span></span>
+        <span class="rule"><span data-l="en">Attraction to light</span><span data-l="zh" lang="zh-CN">趋光性</span></span>
+        <span class="fix"><span data-l="en">Cellar light raised from 45 to 280 lm and moved to the opening, so the collapsed wall is the brightest spot nearby.</span><span data-l="zh" lang="zh-CN">暗室的灯从 45 流明调到 280 流明，挪到洞口内侧。墙塌之后，洞口是附近最亮的地方。</span></span></li>
+      <li><span><span data-l="en">The goal could not be seen until its gate opened.</span><span data-l="zh" lang="zh-CN">终点在开门之前完全看不到。</span></span>
+        <span class="rule"><span data-l="en">Reward seeking</span><span data-l="zh" lang="zh-CN">趋利性</span></span>
+        <span class="fix"><span data-l="en">An 8.7 m pole with a lantern behind the goal, visible from the north loop and the courtyard.</span><span data-l="zh" lang="zh-CN">终点后立一根 8.7 米高、挂灯笼的旗杆，从北环和庭院都能看到。</span></span></li>
+      <li><span><span data-l="en">Prompts were debug prints and vanished in packaged builds.</span><span data-l="zh" lang="zh-CN">提示用的是调试打印，打包之后不显示。</span></span>
+        <span class="rule"><span data-l="en">Build check</span><span data-l="zh" lang="zh-CN">打包验证</span></span>
+        <span class="fix"><span data-l="en">Moved to UI prompts and verified in a Shipping build.</span><span data-l="zh" lang="zh-CN">换成界面提示，并在 Shipping 包里验证。</span></span></li>
+    </ul>
+    <p class="kept" data-l="en"><strong>One flag I overruled.</strong> The audit marked the gold key as invisible from below. I kept it hidden. Finding it is the reward for exploring that side path.</p>
+    <p class="kept" data-l="zh" lang="zh-CN"><strong>有一处我没有照改。</strong>审查指出金钥匙从下层看不到。我保留了这个设计：它是留给愿意探索那条岔路的玩家的奖励。</p>
+    <div class="ba">
+      <figure><svg class="plan ba" viewBox="499 194 403 302" role="img" aria-label="Plan of the key gap before the change: the walk back runs through the whole piston corridor"><g class="floors"><rect class="l" x="510.0" y="24.0" width="238.0" height="60.0"/><rect class="l" x="41.5" y="233.0" width="57.0" height="152.0"/><rect class="l" x="748.0" y="24.0" width="72.0" height="60.0"/><rect class="l" x="760.0" y="83.8" width="60.0" height="121.2"/><rect class="l" x="385.0" y="24.0" width="125.0" height="70.0"/><rect class="l" x="730.0" y="245.0" width="88.5" height="140.0"/><rect class="l" x="778.5" y="205.0" width="40.0" height="40.0"/><rect class="l" x="730.0" y="245.0" width="48.5" height="3.1"/><rect class="l" x="821.5" y="205.0" width="100.0" height="100.0"/><rect class="l" x="788.5" y="200.5" width="20.0" height="7.0"/><rect class="l" x="817.0" y="206.5" width="6.0" height="34.0"/><rect class="l" x="584.0" y="426.5" width="76.0" height="37.0"/><rect class="l" x="658.5" y="428.0" width="31.5" height="34.0"/><rect class="l" x="690.0" y="385.0" width="120.0" height="120.0"/><rect class="s" x="774.8" y="205.0" width="3.7" height="40.0"/><rect class="s" x="771.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="767.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="763.6" y="205.0" width="3.7" height="40.0"/><rect class="s" x="759.9" y="205.0" width="3.7" height="40.0"/><rect class="s" x="756.2" y="205.0" width="3.7" height="40.0"/><rect class="s" x="752.5" y="205.0" width="3.7" height="40.0"/><rect class="s" x="748.8" y="205.0" width="3.7" height="40.0"/><rect class="s" x="745.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="741.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="737.6" y="205.0" width="3.7" height="40.0"/><rect class="s" x="560.0" y="426.5" width="4.0" height="37.0"/><rect class="l" x="564.0" y="426.5" width="20.0" height="37.0"/><rect class="s" x="733.9" y="205.0" width="3.7" height="40.0"/><rect class="s" x="556.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="730.2" y="205.0" width="3.7" height="40.0"/><rect class="s" x="552.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="726.5" y="205.0" width="3.7" height="40.0"/><rect class="s" x="710.5" y="205.0" width="16.0" height="40.0"/><rect class="s" x="548.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="706.8" y="205.0" width="3.7" height="40.0"/><rect class="s" x="544.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="703.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="540.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="699.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="536.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="695.6" y="205.0" width="3.7" height="40.0"/><rect class="l" x="818.5" y="202.0" width="106.0" height="106.0"/><rect class="s" x="532.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="691.9" y="205.0" width="3.7" height="40.0"/><rect class="l" x="502.0" y="426.5" width="30.0" height="37.0"/><rect class="s" x="498.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="688.2" y="205.0" width="3.7" height="40.0"/><rect class="l" x="788.5" y="202.0" width="20.0" height="3.0"/><rect class="s" x="494.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="684.5" y="205.0" width="3.7" height="40.0"/><rect class="s" x="490.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="680.8" y="205.0" width="3.7" height="40.0"/><rect class="u" x="757.0" y="83.8" width="66.0" height="118.1"/><rect class="u" x="455.0" y="23.8" width="55.2" height="70.2"/><rect class="s" x="486.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="677.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="482.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="673.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="478.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="669.6" y="205.0" width="3.7" height="40.0"/><rect class="s" x="474.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="665.9" y="205.0" width="3.7" height="40.0"/><rect class="s" x="470.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="662.2" y="205.0" width="3.7" height="40.0"/><rect class="u" x="597.0" y="423.4" width="36.0" height="3.1"/><rect class="u" x="578.4" y="205.0" width="80.1" height="40.0"/><rect class="s" x="658.5" y="205.0" width="3.7" height="40.0"/><rect class="u" x="410.0" y="105.0" width="20.0" height="96.9"/><rect class="u" x="430.0" y="94.0" width="8.0" height="107.9"/><rect class="u" x="402.0" y="94.0" width="8.0" height="107.9"/><rect class="u" x="410.0" y="94.0" width="20.0" height="11.0"/><rect class="u" x="760.0" y="201.8" width="60.0" height="3.2"/><rect class="u" x="24.0" y="179.0" width="90.0" height="54.0"/><rect class="u" x="597.0" y="463.5" width="36.0" height="3.1"/><rect class="u" x="658.4" y="424.9" width="33.2" height="40.2"/><rect class="u" x="578.4" y="466.6" width="80.0" height="40.0"/><rect class="u" x="578.4" y="383.4" width="80.0" height="40.0"/><rect class="u" x="578.4" y="248.1" width="80.0" height="135.3"/><rect class="u" x="470.0" y="466.6" width="108.4" height="40.0"/><rect class="u" x="470.0" y="383.4" width="108.4" height="40.0"/><rect class="u" x="470.0" y="248.1" width="108.4" height="135.3"/><rect class="u" x="470.0" y="201.9" width="108.4" height="46.2"/><rect class="u" x="811.6" y="386.5" width="9.9" height="36.9"/><rect class="u" x="438.0" y="94.0" width="17.0" height="107.9"/><rect class="u" x="385.0" y="94.0" width="17.0" height="107.9"/><rect class="u" x="41.5" y="385.0" width="57.0" height="38.4"/><rect class="u" x="41.5" y="201.9" width="57.0" height="31.1"/><rect class="u" x="687.6" y="248.1" width="39.4" height="135.3"/><rect class="u" x="688.4" y="248.1" width="3.2" height="135.3"/><rect class="u" x="660.0" y="466.6" width="28.4" height="40.0"/><rect class="u" x="660.0" y="465.1" width="28.4" height="1.5"/><rect class="u" x="660.0" y="423.4" width="28.4" height="1.5"/><rect class="u" x="660.0" y="383.4" width="28.4" height="40.0"/><rect class="u" x="660.0" y="248.1" width="28.4" height="135.3"/><rect class="u" x="658.4" y="466.6" width="1.6" height="40.0"/><rect class="u" x="658.4" y="383.4" width="1.6" height="40.0"/><rect class="u" x="658.4" y="248.1" width="1.6" height="135.3"/><rect class="u" x="241.5" y="386.5" width="89.5" height="85.5"/><rect class="u" x="404.0" y="298.5" width="6.0" height="5.0"/><rect class="u" x="431.0" y="299.5" width="6.5" height="6.0"/><rect class="u" x="284.0" y="424.0" width="12.0" height="12.0"/><rect class="u" x="416.0" y="301.0" width="7.5" height="5.0"/><rect class="u" x="62.5" y="187.0" width="15.0" height="12.0"/><rect class="u" x="401.0" y="288.5" width="12.5" height="10.0"/><rect class="u" x="620.0" y="319.5" width="20.0" height="3.0"/><rect class="u" x="558.5" y="235.0" width="3.0" height="20.0"/><rect class="u" x="238.5" y="355.0" width="3.0" height="20.0"/><rect class="u" x="279.0" y="383.5" width="24.0" height="3.0"/><rect class="u" x="426.0" y="289.0" width="13.0" height="10.5"/><rect class="u" x="413.5" y="288.5" width="12.5" height="12.5"/><rect class="u" x="128.5" y="399.0" width="3.0" height="32.0"/><rect class="u" x="408.0" y="123.5" width="24.0" height="3.0"/><rect class="u" x="398.5" y="93.8" width="43.0" height="32.7"/><rect class="u" x="382.0" y="21.0" width="76.0" height="76.0"/></g><g class="walls"><rect class="w" x="921.5" y="202.0" width="3.0" height="106.0"/><rect class="w" x="821.5" y="305.0" width="100.0" height="3.0"/><rect class="w" x="821.5" y="202.0" width="100.0" height="3.0"/><rect class="w" x="661.5" y="462.0" width="28.5" height="3.0"/><rect class="w" x="661.5" y="425.0" width="28.5" height="3.0"/><rect class="w" x="410.0" y="94.0" width="20.0" height="3.0"/><rect class="w" x="820.0" y="84.0" width="3.0" height="3.0"/><rect class="w" x="510.0" y="84.0" width="250.0" height="3.0"/><rect class="w" x="820.0" y="21.0" width="3.0" height="66.0"/><rect class="w" x="820.0" y="84.0" width="3.0" height="117.9"/><rect class="w" x="757.0" y="84.0" width="3.0" height="117.9"/><rect class="w" x="385.0" y="21.0" width="125.0" height="3.0"/><rect class="w" x="510.0" y="84.0" width="3.0" height="13.0"/><rect class="w" x="808.5" y="202.0" width="11.5" height="3.0"/><rect class="w" x="760.0" y="202.0" width="28.5" height="3.0"/><rect class="w" x="98.5" y="233.0" width="3.0" height="152.0"/><rect class="w" x="38.5" y="233.0" width="3.0" height="152.0"/><rect class="w" x="470.0" y="463.5" width="190.0" height="3.0"/><rect class="w" x="470.0" y="423.5" width="130.0" height="3.0"/><rect class="w" x="600.0" y="423.5" width="60.0" height="3.0"/><rect class="w" x="818.5" y="240.5" width="3.0" height="146.0"/><rect class="w" x="727.0" y="245.0" width="3.0" height="138.5"/><rect class="w" x="816.5" y="201.9" width="2.0" height="3.1"/><rect class="w" x="578.4" y="245.0" width="31.6" height="3.1"/><rect class="w" x="578.4" y="201.9" width="31.6" height="3.1"/><rect class="w" x="610.0" y="245.0" width="51.5" height="3.1"/><rect class="w" x="610.0" y="201.9" width="51.5" height="3.1"/><rect class="w" x="430.0" y="94.0" width="80.0" height="3.0"/><rect class="w" x="385.0" y="93.0" width="25.0" height="3.0"/><rect class="w" x="778.5" y="201.9" width="2.0" height="3.1"/><rect class="w" x="818.5" y="201.9" width="3.0" height="4.6"/><rect class="w" x="818.5" y="206.5" width="3.0" height="34.0"/><rect class="w" x="41.5" y="385.0" width="57.0" height="3.0"/><rect class="w" x="770.0" y="383.5" width="48.5" height="3.0"/><rect class="w" x="690.0" y="383.5" width="40.0" height="3.0"/><rect class="w" x="808.5" y="383.5" width="3.0" height="123.0"/><rect class="w" x="690.0" y="503.5" width="120.0" height="3.0"/><rect class="w" x="688.5" y="462.0" width="3.0" height="43.0"/><rect class="w" x="688.5" y="385.0" width="3.0" height="43.0"/><rect class="w" x="38.5" y="233.0" width="3.0" height="233.5"/><rect class="w" x="38.5" y="463.5" width="203.0" height="3.0"/><rect class="w" x="518.5" y="183.5" width="3.0" height="43.0"/><rect class="w" x="438.5" y="183.5" width="83.0" height="3.0"/><rect class="w" x="98.5" y="233.0" width="3.0" height="133.5"/><rect class="w" x="98.5" y="363.5" width="63.0" height="3.0"/><rect class="w" x="633.0" y="466.5" width="3.0" height="63.5"/><rect class="w" x="594.0" y="466.5" width="3.0" height="63.5"/><rect class="w" x="594.0" y="530.0" width="42.0" height="3.0"/><rect class="w" x="158.5" y="303.5" width="3.0" height="63.0"/><rect class="w" x="658.5" y="163.5" width="3.0" height="41.5"/><rect class="w" x="640.0" y="319.5" width="18.5" height="3.0"/><rect class="w" x="601.5" y="319.5" width="18.5" height="3.0"/><rect class="w" x="558.5" y="255.0" width="3.0" height="8.5"/><rect class="w" x="158.5" y="303.5" width="143.0" height="3.0"/><rect class="w" x="558.5" y="226.5" width="3.0" height="8.5"/><rect class="w" x="298.5" y="123.5" width="3.0" height="183.0"/><rect class="w" x="298.5" y="123.5" width="43.0" height="3.0"/><rect class="w" x="338.5" y="123.5" width="3.0" height="63.0"/><rect class="w" x="661.5" y="245.0" width="117.0" height="3.1"/><rect class="w" x="661.5" y="201.9" width="117.0" height="3.1"/><rect class="w" x="238.5" y="383.5" width="3.0" height="91.5"/><rect class="w" x="338.5" y="183.5" width="63.0" height="3.0"/><rect class="w" x="238.5" y="375.0" width="3.0" height="8.5"/><rect class="w" x="238.5" y="346.5" width="3.0" height="8.5"/><rect class="w" x="398.5" y="123.5" width="3.0" height="63.0"/><rect class="w" x="438.5" y="123.5" width="3.0" height="63.0"/><rect class="w" x="238.5" y="343.5" width="163.0" height="3.0"/><rect class="w" x="331.0" y="386.5" width="3.0" height="88.5"/><rect class="w" x="398.5" y="243.5" width="3.0" height="103.0"/><rect class="w" x="238.5" y="472.0" width="95.5" height="3.0"/><rect class="w" x="238.5" y="383.5" width="40.5" height="3.0"/><rect class="w" x="338.5" y="243.5" width="63.0" height="3.0"/><rect class="w" x="338.5" y="243.5" width="3.0" height="103.0"/><rect class="w" x="438.5" y="223.5" width="3.0" height="123.0"/><rect class="w" x="98.5" y="366.5" width="3.0" height="20.0"/><rect class="w" x="438.5" y="343.5" width="23.0" height="3.0"/><rect class="w" x="114.0" y="176.0" width="3.0" height="57.0"/><rect class="w" x="21.0" y="176.0" width="3.0" height="57.0"/><rect class="w" x="21.0" y="176.0" width="96.0" height="3.0"/><rect class="w" x="98.5" y="231.5" width="18.5" height="3.0"/><rect class="w" x="21.0" y="231.5" width="20.5" height="3.0"/><rect class="w" x="303.0" y="383.5" width="98.5" height="3.0"/><rect class="w" x="458.5" y="343.5" width="3.0" height="83.0"/><rect class="w" x="458.5" y="423.5" width="143.0" height="3.0"/><rect class="w" x="598.5" y="263.5" width="3.0" height="163.0"/><rect class="w" x="478.5" y="263.5" width="123.0" height="3.0"/><rect class="w" x="478.5" y="233.5" width="3.0" height="33.0"/><rect class="w" x="438.5" y="233.5" width="43.0" height="3.0"/><rect class="w" x="398.5" y="383.5" width="3.0" height="83.0"/><rect class="w" x="398.5" y="463.5" width="198.5" height="3.0"/><rect class="w" x="633.0" y="463.5" width="28.5" height="3.0"/><rect class="w" x="558.5" y="163.5" width="103.0" height="3.0"/><rect class="w" x="658.5" y="462.0" width="3.0" height="4.5"/><rect class="w" x="658.5" y="245.0" width="3.0" height="183.0"/><rect class="w" x="658.5" y="428.0" width="3.0" height="34.0"/><rect class="w" x="558.5" y="163.5" width="3.0" height="63.0"/><rect class="w" x="518.5" y="223.5" width="43.0" height="3.0"/><rect class="w" x="128.5" y="431.0" width="3.0" height="35.5"/><rect class="w" x="128.5" y="363.5" width="3.0" height="35.5"/><rect class="w" x="432.0" y="123.5" width="9.5" height="3.0"/><rect class="w" x="398.5" y="123.5" width="9.5" height="3.0"/><rect class="w" x="382.0" y="21.0" width="3.0" height="76.0"/><rect class="w" x="455.0" y="21.0" width="3.0" height="73.0"/><rect class="w" x="430.0" y="94.0" width="28.0" height="3.0"/><rect class="w" x="382.0" y="94.0" width="28.0" height="3.0"/><rect class="w" x="438.0" y="97.0" width="3.0" height="26.5"/><rect class="w" x="399.0" y="97.0" width="3.0" height="26.5"/><rect class="w" x="385.0" y="21.0" width="73.0" height="3.0"/></g><path class="rec" d="M615.0 432.0 L743.0 434.0 L759.0 450.0 L759.0 278.0 L785.0 252.0 L783.0 240.0 L635.0 240.0 L619.0 224.0 L619.0 310.0 L625.0 316.0 L625.0 416.0 L615.0 426.0"/><g class="g gold"><circle cx="610.0" cy="511.0" r="4.8"/><rect x="614.0" y="509.3" width="12.5" height="3.4"/><rect x="622.5" y="511.0" width="2.6" height="4.8"/></g><path class="x" d="M609.0 439.0L621.0 451.0M621.0 439.0L609.0 451.0"/></svg>
+        <figcaption><span data-l="en"><b>Before.</b> A missed jump (✕) dropped the player to the lower layer. The way back to the gap was about 75 m, pistons included.</span><span data-l="zh" lang="zh-CN"><b>改前。</b>跳失败（✕）会掉到下层。回到缺口要走约 75 米，中间还要再过一遍活塞。</span></figcaption></figure>
+      <figure><svg class="plan ba" viewBox="499 194 403 302" role="img" aria-label="Plan of the key gap after the change: a ladder at the gap"><g class="floors"><rect class="l" x="510.0" y="24.0" width="238.0" height="60.0"/><rect class="l" x="41.5" y="233.0" width="57.0" height="152.0"/><rect class="l" x="748.0" y="24.0" width="72.0" height="60.0"/><rect class="l" x="760.0" y="83.8" width="60.0" height="121.2"/><rect class="l" x="385.0" y="24.0" width="125.0" height="70.0"/><rect class="l" x="730.0" y="245.0" width="88.5" height="140.0"/><rect class="l" x="778.5" y="205.0" width="40.0" height="40.0"/><rect class="l" x="730.0" y="245.0" width="48.5" height="3.1"/><rect class="l" x="821.5" y="205.0" width="100.0" height="100.0"/><rect class="l" x="788.5" y="200.5" width="20.0" height="7.0"/><rect class="l" x="817.0" y="206.5" width="6.0" height="34.0"/><rect class="l" x="584.0" y="426.5" width="76.0" height="37.0"/><rect class="l" x="658.5" y="428.0" width="31.5" height="34.0"/><rect class="l" x="690.0" y="385.0" width="120.0" height="120.0"/><rect class="s" x="774.8" y="205.0" width="3.7" height="40.0"/><rect class="s" x="771.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="767.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="763.6" y="205.0" width="3.7" height="40.0"/><rect class="s" x="759.9" y="205.0" width="3.7" height="40.0"/><rect class="s" x="756.2" y="205.0" width="3.7" height="40.0"/><rect class="s" x="752.5" y="205.0" width="3.7" height="40.0"/><rect class="s" x="748.8" y="205.0" width="3.7" height="40.0"/><rect class="s" x="745.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="741.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="737.6" y="205.0" width="3.7" height="40.0"/><rect class="s" x="560.0" y="426.5" width="4.0" height="37.0"/><rect class="l" x="564.0" y="426.5" width="20.0" height="37.0"/><rect class="s" x="733.9" y="205.0" width="3.7" height="40.0"/><rect class="s" x="556.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="730.2" y="205.0" width="3.7" height="40.0"/><rect class="s" x="552.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="726.5" y="205.0" width="3.7" height="40.0"/><rect class="s" x="710.5" y="205.0" width="16.0" height="40.0"/><rect class="s" x="548.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="706.8" y="205.0" width="3.7" height="40.0"/><rect class="s" x="544.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="703.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="540.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="699.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="536.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="695.6" y="205.0" width="3.7" height="40.0"/><rect class="l" x="818.5" y="202.0" width="106.0" height="106.0"/><rect class="s" x="532.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="691.9" y="205.0" width="3.7" height="40.0"/><rect class="l" x="502.0" y="426.5" width="30.0" height="37.0"/><rect class="s" x="498.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="688.2" y="205.0" width="3.7" height="40.0"/><rect class="l" x="788.5" y="202.0" width="20.0" height="3.0"/><rect class="s" x="494.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="684.5" y="205.0" width="3.7" height="40.0"/><rect class="s" x="490.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="680.8" y="205.0" width="3.7" height="40.0"/><rect class="u" x="757.0" y="83.8" width="66.0" height="118.1"/><rect class="u" x="455.0" y="23.8" width="55.2" height="70.2"/><rect class="s" x="486.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="677.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="482.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="673.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="478.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="669.6" y="205.0" width="3.7" height="40.0"/><rect class="s" x="474.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="665.9" y="205.0" width="3.7" height="40.0"/><rect class="s" x="470.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="662.2" y="205.0" width="3.7" height="40.0"/><rect class="u" x="597.0" y="423.4" width="36.0" height="3.1"/><rect class="u" x="578.4" y="205.0" width="80.1" height="40.0"/><rect class="s" x="658.5" y="205.0" width="3.7" height="40.0"/><rect class="u" x="410.0" y="105.0" width="20.0" height="96.9"/><rect class="u" x="430.0" y="94.0" width="8.0" height="107.9"/><rect class="u" x="402.0" y="94.0" width="8.0" height="107.9"/><rect class="u" x="410.0" y="94.0" width="20.0" height="11.0"/><rect class="u" x="760.0" y="201.8" width="60.0" height="3.2"/><rect class="u" x="24.0" y="179.0" width="90.0" height="54.0"/><rect class="u" x="597.0" y="463.5" width="36.0" height="3.1"/><rect class="u" x="658.4" y="424.9" width="33.2" height="40.2"/><rect class="u" x="578.4" y="466.6" width="80.0" height="40.0"/><rect class="u" x="578.4" y="383.4" width="80.0" height="40.0"/><rect class="u" x="578.4" y="248.1" width="80.0" height="135.3"/><rect class="u" x="470.0" y="466.6" width="108.4" height="40.0"/><rect class="u" x="470.0" y="383.4" width="108.4" height="40.0"/><rect class="u" x="470.0" y="248.1" width="108.4" height="135.3"/><rect class="u" x="470.0" y="201.9" width="108.4" height="46.2"/><rect class="u" x="811.6" y="386.5" width="9.9" height="36.9"/><rect class="u" x="438.0" y="94.0" width="17.0" height="107.9"/><rect class="u" x="385.0" y="94.0" width="17.0" height="107.9"/><rect class="u" x="41.5" y="385.0" width="57.0" height="38.4"/><rect class="u" x="41.5" y="201.9" width="57.0" height="31.1"/><rect class="u" x="687.6" y="248.1" width="39.4" height="135.3"/><rect class="u" x="688.4" y="248.1" width="3.2" height="135.3"/><rect class="u" x="660.0" y="466.6" width="28.4" height="40.0"/><rect class="u" x="660.0" y="465.1" width="28.4" height="1.5"/><rect class="u" x="660.0" y="423.4" width="28.4" height="1.5"/><rect class="u" x="660.0" y="383.4" width="28.4" height="40.0"/><rect class="u" x="660.0" y="248.1" width="28.4" height="135.3"/><rect class="u" x="658.4" y="466.6" width="1.6" height="40.0"/><rect class="u" x="658.4" y="383.4" width="1.6" height="40.0"/><rect class="u" x="658.4" y="248.1" width="1.6" height="135.3"/><rect class="u" x="241.5" y="386.5" width="89.5" height="85.5"/><rect class="u" x="404.0" y="298.5" width="6.0" height="5.0"/><rect class="u" x="431.0" y="299.5" width="6.5" height="6.0"/><rect class="u" x="284.0" y="424.0" width="12.0" height="12.0"/><rect class="u" x="416.0" y="301.0" width="7.5" height="5.0"/><rect class="u" x="62.5" y="187.0" width="15.0" height="12.0"/><rect class="u" x="401.0" y="288.5" width="12.5" height="10.0"/><rect class="u" x="620.0" y="319.5" width="20.0" height="3.0"/><rect class="u" x="558.5" y="235.0" width="3.0" height="20.0"/><rect class="u" x="238.5" y="355.0" width="3.0" height="20.0"/><rect class="u" x="279.0" y="383.5" width="24.0" height="3.0"/><rect class="u" x="426.0" y="289.0" width="13.0" height="10.5"/><rect class="u" x="413.5" y="288.5" width="12.5" height="12.5"/><rect class="u" x="128.5" y="399.0" width="3.0" height="32.0"/><rect class="u" x="408.0" y="123.5" width="24.0" height="3.0"/><rect class="u" x="398.5" y="93.8" width="43.0" height="32.7"/><rect class="u" x="382.0" y="21.0" width="76.0" height="76.0"/></g><g class="walls"><rect class="w" x="921.5" y="202.0" width="3.0" height="106.0"/><rect class="w" x="821.5" y="305.0" width="100.0" height="3.0"/><rect class="w" x="821.5" y="202.0" width="100.0" height="3.0"/><rect class="w" x="661.5" y="462.0" width="28.5" height="3.0"/><rect class="w" x="661.5" y="425.0" width="28.5" height="3.0"/><rect class="w" x="410.0" y="94.0" width="20.0" height="3.0"/><rect class="w" x="820.0" y="84.0" width="3.0" height="3.0"/><rect class="w" x="510.0" y="84.0" width="250.0" height="3.0"/><rect class="w" x="820.0" y="21.0" width="3.0" height="66.0"/><rect class="w" x="820.0" y="84.0" width="3.0" height="117.9"/><rect class="w" x="757.0" y="84.0" width="3.0" height="117.9"/><rect class="w" x="385.0" y="21.0" width="125.0" height="3.0"/><rect class="w" x="510.0" y="84.0" width="3.0" height="13.0"/><rect class="w" x="808.5" y="202.0" width="11.5" height="3.0"/><rect class="w" x="760.0" y="202.0" width="28.5" height="3.0"/><rect class="w" x="98.5" y="233.0" width="3.0" height="152.0"/><rect class="w" x="38.5" y="233.0" width="3.0" height="152.0"/><rect class="w" x="470.0" y="463.5" width="190.0" height="3.0"/><rect class="w" x="470.0" y="423.5" width="130.0" height="3.0"/><rect class="w" x="600.0" y="423.5" width="60.0" height="3.0"/><rect class="w" x="818.5" y="240.5" width="3.0" height="146.0"/><rect class="w" x="727.0" y="245.0" width="3.0" height="138.5"/><rect class="w" x="816.5" y="201.9" width="2.0" height="3.1"/><rect class="w" x="578.4" y="245.0" width="31.6" height="3.1"/><rect class="w" x="578.4" y="201.9" width="31.6" height="3.1"/><rect class="w" x="610.0" y="245.0" width="51.5" height="3.1"/><rect class="w" x="610.0" y="201.9" width="51.5" height="3.1"/><rect class="w" x="430.0" y="94.0" width="80.0" height="3.0"/><rect class="w" x="385.0" y="93.0" width="25.0" height="3.0"/><rect class="w" x="778.5" y="201.9" width="2.0" height="3.1"/><rect class="w" x="818.5" y="201.9" width="3.0" height="4.6"/><rect class="w" x="818.5" y="206.5" width="3.0" height="34.0"/><rect class="w" x="41.5" y="385.0" width="57.0" height="3.0"/><rect class="w" x="770.0" y="383.5" width="48.5" height="3.0"/><rect class="w" x="690.0" y="383.5" width="40.0" height="3.0"/><rect class="w" x="808.5" y="383.5" width="3.0" height="123.0"/><rect class="w" x="690.0" y="503.5" width="120.0" height="3.0"/><rect class="w" x="688.5" y="462.0" width="3.0" height="43.0"/><rect class="w" x="688.5" y="385.0" width="3.0" height="43.0"/><rect class="w" x="38.5" y="233.0" width="3.0" height="233.5"/><rect class="w" x="38.5" y="463.5" width="203.0" height="3.0"/><rect class="w" x="518.5" y="183.5" width="3.0" height="43.0"/><rect class="w" x="438.5" y="183.5" width="83.0" height="3.0"/><rect class="w" x="98.5" y="233.0" width="3.0" height="133.5"/><rect class="w" x="98.5" y="363.5" width="63.0" height="3.0"/><rect class="w" x="633.0" y="466.5" width="3.0" height="63.5"/><rect class="w" x="594.0" y="466.5" width="3.0" height="63.5"/><rect class="w" x="594.0" y="530.0" width="42.0" height="3.0"/><rect class="w" x="158.5" y="303.5" width="3.0" height="63.0"/><rect class="w" x="658.5" y="163.5" width="3.0" height="41.5"/><rect class="w" x="640.0" y="319.5" width="18.5" height="3.0"/><rect class="w" x="601.5" y="319.5" width="18.5" height="3.0"/><rect class="w" x="558.5" y="255.0" width="3.0" height="8.5"/><rect class="w" x="158.5" y="303.5" width="143.0" height="3.0"/><rect class="w" x="558.5" y="226.5" width="3.0" height="8.5"/><rect class="w" x="298.5" y="123.5" width="3.0" height="183.0"/><rect class="w" x="298.5" y="123.5" width="43.0" height="3.0"/><rect class="w" x="338.5" y="123.5" width="3.0" height="63.0"/><rect class="w" x="661.5" y="245.0" width="117.0" height="3.1"/><rect class="w" x="661.5" y="201.9" width="117.0" height="3.1"/><rect class="w" x="238.5" y="383.5" width="3.0" height="91.5"/><rect class="w" x="338.5" y="183.5" width="63.0" height="3.0"/><rect class="w" x="238.5" y="375.0" width="3.0" height="8.5"/><rect class="w" x="238.5" y="346.5" width="3.0" height="8.5"/><rect class="w" x="398.5" y="123.5" width="3.0" height="63.0"/><rect class="w" x="438.5" y="123.5" width="3.0" height="63.0"/><rect class="w" x="238.5" y="343.5" width="163.0" height="3.0"/><rect class="w" x="331.0" y="386.5" width="3.0" height="88.5"/><rect class="w" x="398.5" y="243.5" width="3.0" height="103.0"/><rect class="w" x="238.5" y="472.0" width="95.5" height="3.0"/><rect class="w" x="238.5" y="383.5" width="40.5" height="3.0"/><rect class="w" x="338.5" y="243.5" width="63.0" height="3.0"/><rect class="w" x="338.5" y="243.5" width="3.0" height="103.0"/><rect class="w" x="438.5" y="223.5" width="3.0" height="123.0"/><rect class="w" x="98.5" y="366.5" width="3.0" height="20.0"/><rect class="w" x="438.5" y="343.5" width="23.0" height="3.0"/><rect class="w" x="114.0" y="176.0" width="3.0" height="57.0"/><rect class="w" x="21.0" y="176.0" width="3.0" height="57.0"/><rect class="w" x="21.0" y="176.0" width="96.0" height="3.0"/><rect class="w" x="98.5" y="231.5" width="18.5" height="3.0"/><rect class="w" x="21.0" y="231.5" width="20.5" height="3.0"/><rect class="w" x="303.0" y="383.5" width="98.5" height="3.0"/><rect class="w" x="458.5" y="343.5" width="3.0" height="83.0"/><rect class="w" x="458.5" y="423.5" width="143.0" height="3.0"/><rect class="w" x="598.5" y="263.5" width="3.0" height="163.0"/><rect class="w" x="478.5" y="263.5" width="123.0" height="3.0"/><rect class="w" x="478.5" y="233.5" width="3.0" height="33.0"/><rect class="w" x="438.5" y="233.5" width="43.0" height="3.0"/><rect class="w" x="398.5" y="383.5" width="3.0" height="83.0"/><rect class="w" x="398.5" y="463.5" width="198.5" height="3.0"/><rect class="w" x="633.0" y="463.5" width="28.5" height="3.0"/><rect class="w" x="558.5" y="163.5" width="103.0" height="3.0"/><rect class="w" x="658.5" y="462.0" width="3.0" height="4.5"/><rect class="w" x="658.5" y="245.0" width="3.0" height="183.0"/><rect class="w" x="658.5" y="428.0" width="3.0" height="34.0"/><rect class="w" x="558.5" y="163.5" width="3.0" height="63.0"/><rect class="w" x="518.5" y="223.5" width="43.0" height="3.0"/><rect class="w" x="128.5" y="431.0" width="3.0" height="35.5"/><rect class="w" x="128.5" y="363.5" width="3.0" height="35.5"/><rect class="w" x="432.0" y="123.5" width="9.5" height="3.0"/><rect class="w" x="398.5" y="123.5" width="9.5" height="3.0"/><rect class="w" x="382.0" y="21.0" width="3.0" height="76.0"/><rect class="w" x="455.0" y="21.0" width="3.0" height="73.0"/><rect class="w" x="430.0" y="94.0" width="28.0" height="3.0"/><rect class="w" x="382.0" y="94.0" width="28.0" height="3.0"/><rect class="w" x="438.0" y="97.0" width="3.0" height="26.5"/><rect class="w" x="399.0" y="97.0" width="3.0" height="26.5"/><rect class="w" x="385.0" y="21.0" width="73.0" height="3.0"/></g><path class="rec ok" d="M615.0 430.2L615.0 430.3"/><rect class="g ow" x="610.5" y="425.7" width="9" height="9"/><g class="g gold"><circle cx="610.0" cy="511.0" r="4.8"/><rect x="614.0" y="509.3" width="12.5" height="3.4"/><rect x="622.5" y="511.0" width="2.6" height="4.8"/></g><path class="x" d="M609.0 439.0L621.0 451.0M621.0 439.0L609.0 451.0"/></svg>
+        <figcaption><span data-l="en"><b>After.</b> A ladder at the gap (square). Once it is kicked down, a fall costs a 5.2 m climb.</span><span data-l="zh" lang="zh-CN"><b>改后。</b>缺口边加了梯子（方块）。踹下之后，掉下去只需要爬 5.2 米。</span></figcaption></figure>
+      <figure><svg class="plan ba" viewBox="20 95 460 345" role="img" aria-label="Plan before the change: nothing marks the goal from the two viewpoints"><g class="floors"><rect class="l" x="510.0" y="24.0" width="238.0" height="60.0"/><rect class="l" x="41.5" y="233.0" width="57.0" height="152.0"/><rect class="l" x="748.0" y="24.0" width="72.0" height="60.0"/><rect class="l" x="760.0" y="83.8" width="60.0" height="121.2"/><rect class="l" x="385.0" y="24.0" width="125.0" height="70.0"/><rect class="l" x="730.0" y="245.0" width="88.5" height="140.0"/><rect class="l" x="778.5" y="205.0" width="40.0" height="40.0"/><rect class="l" x="730.0" y="245.0" width="48.5" height="3.1"/><rect class="l" x="821.5" y="205.0" width="100.0" height="100.0"/><rect class="l" x="788.5" y="200.5" width="20.0" height="7.0"/><rect class="l" x="817.0" y="206.5" width="6.0" height="34.0"/><rect class="l" x="584.0" y="426.5" width="76.0" height="37.0"/><rect class="l" x="658.5" y="428.0" width="31.5" height="34.0"/><rect class="l" x="690.0" y="385.0" width="120.0" height="120.0"/><rect class="s" x="774.8" y="205.0" width="3.7" height="40.0"/><rect class="s" x="771.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="767.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="763.6" y="205.0" width="3.7" height="40.0"/><rect class="s" x="759.9" y="205.0" width="3.7" height="40.0"/><rect class="s" x="756.2" y="205.0" width="3.7" height="40.0"/><rect class="s" x="752.5" y="205.0" width="3.7" height="40.0"/><rect class="s" x="748.8" y="205.0" width="3.7" height="40.0"/><rect class="s" x="745.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="741.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="737.6" y="205.0" width="3.7" height="40.0"/><rect class="s" x="560.0" y="426.5" width="4.0" height="37.0"/><rect class="l" x="564.0" y="426.5" width="20.0" height="37.0"/><rect class="s" x="733.9" y="205.0" width="3.7" height="40.0"/><rect class="s" x="556.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="730.2" y="205.0" width="3.7" height="40.0"/><rect class="s" x="552.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="726.5" y="205.0" width="3.7" height="40.0"/><rect class="s" x="710.5" y="205.0" width="16.0" height="40.0"/><rect class="s" x="548.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="706.8" y="205.0" width="3.7" height="40.0"/><rect class="s" x="544.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="703.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="540.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="699.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="536.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="695.6" y="205.0" width="3.7" height="40.0"/><rect class="l" x="818.5" y="202.0" width="106.0" height="106.0"/><rect class="s" x="532.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="691.9" y="205.0" width="3.7" height="40.0"/><rect class="l" x="502.0" y="426.5" width="30.0" height="37.0"/><rect class="s" x="498.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="688.2" y="205.0" width="3.7" height="40.0"/><rect class="l" x="788.5" y="202.0" width="20.0" height="3.0"/><rect class="s" x="494.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="684.5" y="205.0" width="3.7" height="40.0"/><rect class="s" x="490.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="680.8" y="205.0" width="3.7" height="40.0"/><rect class="u" x="757.0" y="83.8" width="66.0" height="118.1"/><rect class="u" x="455.0" y="23.8" width="55.2" height="70.2"/><rect class="s" x="486.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="677.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="482.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="673.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="478.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="669.6" y="205.0" width="3.7" height="40.0"/><rect class="s" x="474.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="665.9" y="205.0" width="3.7" height="40.0"/><rect class="s" x="470.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="662.2" y="205.0" width="3.7" height="40.0"/><rect class="u" x="597.0" y="423.4" width="36.0" height="3.1"/><rect class="u" x="578.4" y="205.0" width="80.1" height="40.0"/><rect class="s" x="658.5" y="205.0" width="3.7" height="40.0"/><rect class="u" x="410.0" y="105.0" width="20.0" height="96.9"/><rect class="u" x="430.0" y="94.0" width="8.0" height="107.9"/><rect class="u" x="402.0" y="94.0" width="8.0" height="107.9"/><rect class="u" x="410.0" y="94.0" width="20.0" height="11.0"/><rect class="u" x="760.0" y="201.8" width="60.0" height="3.2"/><rect class="u" x="24.0" y="179.0" width="90.0" height="54.0"/><rect class="u" x="597.0" y="463.5" width="36.0" height="3.1"/><rect class="u" x="658.4" y="424.9" width="33.2" height="40.2"/><rect class="u" x="578.4" y="466.6" width="80.0" height="40.0"/><rect class="u" x="578.4" y="383.4" width="80.0" height="40.0"/><rect class="u" x="578.4" y="248.1" width="80.0" height="135.3"/><rect class="u" x="470.0" y="466.6" width="108.4" height="40.0"/><rect class="u" x="470.0" y="383.4" width="108.4" height="40.0"/><rect class="u" x="470.0" y="248.1" width="108.4" height="135.3"/><rect class="u" x="470.0" y="201.9" width="108.4" height="46.2"/><rect class="u" x="811.6" y="386.5" width="9.9" height="36.9"/><rect class="u" x="438.0" y="94.0" width="17.0" height="107.9"/><rect class="u" x="385.0" y="94.0" width="17.0" height="107.9"/><rect class="u" x="41.5" y="385.0" width="57.0" height="38.4"/><rect class="u" x="41.5" y="201.9" width="57.0" height="31.1"/><rect class="u" x="687.6" y="248.1" width="39.4" height="135.3"/><rect class="u" x="688.4" y="248.1" width="3.2" height="135.3"/><rect class="u" x="660.0" y="466.6" width="28.4" height="40.0"/><rect class="u" x="660.0" y="465.1" width="28.4" height="1.5"/><rect class="u" x="660.0" y="423.4" width="28.4" height="1.5"/><rect class="u" x="660.0" y="383.4" width="28.4" height="40.0"/><rect class="u" x="660.0" y="248.1" width="28.4" height="135.3"/><rect class="u" x="658.4" y="466.6" width="1.6" height="40.0"/><rect class="u" x="658.4" y="383.4" width="1.6" height="40.0"/><rect class="u" x="658.4" y="248.1" width="1.6" height="135.3"/><rect class="u" x="241.5" y="386.5" width="89.5" height="85.5"/><rect class="u" x="404.0" y="298.5" width="6.0" height="5.0"/><rect class="u" x="431.0" y="299.5" width="6.5" height="6.0"/><rect class="u" x="284.0" y="424.0" width="12.0" height="12.0"/><rect class="u" x="416.0" y="301.0" width="7.5" height="5.0"/><rect class="u" x="62.5" y="187.0" width="15.0" height="12.0"/><rect class="u" x="401.0" y="288.5" width="12.5" height="10.0"/><rect class="u" x="620.0" y="319.5" width="20.0" height="3.0"/><rect class="u" x="558.5" y="235.0" width="3.0" height="20.0"/><rect class="u" x="238.5" y="355.0" width="3.0" height="20.0"/><rect class="u" x="279.0" y="383.5" width="24.0" height="3.0"/><rect class="u" x="426.0" y="289.0" width="13.0" height="10.5"/><rect class="u" x="413.5" y="288.5" width="12.5" height="12.5"/><rect class="u" x="128.5" y="399.0" width="3.0" height="32.0"/><rect class="u" x="408.0" y="123.5" width="24.0" height="3.0"/><rect class="u" x="398.5" y="93.8" width="43.0" height="32.7"/><rect class="u" x="382.0" y="21.0" width="76.0" height="76.0"/></g><g class="walls"><rect class="w" x="921.5" y="202.0" width="3.0" height="106.0"/><rect class="w" x="821.5" y="305.0" width="100.0" height="3.0"/><rect class="w" x="821.5" y="202.0" width="100.0" height="3.0"/><rect class="w" x="661.5" y="462.0" width="28.5" height="3.0"/><rect class="w" x="661.5" y="425.0" width="28.5" height="3.0"/><rect class="w" x="410.0" y="94.0" width="20.0" height="3.0"/><rect class="w" x="820.0" y="84.0" width="3.0" height="3.0"/><rect class="w" x="510.0" y="84.0" width="250.0" height="3.0"/><rect class="w" x="820.0" y="21.0" width="3.0" height="66.0"/><rect class="w" x="820.0" y="84.0" width="3.0" height="117.9"/><rect class="w" x="757.0" y="84.0" width="3.0" height="117.9"/><rect class="w" x="385.0" y="21.0" width="125.0" height="3.0"/><rect class="w" x="510.0" y="84.0" width="3.0" height="13.0"/><rect class="w" x="808.5" y="202.0" width="11.5" height="3.0"/><rect class="w" x="760.0" y="202.0" width="28.5" height="3.0"/><rect class="w" x="98.5" y="233.0" width="3.0" height="152.0"/><rect class="w" x="38.5" y="233.0" width="3.0" height="152.0"/><rect class="w" x="470.0" y="463.5" width="190.0" height="3.0"/><rect class="w" x="470.0" y="423.5" width="130.0" height="3.0"/><rect class="w" x="600.0" y="423.5" width="60.0" height="3.0"/><rect class="w" x="818.5" y="240.5" width="3.0" height="146.0"/><rect class="w" x="727.0" y="245.0" width="3.0" height="138.5"/><rect class="w" x="816.5" y="201.9" width="2.0" height="3.1"/><rect class="w" x="578.4" y="245.0" width="31.6" height="3.1"/><rect class="w" x="578.4" y="201.9" width="31.6" height="3.1"/><rect class="w" x="610.0" y="245.0" width="51.5" height="3.1"/><rect class="w" x="610.0" y="201.9" width="51.5" height="3.1"/><rect class="w" x="430.0" y="94.0" width="80.0" height="3.0"/><rect class="w" x="385.0" y="93.0" width="25.0" height="3.0"/><rect class="w" x="778.5" y="201.9" width="2.0" height="3.1"/><rect class="w" x="818.5" y="201.9" width="3.0" height="4.6"/><rect class="w" x="818.5" y="206.5" width="3.0" height="34.0"/><rect class="w" x="41.5" y="385.0" width="57.0" height="3.0"/><rect class="w" x="770.0" y="383.5" width="48.5" height="3.0"/><rect class="w" x="690.0" y="383.5" width="40.0" height="3.0"/><rect class="w" x="808.5" y="383.5" width="3.0" height="123.0"/><rect class="w" x="690.0" y="503.5" width="120.0" height="3.0"/><rect class="w" x="688.5" y="462.0" width="3.0" height="43.0"/><rect class="w" x="688.5" y="385.0" width="3.0" height="43.0"/><rect class="w" x="38.5" y="233.0" width="3.0" height="233.5"/><rect class="w" x="38.5" y="463.5" width="203.0" height="3.0"/><rect class="w" x="518.5" y="183.5" width="3.0" height="43.0"/><rect class="w" x="438.5" y="183.5" width="83.0" height="3.0"/><rect class="w" x="98.5" y="233.0" width="3.0" height="133.5"/><rect class="w" x="98.5" y="363.5" width="63.0" height="3.0"/><rect class="w" x="633.0" y="466.5" width="3.0" height="63.5"/><rect class="w" x="594.0" y="466.5" width="3.0" height="63.5"/><rect class="w" x="594.0" y="530.0" width="42.0" height="3.0"/><rect class="w" x="158.5" y="303.5" width="3.0" height="63.0"/><rect class="w" x="658.5" y="163.5" width="3.0" height="41.5"/><rect class="w" x="640.0" y="319.5" width="18.5" height="3.0"/><rect class="w" x="601.5" y="319.5" width="18.5" height="3.0"/><rect class="w" x="558.5" y="255.0" width="3.0" height="8.5"/><rect class="w" x="158.5" y="303.5" width="143.0" height="3.0"/><rect class="w" x="558.5" y="226.5" width="3.0" height="8.5"/><rect class="w" x="298.5" y="123.5" width="3.0" height="183.0"/><rect class="w" x="298.5" y="123.5" width="43.0" height="3.0"/><rect class="w" x="338.5" y="123.5" width="3.0" height="63.0"/><rect class="w" x="661.5" y="245.0" width="117.0" height="3.1"/><rect class="w" x="661.5" y="201.9" width="117.0" height="3.1"/><rect class="w" x="238.5" y="383.5" width="3.0" height="91.5"/><rect class="w" x="338.5" y="183.5" width="63.0" height="3.0"/><rect class="w" x="238.5" y="375.0" width="3.0" height="8.5"/><rect class="w" x="238.5" y="346.5" width="3.0" height="8.5"/><rect class="w" x="398.5" y="123.5" width="3.0" height="63.0"/><rect class="w" x="438.5" y="123.5" width="3.0" height="63.0"/><rect class="w" x="238.5" y="343.5" width="163.0" height="3.0"/><rect class="w" x="331.0" y="386.5" width="3.0" height="88.5"/><rect class="w" x="398.5" y="243.5" width="3.0" height="103.0"/><rect class="w" x="238.5" y="472.0" width="95.5" height="3.0"/><rect class="w" x="238.5" y="383.5" width="40.5" height="3.0"/><rect class="w" x="338.5" y="243.5" width="63.0" height="3.0"/><rect class="w" x="338.5" y="243.5" width="3.0" height="103.0"/><rect class="w" x="438.5" y="223.5" width="3.0" height="123.0"/><rect class="w" x="98.5" y="366.5" width="3.0" height="20.0"/><rect class="w" x="438.5" y="343.5" width="23.0" height="3.0"/><rect class="w" x="114.0" y="176.0" width="3.0" height="57.0"/><rect class="w" x="21.0" y="176.0" width="3.0" height="57.0"/><rect class="w" x="21.0" y="176.0" width="96.0" height="3.0"/><rect class="w" x="98.5" y="231.5" width="18.5" height="3.0"/><rect class="w" x="21.0" y="231.5" width="20.5" height="3.0"/><rect class="w" x="303.0" y="383.5" width="98.5" height="3.0"/><rect class="w" x="458.5" y="343.5" width="3.0" height="83.0"/><rect class="w" x="458.5" y="423.5" width="143.0" height="3.0"/><rect class="w" x="598.5" y="263.5" width="3.0" height="163.0"/><rect class="w" x="478.5" y="263.5" width="123.0" height="3.0"/><rect class="w" x="478.5" y="233.5" width="3.0" height="33.0"/><rect class="w" x="438.5" y="233.5" width="43.0" height="3.0"/><rect class="w" x="398.5" y="383.5" width="3.0" height="83.0"/><rect class="w" x="398.5" y="463.5" width="198.5" height="3.0"/><rect class="w" x="633.0" y="463.5" width="28.5" height="3.0"/><rect class="w" x="558.5" y="163.5" width="103.0" height="3.0"/><rect class="w" x="658.5" y="462.0" width="3.0" height="4.5"/><rect class="w" x="658.5" y="245.0" width="3.0" height="183.0"/><rect class="w" x="658.5" y="428.0" width="3.0" height="34.0"/><rect class="w" x="558.5" y="163.5" width="3.0" height="63.0"/><rect class="w" x="518.5" y="223.5" width="43.0" height="3.0"/><rect class="w" x="128.5" y="431.0" width="3.0" height="35.5"/><rect class="w" x="128.5" y="363.5" width="3.0" height="35.5"/><rect class="w" x="432.0" y="123.5" width="9.5" height="3.0"/><rect class="w" x="398.5" y="123.5" width="9.5" height="3.0"/><rect class="w" x="382.0" y="21.0" width="3.0" height="76.0"/><rect class="w" x="455.0" y="21.0" width="3.0" height="73.0"/><rect class="w" x="430.0" y="94.0" width="28.0" height="3.0"/><rect class="w" x="382.0" y="94.0" width="28.0" height="3.0"/><rect class="w" x="438.0" y="97.0" width="3.0" height="26.5"/><rect class="w" x="399.0" y="97.0" width="3.0" height="26.5"/><rect class="w" x="385.0" y="21.0" width="73.0" height="3.0"/></g><path class="g goal" d="M70.0 184.0L72.6 190.2L79.0 190.2L73.8 194.4L75.6 201.0L70.0 197.0L64.4 201.0L66.2 194.4L61.0 190.2L67.4 190.2Z"/><circle class="eye" cx="420.0" cy="215.0" r="6"/><circle class="eye" cx="210.0" cy="335.0" r="6"/></svg>
+        <figcaption><span data-l="en"><b>Before.</b> From these two viewpoints (dots), nothing showed where the goal (star) was.</span><span data-l="zh" lang="zh-CN"><b>改前。</b>站在这两个位置（圆点），看不出终点（星）在哪。</span></figcaption></figure>
+      <figure><svg class="plan ba" viewBox="20 95 460 345" role="img" aria-label="Plan after the change: sightlines from two viewpoints to the lantern pole behind the goal"><g class="floors"><rect class="l" x="510.0" y="24.0" width="238.0" height="60.0"/><rect class="l" x="41.5" y="233.0" width="57.0" height="152.0"/><rect class="l" x="748.0" y="24.0" width="72.0" height="60.0"/><rect class="l" x="760.0" y="83.8" width="60.0" height="121.2"/><rect class="l" x="385.0" y="24.0" width="125.0" height="70.0"/><rect class="l" x="730.0" y="245.0" width="88.5" height="140.0"/><rect class="l" x="778.5" y="205.0" width="40.0" height="40.0"/><rect class="l" x="730.0" y="245.0" width="48.5" height="3.1"/><rect class="l" x="821.5" y="205.0" width="100.0" height="100.0"/><rect class="l" x="788.5" y="200.5" width="20.0" height="7.0"/><rect class="l" x="817.0" y="206.5" width="6.0" height="34.0"/><rect class="l" x="584.0" y="426.5" width="76.0" height="37.0"/><rect class="l" x="658.5" y="428.0" width="31.5" height="34.0"/><rect class="l" x="690.0" y="385.0" width="120.0" height="120.0"/><rect class="s" x="774.8" y="205.0" width="3.7" height="40.0"/><rect class="s" x="771.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="767.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="763.6" y="205.0" width="3.7" height="40.0"/><rect class="s" x="759.9" y="205.0" width="3.7" height="40.0"/><rect class="s" x="756.2" y="205.0" width="3.7" height="40.0"/><rect class="s" x="752.5" y="205.0" width="3.7" height="40.0"/><rect class="s" x="748.8" y="205.0" width="3.7" height="40.0"/><rect class="s" x="745.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="741.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="737.6" y="205.0" width="3.7" height="40.0"/><rect class="s" x="560.0" y="426.5" width="4.0" height="37.0"/><rect class="l" x="564.0" y="426.5" width="20.0" height="37.0"/><rect class="s" x="733.9" y="205.0" width="3.7" height="40.0"/><rect class="s" x="556.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="730.2" y="205.0" width="3.7" height="40.0"/><rect class="s" x="552.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="726.5" y="205.0" width="3.7" height="40.0"/><rect class="s" x="710.5" y="205.0" width="16.0" height="40.0"/><rect class="s" x="548.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="706.8" y="205.0" width="3.7" height="40.0"/><rect class="s" x="544.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="703.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="540.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="699.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="536.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="695.6" y="205.0" width="3.7" height="40.0"/><rect class="l" x="818.5" y="202.0" width="106.0" height="106.0"/><rect class="s" x="532.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="691.9" y="205.0" width="3.7" height="40.0"/><rect class="l" x="502.0" y="426.5" width="30.0" height="37.0"/><rect class="s" x="498.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="688.2" y="205.0" width="3.7" height="40.0"/><rect class="l" x="788.5" y="202.0" width="20.0" height="3.0"/><rect class="s" x="494.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="684.5" y="205.0" width="3.7" height="40.0"/><rect class="s" x="490.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="680.8" y="205.0" width="3.7" height="40.0"/><rect class="u" x="757.0" y="83.8" width="66.0" height="118.1"/><rect class="u" x="455.0" y="23.8" width="55.2" height="70.2"/><rect class="s" x="486.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="677.1" y="205.0" width="3.7" height="40.0"/><rect class="s" x="482.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="673.4" y="205.0" width="3.7" height="40.0"/><rect class="s" x="478.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="669.6" y="205.0" width="3.7" height="40.0"/><rect class="s" x="474.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="665.9" y="205.0" width="3.7" height="40.0"/><rect class="s" x="470.0" y="426.5" width="4.0" height="37.0"/><rect class="s" x="662.2" y="205.0" width="3.7" height="40.0"/><rect class="u" x="597.0" y="423.4" width="36.0" height="3.1"/><rect class="u" x="578.4" y="205.0" width="80.1" height="40.0"/><rect class="s" x="658.5" y="205.0" width="3.7" height="40.0"/><rect class="u" x="410.0" y="105.0" width="20.0" height="96.9"/><rect class="u" x="430.0" y="94.0" width="8.0" height="107.9"/><rect class="u" x="402.0" y="94.0" width="8.0" height="107.9"/><rect class="u" x="410.0" y="94.0" width="20.0" height="11.0"/><rect class="u" x="760.0" y="201.8" width="60.0" height="3.2"/><rect class="u" x="24.0" y="179.0" width="90.0" height="54.0"/><rect class="u" x="597.0" y="463.5" width="36.0" height="3.1"/><rect class="u" x="658.4" y="424.9" width="33.2" height="40.2"/><rect class="u" x="578.4" y="466.6" width="80.0" height="40.0"/><rect class="u" x="578.4" y="383.4" width="80.0" height="40.0"/><rect class="u" x="578.4" y="248.1" width="80.0" height="135.3"/><rect class="u" x="470.0" y="466.6" width="108.4" height="40.0"/><rect class="u" x="470.0" y="383.4" width="108.4" height="40.0"/><rect class="u" x="470.0" y="248.1" width="108.4" height="135.3"/><rect class="u" x="470.0" y="201.9" width="108.4" height="46.2"/><rect class="u" x="811.6" y="386.5" width="9.9" height="36.9"/><rect class="u" x="438.0" y="94.0" width="17.0" height="107.9"/><rect class="u" x="385.0" y="94.0" width="17.0" height="107.9"/><rect class="u" x="41.5" y="385.0" width="57.0" height="38.4"/><rect class="u" x="41.5" y="201.9" width="57.0" height="31.1"/><rect class="u" x="687.6" y="248.1" width="39.4" height="135.3"/><rect class="u" x="688.4" y="248.1" width="3.2" height="135.3"/><rect class="u" x="660.0" y="466.6" width="28.4" height="40.0"/><rect class="u" x="660.0" y="465.1" width="28.4" height="1.5"/><rect class="u" x="660.0" y="423.4" width="28.4" height="1.5"/><rect class="u" x="660.0" y="383.4" width="28.4" height="40.0"/><rect class="u" x="660.0" y="248.1" width="28.4" height="135.3"/><rect class="u" x="658.4" y="466.6" width="1.6" height="40.0"/><rect class="u" x="658.4" y="383.4" width="1.6" height="40.0"/><rect class="u" x="658.4" y="248.1" width="1.6" height="135.3"/><rect class="u" x="241.5" y="386.5" width="89.5" height="85.5"/><rect class="u" x="404.0" y="298.5" width="6.0" height="5.0"/><rect class="u" x="431.0" y="299.5" width="6.5" height="6.0"/><rect class="u" x="284.0" y="424.0" width="12.0" height="12.0"/><rect class="u" x="416.0" y="301.0" width="7.5" height="5.0"/><rect class="u" x="62.5" y="187.0" width="15.0" height="12.0"/><rect class="u" x="401.0" y="288.5" width="12.5" height="10.0"/><rect class="u" x="620.0" y="319.5" width="20.0" height="3.0"/><rect class="u" x="558.5" y="235.0" width="3.0" height="20.0"/><rect class="u" x="238.5" y="355.0" width="3.0" height="20.0"/><rect class="u" x="279.0" y="383.5" width="24.0" height="3.0"/><rect class="u" x="426.0" y="289.0" width="13.0" height="10.5"/><rect class="u" x="413.5" y="288.5" width="12.5" height="12.5"/><rect class="u" x="128.5" y="399.0" width="3.0" height="32.0"/><rect class="u" x="408.0" y="123.5" width="24.0" height="3.0"/><rect class="u" x="398.5" y="93.8" width="43.0" height="32.7"/><rect class="u" x="382.0" y="21.0" width="76.0" height="76.0"/></g><g class="walls"><rect class="w" x="921.5" y="202.0" width="3.0" height="106.0"/><rect class="w" x="821.5" y="305.0" width="100.0" height="3.0"/><rect class="w" x="821.5" y="202.0" width="100.0" height="3.0"/><rect class="w" x="661.5" y="462.0" width="28.5" height="3.0"/><rect class="w" x="661.5" y="425.0" width="28.5" height="3.0"/><rect class="w" x="410.0" y="94.0" width="20.0" height="3.0"/><rect class="w" x="820.0" y="84.0" width="3.0" height="3.0"/><rect class="w" x="510.0" y="84.0" width="250.0" height="3.0"/><rect class="w" x="820.0" y="21.0" width="3.0" height="66.0"/><rect class="w" x="820.0" y="84.0" width="3.0" height="117.9"/><rect class="w" x="757.0" y="84.0" width="3.0" height="117.9"/><rect class="w" x="385.0" y="21.0" width="125.0" height="3.0"/><rect class="w" x="510.0" y="84.0" width="3.0" height="13.0"/><rect class="w" x="808.5" y="202.0" width="11.5" height="3.0"/><rect class="w" x="760.0" y="202.0" width="28.5" height="3.0"/><rect class="w" x="98.5" y="233.0" width="3.0" height="152.0"/><rect class="w" x="38.5" y="233.0" width="3.0" height="152.0"/><rect class="w" x="470.0" y="463.5" width="190.0" height="3.0"/><rect class="w" x="470.0" y="423.5" width="130.0" height="3.0"/><rect class="w" x="600.0" y="423.5" width="60.0" height="3.0"/><rect class="w" x="818.5" y="240.5" width="3.0" height="146.0"/><rect class="w" x="727.0" y="245.0" width="3.0" height="138.5"/><rect class="w" x="816.5" y="201.9" width="2.0" height="3.1"/><rect class="w" x="578.4" y="245.0" width="31.6" height="3.1"/><rect class="w" x="578.4" y="201.9" width="31.6" height="3.1"/><rect class="w" x="610.0" y="245.0" width="51.5" height="3.1"/><rect class="w" x="610.0" y="201.9" width="51.5" height="3.1"/><rect class="w" x="430.0" y="94.0" width="80.0" height="3.0"/><rect class="w" x="385.0" y="93.0" width="25.0" height="3.0"/><rect class="w" x="778.5" y="201.9" width="2.0" height="3.1"/><rect class="w" x="818.5" y="201.9" width="3.0" height="4.6"/><rect class="w" x="818.5" y="206.5" width="3.0" height="34.0"/><rect class="w" x="41.5" y="385.0" width="57.0" height="3.0"/><rect class="w" x="770.0" y="383.5" width="48.5" height="3.0"/><rect class="w" x="690.0" y="383.5" width="40.0" height="3.0"/><rect class="w" x="808.5" y="383.5" width="3.0" height="123.0"/><rect class="w" x="690.0" y="503.5" width="120.0" height="3.0"/><rect class="w" x="688.5" y="462.0" width="3.0" height="43.0"/><rect class="w" x="688.5" y="385.0" width="3.0" height="43.0"/><rect class="w" x="38.5" y="233.0" width="3.0" height="233.5"/><rect class="w" x="38.5" y="463.5" width="203.0" height="3.0"/><rect class="w" x="518.5" y="183.5" width="3.0" height="43.0"/><rect class="w" x="438.5" y="183.5" width="83.0" height="3.0"/><rect class="w" x="98.5" y="233.0" width="3.0" height="133.5"/><rect class="w" x="98.5" y="363.5" width="63.0" height="3.0"/><rect class="w" x="633.0" y="466.5" width="3.0" height="63.5"/><rect class="w" x="594.0" y="466.5" width="3.0" height="63.5"/><rect class="w" x="594.0" y="530.0" width="42.0" height="3.0"/><rect class="w" x="158.5" y="303.5" width="3.0" height="63.0"/><rect class="w" x="658.5" y="163.5" width="3.0" height="41.5"/><rect class="w" x="640.0" y="319.5" width="18.5" height="3.0"/><rect class="w" x="601.5" y="319.5" width="18.5" height="3.0"/><rect class="w" x="558.5" y="255.0" width="3.0" height="8.5"/><rect class="w" x="158.5" y="303.5" width="143.0" height="3.0"/><rect class="w" x="558.5" y="226.5" width="3.0" height="8.5"/><rect class="w" x="298.5" y="123.5" width="3.0" height="183.0"/><rect class="w" x="298.5" y="123.5" width="43.0" height="3.0"/><rect class="w" x="338.5" y="123.5" width="3.0" height="63.0"/><rect class="w" x="661.5" y="245.0" width="117.0" height="3.1"/><rect class="w" x="661.5" y="201.9" width="117.0" height="3.1"/><rect class="w" x="238.5" y="383.5" width="3.0" height="91.5"/><rect class="w" x="338.5" y="183.5" width="63.0" height="3.0"/><rect class="w" x="238.5" y="375.0" width="3.0" height="8.5"/><rect class="w" x="238.5" y="346.5" width="3.0" height="8.5"/><rect class="w" x="398.5" y="123.5" width="3.0" height="63.0"/><rect class="w" x="438.5" y="123.5" width="3.0" height="63.0"/><rect class="w" x="238.5" y="343.5" width="163.0" height="3.0"/><rect class="w" x="331.0" y="386.5" width="3.0" height="88.5"/><rect class="w" x="398.5" y="243.5" width="3.0" height="103.0"/><rect class="w" x="238.5" y="472.0" width="95.5" height="3.0"/><rect class="w" x="238.5" y="383.5" width="40.5" height="3.0"/><rect class="w" x="338.5" y="243.5" width="63.0" height="3.0"/><rect class="w" x="338.5" y="243.5" width="3.0" height="103.0"/><rect class="w" x="438.5" y="223.5" width="3.0" height="123.0"/><rect class="w" x="98.5" y="366.5" width="3.0" height="20.0"/><rect class="w" x="438.5" y="343.5" width="23.0" height="3.0"/><rect class="w" x="114.0" y="176.0" width="3.0" height="57.0"/><rect class="w" x="21.0" y="176.0" width="3.0" height="57.0"/><rect class="w" x="21.0" y="176.0" width="96.0" height="3.0"/><rect class="w" x="98.5" y="231.5" width="18.5" height="3.0"/><rect class="w" x="21.0" y="231.5" width="20.5" height="3.0"/><rect class="w" x="303.0" y="383.5" width="98.5" height="3.0"/><rect class="w" x="458.5" y="343.5" width="3.0" height="83.0"/><rect class="w" x="458.5" y="423.5" width="143.0" height="3.0"/><rect class="w" x="598.5" y="263.5" width="3.0" height="163.0"/><rect class="w" x="478.5" y="263.5" width="123.0" height="3.0"/><rect class="w" x="478.5" y="233.5" width="3.0" height="33.0"/><rect class="w" x="438.5" y="233.5" width="43.0" height="3.0"/><rect class="w" x="398.5" y="383.5" width="3.0" height="83.0"/><rect class="w" x="398.5" y="463.5" width="198.5" height="3.0"/><rect class="w" x="633.0" y="463.5" width="28.5" height="3.0"/><rect class="w" x="558.5" y="163.5" width="103.0" height="3.0"/><rect class="w" x="658.5" y="462.0" width="3.0" height="4.5"/><rect class="w" x="658.5" y="245.0" width="3.0" height="183.0"/><rect class="w" x="658.5" y="428.0" width="3.0" height="34.0"/><rect class="w" x="558.5" y="163.5" width="3.0" height="63.0"/><rect class="w" x="518.5" y="223.5" width="43.0" height="3.0"/><rect class="w" x="128.5" y="431.0" width="3.0" height="35.5"/><rect class="w" x="128.5" y="363.5" width="3.0" height="35.5"/><rect class="w" x="432.0" y="123.5" width="9.5" height="3.0"/><rect class="w" x="398.5" y="123.5" width="9.5" height="3.0"/><rect class="w" x="382.0" y="21.0" width="3.0" height="76.0"/><rect class="w" x="455.0" y="21.0" width="3.0" height="73.0"/><rect class="w" x="430.0" y="94.0" width="28.0" height="3.0"/><rect class="w" x="382.0" y="94.0" width="28.0" height="3.0"/><rect class="w" x="438.0" y="97.0" width="3.0" height="26.5"/><rect class="w" x="399.0" y="97.0" width="3.0" height="26.5"/><rect class="w" x="385.0" y="21.0" width="73.0" height="3.0"/></g><path class="sight" d="M420.0 215.0L70.0 181.0"/><path class="sight" d="M210.0 335.0L70.0 181.0"/><path class="g goal" d="M70.0 184.0L72.6 190.2L79.0 190.2L73.8 194.4L75.6 201.0L70.0 197.0L64.4 201.0L66.2 194.4L61.0 190.2L67.4 190.2Z"/><circle class="pole" cx="70.0" cy="181.0" r="7"/><circle class="eye" cx="420.0" cy="215.0" r="6"/><circle class="eye" cx="210.0" cy="335.0" r="6"/></svg>
+        <figcaption><span data-l="en"><b>After.</b> An 8.7 m lantern pole behind the goal, in view over the walls from both.</span><span data-l="zh" lang="zh-CN"><b>改后。</b>终点后立起 8.7 米的灯笼旗杆，从两处越过墙头都能看到。</span></figcaption></figure>
+    </div>
+    <div class="figs">
+      <figure><img src="img/door-locked.jpg" data-en="img/door-locked.jpg" data-zh="img/zh/door-locked.jpg" width="1280" height="720" loading="lazy" alt="Close view of the locked face of a one-way door, with an on-screen prompt.">
+        <figcaption><span data-l="en">One-way door, locked side: plain boards, and a prompt saying it can't be opened from here.</span><span data-l="zh" lang="zh-CN">单向门锁住的一面：只有门板，走近时提示“此门无法从这一侧打开”。</span></figcaption></figure>
+      <figure><img src="img/door-open.jpg" width="1280" height="720" loading="lazy" alt="The other face of the same door, with a wooden crossbar resting in iron brackets.">
+        <figcaption><span data-l="en">The same door from the other side: a crossbar in its brackets.</span><span data-l="zh" lang="zh-CN">同一扇门的另一面：门闩架在托架上。</span></figcaption></figure>
+      <figure class="wide"><img src="img/locks-keys.jpg" width="1500" height="533" loading="lazy" alt="Three padlocks above three keys, in gold with a cloud motif, red with a lozenge motif and bronze with a bamboo motif.">
+        <figcaption><span data-l="en">The three lock and key pairs: gold cloud, red lozenge, bronze bamboo. The motif matches even where color can't be told apart.</span><span data-l="zh" lang="zh-CN">三组锁和钥匙：金色云纹、朱红方胜、青铜竹节。分不清颜色时，纹样也能对上。</span></figcaption></figure>
+      <figure><img src="img/lock-red.jpg" data-en="img/lock-red.jpg" data-zh="img/zh/lock-red.jpg" width="1280" height="720" loading="lazy" alt="A double door with a red padlock and an on-screen prompt.">
+        <figcaption><span data-l="en">The red lock beside spawn. The prompt names the key it needs.</span><span data-l="zh" lang="zh-CN">出生点旁的红锁，提示里写明需要哪把钥匙。</span></figcaption></figure>
+      <figure><img src="img/landmark.jpg" width="1280" height="720" loading="lazy" alt="A grey walled corridor with a pole and lantern visible above the far wall.">
+        <figcaption><span data-l="en">The lantern pole above the walls, seen from the north loop.</span><span data-l="zh" lang="zh-CN">从北环望去，墙头上方的灯笼旗杆。</span></figcaption></figure>
+    </div>
+  </div>
+
+  <div class="sub two" id="metrics">
+    <div>
+      <h3 class="h3d"><span data-l="en">Metrics</span><span data-l="zh" lang="zh-CN">尺度</span></h3>
+      <table class="metrics">
+        <tr><th scope="row"><span data-l="en">Layer height</span><span data-l="zh" lang="zh-CN">上下层高差</span></th><td>5.2 m</td></tr>
+        <tr><th scope="row"><span data-l="en">Irreversible drop at the start</span><span data-l="zh" lang="zh-CN">开局的不可逆落差</span></th><td>2.2 m</td></tr>
+        <tr><th scope="row"><span data-l="en">Key gap</span><span data-l="zh" lang="zh-CN">钥匙缺口</span></th><td><span data-l="en">3.7 m wide, over a 5.2 m fall</span><span data-l="zh" lang="zh-CN">宽 3.7 米，下方落差 5.2 米</span></td></tr>
+        <tr><th scope="row"><span data-l="en">Jump</span><span data-l="zh" lang="zh-CN">跳跃</span></th><td><span data-l="en">500 cm/s take-off, about 1.27 m apex</span><span data-l="zh" lang="zh-CN">起跳速度 500 cm/s，最高约 1.27 米</span></td></tr>
+        <tr><th scope="row"><span data-l="en">Corridor clear width</span><span data-l="zh" lang="zh-CN">走廊净宽</span></th><td><span data-l="en">3.6 to 6 m</span><span data-l="zh" lang="zh-CN">3.6 至 6 米</span></td></tr>
+        <tr><th scope="row"><span data-l="en">Door openings</span><span data-l="zh" lang="zh-CN">门洞</span></th><td>2.0 × 2.6 m, 2.4 × 2.6 m, 3.2 × 3.0 m</td></tr>
+        <tr><th scope="row"><span data-l="en">Critical path</span><span data-l="zh" lang="zh-CN">主线</span></th><td><span data-l="en">About 420 m on foot</span><span data-l="zh" lang="zh-CN">步行约 420 米</span></td></tr>
+      </table>
+    </div>
+    <div class="stack">
+      <h3 class="h3d"><span data-l="en">How I worked</span><span data-l="zh" lang="zh-CN">工作方式</span></h3>
+      <p data-l="en">This was a solo project. I designed the layout, the mechanics and the flow, and directed AI agents to build them: Codex and ChatGPT for the C++ and Blueprint scripting and for the Blender placeholder art, Claude for the guidance audit. I decided what to fix and what to keep. Every change was checked in play-in-editor or a Shipping build before it stayed.</p>
+      <p data-l="zh" lang="zh-CN">这是我一个人的项目。布局、机关和流程由我设计，再指挥 AI 代理去实现：Codex 和 ChatGPT 负责 C++ 与蓝图脚本，以及 Blender 占位美术；Claude 负责引导审查。改什么、留什么由我决定。每项改动都先在编辑器试玩或 Shipping 包里验证过，才保留下来。</p>
+      <h3 class="h3d"><span data-l="en">What's next</span><span data-l="zh" lang="zh-CN">接下来</span></h3>
+      <ul class="next" data-l="en">
+        <li>A narrated walkthrough video.</li>
+        <li>Outside playtests, logging where players hesitate or turn back.</li>
+        <li>Let the final wall-run be replayed after the win. Right now it locks once the level is complete.</li>
+      </ul>
+      <ul class="next" data-l="zh" lang="zh-CN">
+        <li>录一段带解说的通关视频。</li>
+        <li>请别人来试玩，记录他们在哪里犹豫、在哪里回头。</li>
+        <li>让终点的附墙路线在通关后还能再玩。现在通关后就吸附不上去了。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="block" aria-labelledby="more-h">
+  <h2 id="more-h"><span data-l="en">Other work</span><span data-l="zh" lang="zh-CN">其他作品</span></h2>
+  <ul class="works">
+    <li>
+      <div><h3>SALTLINE</h3><p class="kind"><span data-l="en">Tactical map study, in progress</span><span data-l="zh" lang="zh-CN">战术地图研究，进行中</span></p></div>
+      <div>
+        <p data-l="en">An original tactical map set between an old harbor district and a desalination facility. Both sites take similar time to reach but cost differently: exposure on the A approach, commitment on the B approach, and a dry-canal mid route that trades information for rotation pressure.</p>
+        <p data-l="zh" lang="zh-CN">一张原创战术地图，场景在旧港区和海水淡化厂之间。到两个点位的时间相近，代价却不同：A 路暴露在长视线下，B 路进去就难退，中路的干渠能换来信息，但要承受转点压力。</p>
+      </div>
+      <p class="meta"><span data-l="en">Technical level design. Unreal Engine, layout studies.</span><span data-l="zh" lang="zh-CN">技术关卡设计。Unreal Engine，布局研究。</span><br><a href="https://wayne-liang-level-design-portfolio.zestywren16.chatgpt.site"><span data-l="en">Greybox and diagrams</span><span data-l="zh" lang="zh-CN">灰盒截图和设计图</span></a></p>
+    </li>
+    <li>
+      <div><h3>Hollow Reach</h3><p class="kind"><span data-l="en">Action-exploration level, university project</span><span data-l="zh" lang="zh-CN">动作探索关卡，学校项目</span></p></div>
+      <div>
+        <p data-l="en">A multi-zone exploration level in Unreal Engine 5. I greyboxed the routes, spaced the encounters and landmarks, and scripted triggers, doors and hazards in Blueprints.</p>
+        <p data-l="zh" lang="zh-CN">Unreal Engine 5 里的一张多区域探索关卡。我搭了路线的灰盒，安排了遭遇战和地标的间距，并用蓝图做了触发器、门和环境机关。</p>
+      </div>
+      <p class="meta"><span data-l="en">Level design. Unreal Engine 5, Blueprints.</span><span data-l="zh" lang="zh-CN">关卡设计。Unreal Engine 5，蓝图。</span></p>
+    </li>
+    <li>
+      <div><h3>Wall Street Titan</h3><p class="kind"><span data-l="en">Trading simulation, independent project</span><span data-l="zh" lang="zh-CN">交易模拟，个人项目</span></p></div>
+      <div>
+        <p data-l="en">A financial trading sim about how an economy creates risk, reward and player decisions.</p>
+        <p data-l="zh" lang="zh-CN">一款金融交易模拟游戏，研究经济系统怎样产生风险、回报和玩家的决策。</p>
+      </div>
+      <p class="meta"><span data-l="en">Systems design. GameMaker.</span><span data-l="zh" lang="zh-CN">系统设计。GameMaker。</span></p>
+    </li>
+    <li>
+      <div><h3><span data-l="en">Web and tools</span><span data-l="zh" lang="zh-CN">网站与工具</span></h3><p class="kind"><span data-l="en">Side projects</span><span data-l="zh" lang="zh-CN">业余项目</span></p></div>
+      <div>
+        <p data-l="en">BridgeStay, a housing platform for international students, and a rental ROI calculator. Built with React and TypeScript.</p>
+        <p data-l="zh" lang="zh-CN">BridgeStay：面向留学生的租房平台，另有一个租房投资回报计算器。用 React 和 TypeScript 开发。</p>
+      </div>
+      <p class="meta"><a href="https://github.com/WAYNE1-L"><span data-l="en">Code on GitHub</span><span data-l="zh" lang="zh-CN">GitHub 上的代码</span></a></p>
+    </li>
+  </ul>
+</section>
+
+<section class="block about" id="about" aria-labelledby="about-h">
+  <h2 id="about-h"><span data-l="en">About</span><span data-l="zh" lang="zh-CN">关于我</span></h2>
+  <div class="two">
+    <div>
+      <p class="lead" data-l="en">I'm Wayne (Weijun) Liang. I study Games at the University of Utah and graduate in May 2027. My interests sit between level design, gameplay prototyping and player research.</p>
+      <p class="lead" data-l="zh" lang="zh-CN">我是 Wayne (Weijun) Liang，在犹他大学读游戏专业，2027 年 5 月毕业。我的兴趣在关卡设计、玩法原型和玩家研究之间。</p>
+      <p data-l="en">I interned at Tencent Morefun Studios and Tencent IEG, working on FPS design analysis, level flow and user research.</p>
+      <p data-l="zh" lang="zh-CN">我在腾讯魔方工作室群和腾讯 IEG 实习过，做过 FPS 设计分析、关卡动线和用户研究。</p>
+      <p class="edu small mute"><span data-l="en">University of Utah, B.S. in Games, expected May 2027</span><span data-l="zh" lang="zh-CN">犹他大学，游戏专业理学学士，预计 2027 年 5 月毕业</span></p>
+    </div>
+    <div>
+      <h3><span data-l="en">Toolkit</span><span data-l="zh" lang="zh-CN">常用工具</span></h3>
+      <ul class="kit">
+        <li><span data-l="en">Unreal Engine 5 and Blueprints</span><span data-l="zh" lang="zh-CN">Unreal Engine 5 与蓝图</span></li>
+        <li><span data-l="en">Greyboxing and player flow</span><span data-l="zh" lang="zh-CN">灰盒搭建与玩家动线</span></li>
+        <li><span data-l="en">Level prototyping and iteration</span><span data-l="zh" lang="zh-CN">关卡原型与迭代</span></li>
+        <li><span data-l="en">User research and focus groups</span><span data-l="zh" lang="zh-CN">用户研究与焦点小组</span></li>
+        <li>GameMaker</li>
+        <li>Git, Jira, Autodesk Maya</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact" aria-labelledby="contact-h">
+  <div>
+    <h2 id="contact-h"><span data-l="en">Get in touch</span><span data-l="zh" lang="zh-CN">联系我</span></h2>
+    <a class="mail" href="mailto:liangweijun1103@gmail.com">liangweijun1103@gmail.com</a>
+  </div>
+  <ul>
+    <li><a href="https://www.linkedin.com/in/weijun-liang-2b437a2a6/">LinkedIn</a></li>
+    <li><a href="https://github.com/WAYNE1-L">GitHub</a></li>
+    <li><a href="Wayne_Liang_Resume.pdf"><span data-l="en">Resume (PDF)</span><span data-l="zh" lang="zh-CN">简历（PDF）</span></a></li>
+  </ul>
+</section>
+</main>
+<dialog class="zoom" id="zoom" aria-label="Enlarged image"><img alt=""></dialog>
+
+<footer>
+  <span>© 2026 Wayne Liang</span>
+  <span><span data-l="en">Salt Lake City, Utah</span><span data-l="zh" lang="zh-CN">美国犹他州盐湖城</span></span>
+</footer>
+</div>
+
+<script>
+// Links that appear on the Photo01 card once they exist. Leave empty to hide the button.
+var PLAY_URL='https://github.com/WAYNE1-L/portfolio/releases/latest/download/Photo01_Win64.zip';    // download page or file for the Windows build
+var VIDEO_URL='media/full_run.mp4';   // full walkthrough video
+(function(){
+  var root=document.documentElement, plan=document.getElementById('plan');
+  var tabs=[].slice.call(document.querySelectorAll('#tabs [role="tab"]'));
+  var beats=[].slice.call(document.querySelectorAll('article.beat'));
+  var marks=[].slice.call(document.querySelectorAll('#plan .bm'));
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  // Language: English by default, Chinese when the address ends in #zh.
+  function setLang(zh){
+    root.setAttribute('data-lang',zh?'zh':'en');
+    root.lang=zh?'zh-CN':'en';
+    document.getElementById('lang-en').setAttribute('aria-pressed',String(!zh));
+    document.getElementById('lang-zh').setAttribute('aria-pressed',String(zh));
+    // screenshots with on-screen text follow the page language
+    [].forEach.call(document.querySelectorAll('img[data-zh]'),function(im){
+      var want=im.getAttribute(zh?'data-zh':'data-en'); if(im.getAttribute('src')!==want) im.setAttribute('src',want);
+    });
+  }
+  [].forEach.call(document.querySelectorAll('[data-setlang]'),function(b){
+    b.addEventListener('click',function(){
+      var y=window.scrollY, zh=b.getAttribute('data-setlang')==='zh';
+      setLang(zh);
+      try{ if(zh) location.hash='zh'; else history.replaceState(null,'',location.pathname+location.search); }
+      catch(e){ try{ location.hash=zh?'zh':''; }catch(e2){} }
+      window.scrollTo(0,y);
+    });
+  });
+  window.addEventListener('hashchange',function(){ setLang(location.hash==='#zh'); });
+  setLang(location.hash==='#zh');
+
+  [].forEach.call(document.querySelectorAll('[data-go]'),function(b){
+    b.addEventListener('click',function(){
+      var el=document.getElementById(b.getAttribute('data-go'));
+      if(el) el.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});
+    });
+  });
+  document.getElementById('home-link').addEventListener('click',function(e){e.preventDefault();window.scrollTo({top:0,behavior:reduce?'auto':'smooth'});});
+
+  // Walkthrough: tabs, plan markers and the pager all select the same beat.
+  var cur=1;
+  function select(n,focusTab){
+    n=Math.max(1,Math.min(beats.length,n)); cur=n;
+    beats.forEach(function(a){a.hidden=Number(a.getAttribute('data-beat'))!==n;});
+    tabs.forEach(function(t){var on=Number(t.getAttribute('data-beat'))===n;t.setAttribute('aria-selected',String(on));t.tabIndex=on?0:-1;if(on&&focusTab)t.focus();if(on&&t.scrollIntoView&&t.parentNode.scrollWidth>t.parentNode.clientWidth){t.parentNode.scrollLeft=t.offsetLeft-t.parentNode.clientWidth/2+t.clientWidth/2;}});
+    marks.forEach(function(m){m.classList.toggle('on',Number(m.getAttribute('data-beat'))===n);});
+    plan.setAttribute('data-phase',beats[n-1].getAttribute('data-phase'));
+    if(typeof syncClips==='function') syncClips();
+  }
+  tabs.forEach(function(t){
+    t.addEventListener('click',function(){select(Number(t.getAttribute('data-beat')));});
+    t.addEventListener('keydown',function(e){
+      if(e.key==='ArrowRight'){e.preventDefault();select(cur+1,true);}
+      if(e.key==='ArrowLeft'){e.preventDefault();select(cur-1,true);}
+    });
+  });
+  marks.forEach(function(m){
+    function go(){select(Number(m.getAttribute('data-beat')));}
+    m.addEventListener('click',go);
+    m.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
+  });
+  [].forEach.call(document.querySelectorAll('.pager [data-step]'),function(b){
+    b.addEventListener('click',function(){select(cur+Number(b.getAttribute('data-step')));});
+  });
+  select(1);
+
+  // Buttons on the level card.
+  (function(){
+    var cta=document.getElementById('cta'), any=false;
+    [['play-link',PLAY_URL],['video-link',VIDEO_URL]].forEach(function(p){
+      var a=document.getElementById(p[0]); if(p[1]){a.href=p[1];a.hidden=false;any=true;}
+    });
+    cta.hidden=!any;
+  })();
+
+  // Short clips replace the stills when the files are there:
+  // media/hero.mp4 for the card, media/beat1.mp4 ... media/beat8.mp4 for the walkthrough.
+  function clip(img,src){
+    var v=document.createElement('video');
+    v.muted=true; v.loop=true; v.playsInline=true; v.preload='metadata';
+    v.setAttribute('muted',''); v.setAttribute('playsinline','');
+    v.poster=img.currentSrc||img.src; v.setAttribute('aria-label',img.alt);
+    v.addEventListener('loadedmetadata',function(){
+      if(!img.parentNode) return;
+      var fig=img.parentNode;
+      v.controls=reduce; fig.replaceChild(v,img);
+      // some clips show a different moment from the still, so they carry their own caption
+      if(fig.getAttribute&&fig.getAttribute('data-clip-en')){
+        var en=fig.querySelector('figcaption [data-l="en"]'), zh=fig.querySelector('figcaption [data-l="zh"]');
+        if(en) en.textContent=fig.getAttribute('data-clip-en'); if(zh) zh.textContent=fig.getAttribute('data-clip-zh');
+      }
+      syncClips();
+    });
+    v.src=src;
+  }
+  // Only the clip that is on screen plays: the card clip, and the current beat.
+  function syncClips(){
+    [].forEach.call(document.querySelectorAll('.lv .thumb video,.beat video'),function(v){
+      var art=v.closest?v.closest('article.beat'):null, show=!art||!art.hidden;
+      if(show&&!reduce){ if(v.paused){var p=v.play(); if(p&&p.catch)p.catch(function(){v.controls=true;});} }
+      else if(!v.paused){ v.pause(); }
+    });
+  }
+  var heroImg=document.querySelector('.lv .thumb img'); if(heroImg) clip(heroImg,'media/hero.mp4');
+  beats.forEach(function(a){var im=a.querySelector('figure img'); if(im) clip(im,'media/beat'+a.getAttribute('data-beat')+'.mp4');});
+
+  // Click a picture to see it full size.
+  var dlg=document.getElementById('zoom');
+  if(dlg&&dlg.showModal){
+    var big=dlg.querySelector('img');
+    [].forEach.call(document.querySelectorAll('.beat img,.figs img,.paper img,.views img'),function(im){
+      im.classList.add('zoomable'); im.tabIndex=0;
+      function open(){big.src=im.currentSrc||im.src;big.alt=im.alt;dlg.showModal();}
+      im.addEventListener('click',open);
+      im.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();open();}});
+    });
+    dlg.addEventListener('click',function(){dlg.close();});
+  }
+})();
+</script>
+</body>
+</html>
