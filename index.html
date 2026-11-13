@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Wayne Liang Portfolio</title>
+<title>Wayne Liang | Level Designer</title>
 <meta property="og:type" content="website">
-<meta property="og:title" content="Wayne Liang, level designer">
+<meta property="og:title" content="Wayne Liang | Level Designer">
 <meta property="og:description" content="Photo01: an interconnected shortcut level in Unreal Engine 5, with the full design breakdown.">
 <meta property="og:url" content="https://wayne1-l.github.io/portfolio/">
 <meta property="og:image" content="https://wayne1-l.github.io/portfolio/img/b8.jpg">
@@ -41,10 +41,10 @@ a:hover{text-decoration-thickness:2px}
 button{font:inherit;color:inherit;cursor:pointer}
 :focus-visible{outline:3px solid var(--lantern);outline-offset:3px}
 h1,h2{font-family:var(--display);font-weight:600;line-height:1;margin:0;text-wrap:balance}
-h1{font-size:clamp(46px,5.4vw,72px);letter-spacing:-.01em}
+h1{font-size:clamp(40px,4.6vw,60px);letter-spacing:-.01em}
 h2{font-size:clamp(31px,3.5vw,44px)}
 h3{font:600 19px/1.3 var(--body);margin:0;text-wrap:balance}
-html[data-lang="zh"] h1{font-size:clamp(38px,4.6vw,58px);line-height:1.15;letter-spacing:0}
+html[data-lang="zh"] h1{font-size:clamp(34px,4vw,50px);line-height:1.15;letter-spacing:0}
 html[data-lang="zh"] h2{font-size:clamp(27px,3vw,36px);line-height:1.2}
 p{margin:0}
 .wrap{max-width:1240px;margin:0 auto;padding:0 clamp(18px,4vw,44px)}
@@ -62,11 +62,15 @@ p{margin:0}
 .lang button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
 
 /* hero */
-.hero{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:20px clamp(24px,4vw,56px);align-items:end;padding:clamp(14px,2.2vw,28px) 0 clamp(28px,3.6vw,48px)}
-.hero-head{display:flex;flex-direction:column;gap:14px}
-.hero-side{display:flex;flex-direction:column;gap:14px;padding-bottom:6px}
+.hero{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:22px clamp(24px,3.6vw,48px);align-items:center;padding:clamp(8px,1.4vw,18px) 0 clamp(28px,3.6vw,44px)}
+.hero-text{display:flex;flex-direction:column;gap:14px}
+.hero-media{margin:0;border:1px solid var(--ink);background:var(--ink)}
+.hero-media img,.hero-media video{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+.hero-media figcaption{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 16px;padding:9px 14px;color:#d3dbe6;font-size:15px}
+.hero-media figcaption button{background:none;border:0;padding:2px 0;color:var(--lantern);font-weight:500;text-decoration:underline;text-underline-offset:.22em}
+.did{margin:10px 0 0;padding-left:1.15em;display:flex;flex-direction:column;gap:4px}
 .role{font-weight:500;color:var(--mute)}
-.lede{font-size:19px;line-height:1.5;max-width:30em}
+.lede{font-size:18px;line-height:1.5;max-width:30em}
 .hero-links{display:flex;flex-wrap:wrap;gap:8px 22px;font-weight:500}
 .open{display:inline-flex;align-items:center;gap:9px;font-weight:500}
 .open::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--lantern);box-shadow:0 0 0 3px #f0a03040}
@@ -132,9 +136,7 @@ html[data-lang="zh"] .beat-text h3{font-size:clamp(21px,2vw,26px);line-height:1.
 /* level list */
 .levels{padding-top:clamp(22px,3vw,34px);padding-bottom:clamp(26px,3.4vw,40px)}
 .lv{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
-.lv li{display:grid;grid-template-columns:220px minmax(0,1fr) minmax(0,260px);gap:14px 28px;align-items:start;background:var(--sheet);border:1px solid var(--ink);padding:14px}
-.lv .thumb{padding:0;border:0;background:none;display:block}
-.lv .thumb img{width:100%;aspect-ratio:16/9;object-fit:cover;border:1px solid var(--ink)}
+.lv>li{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,260px);gap:14px 36px;align-items:start;background:var(--sheet);border:1px solid var(--ink);padding:18px 20px}
 .lv h3{font:600 30px/1 var(--display)}
 .lv .kind{color:var(--mute);font-size:15px;margin:3px 0 8px}
 .cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
@@ -142,8 +144,7 @@ html[data-lang="zh"] .beat-text h3{font-size:clamp(21px,2vw,26px);line-height:1.
 .btn:hover{background:var(--sky)}
 .btn.alt{background:none;color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
 .btn.alt:hover{background:#fff}
-.lv .thumb video,.beat video{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--ink)}
-.lv .thumb video{border:1px solid var(--ink)}
+.beat video{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--ink)}
 .jump{display:flex;flex-wrap:wrap;gap:2px 18px;margin-top:8px;font-size:15.5px}
 .jump button{background:none;border:0;padding:5px 0;color:var(--sky);font-weight:500;text-decoration:underline;text-underline-offset:.22em;text-decoration-thickness:1px}
 .jump button:hover{text-decoration-thickness:2px}
@@ -250,8 +251,8 @@ footer{padding:0 0 32px;font-size:14.5px;color:var(--mute);display:flex;justify-
 
 @media (max-width:920px){
   .hero{grid-template-columns:minmax(0,1fr);align-items:start}
-  .lv li{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
-  .lv li>dl{grid-column:1/-1;grid-template-columns:repeat(4,minmax(0,1fr))}
+  .lv>li{grid-template-columns:minmax(0,1fr)}
+  .lv>li>dl{grid-template-columns:repeat(4,minmax(0,1fr))}
   .viewer{grid-template-columns:minmax(0,1fr);grid-template-rows:auto;grid-template-areas:"tabs" "plan" "beats" "key"}
   .tabs{grid-template-columns:repeat(4,minmax(0,1fr))}
   .tabs button{border-bottom:1px solid var(--ink)}
@@ -286,8 +287,7 @@ footer{padding:0 0 32px;font-size:14.5px;color:var(--mute);display:flex;justify-
   body{font-size:16px}
   .bar nav{order:3;width:100%;margin-left:-12px}
   .tabs button{font-size:14px;padding:9px 8px 8px}
-  .lv li{grid-template-columns:minmax(0,1fr)}
-  .lv li>dl{grid-template-columns:minmax(0,1fr)}
+  .lv>li>dl{grid-template-columns:repeat(2,minmax(0,1fr))}
   .legend{grid-auto-flow:row;grid-template-rows:none;grid-template-columns:minmax(0,1fr)}
   .facts{grid-template-columns:minmax(0,1fr)}
   .figs{grid-template-columns:minmax(0,1fr)}
@@ -315,11 +315,9 @@ footer{padding:0 0 32px;font-size:14.5px;color:var(--mute);display:flex;justify-
 
 <main>
 <section class="hero" aria-labelledby="hero-h">
-  <div class="hero-head">
-    <p class="role"><span data-l="en">Level and technical designer</span><span data-l="zh" lang="zh-CN">关卡与技术设计</span></p>
+  <div class="hero-text">
+    <p class="role"><span data-l="en">Level designer</span><span data-l="zh" lang="zh-CN">关卡设计师</span></p>
     <h1 id="hero-h"><span data-l="en">Turning spaces into decisions.</span><span data-l="zh" lang="zh-CN">把空间变成选择。</span></h1>
-  </div>
-  <div class="hero-side">
     <p class="lede" data-l="en">I'm Wayne, a Games student at the University of Utah, graduating May 2027. I plan routes, locks and sightlines, then block them out and test them in Unreal Engine.</p>
     <p class="lede" data-l="zh" lang="zh-CN">我是 Wayne Liang，犹他大学游戏专业在读，2027 年 5 月毕业。我先规划路线、门锁和视线，再到 Unreal Engine 里搭灰盒、做测试。</p>
     <p class="open"><span data-l="en">Open to level design roles</span><span data-l="zh" lang="zh-CN">正在找关卡设计方向的工作</span></p>
@@ -329,18 +327,32 @@ footer{padding:0 0 32px;font-size:14.5px;color:var(--mute);display:flex;justify-
       <a href="Wayne_Liang_Resume.pdf"><span data-l="en">Resume (PDF)</span><span data-l="zh" lang="zh-CN">简历（PDF）</span></a>
     </p>
   </div>
-  </section>
+  <figure class="hero-media">
+    <img src="img/b8.jpg" width="1221" height="688" alt="Gameplay from Photo01: the player crosses a pit along blue and red wall-run panels toward the goal.">
+    <figcaption><span><span data-l="en">Photo01: the final wall-run to the goal</span><span data-l="zh" lang="zh-CN">Photo01：通向终点的最后一段附墙路线</span></span>
+      <button type="button" data-go="photo01"><span data-l="en">See the walkthrough</span><span data-l="zh" lang="zh-CN">看八步走查</span></button></figcaption>
+  </figure>
+</section>
 
 <section class="block levels" id="work" aria-labelledby="levels-h">
   <h2 id="levels-h"><span data-l="en">Level design</span><span data-l="zh" lang="zh-CN">关卡设计</span></h2>
   <ul class="lv">
     <li>
-      <button type="button" class="thumb" data-go="photo01" aria-label="Photo01 walkthrough"><img src="img/b8.jpg" width="1221" height="688" alt="The player character facing blue and red wall-run panels over a pit in Photo01."></button>
       <div>
         <h3>Photo01</h3>
         <p class="kind"><span data-l="en">Interconnected shortcut level, single-player</span><span data-l="zh" lang="zh-CN">单人箱庭关卡，以捷径回环为核心</span></p>
         <p data-l="en">Two layers, three keys and three shortcuts. One-way doors, keyed locks and a kick-down ladder make every route bend back toward spawn.</p>
         <p data-l="zh" lang="zh-CN">上下两层、三把钥匙、三条捷径。单向门、带锁的门和一架可以踹下的梯子，让每条路线最后都绕回出生点。</p>
+        <ul class="did" data-l="en">
+          <li>Designed the layout, gating and three shortcuts on paper, then directed the blockout in Unreal Engine 5.</li>
+          <li>Specified the mechanics: one-way doors, keyed locks, a kick-down ladder and wall-run boots.</li>
+          <li>Audited player guidance against 16 behavior rules and shipped six fixes.</li>
+        </ul>
+        <ul class="did" data-l="zh" lang="zh-CN">
+          <li>在纸上设计布局、门锁关系和三条捷径，再主导 Unreal Engine 5 里的灰盒搭建。</li>
+          <li>定下机关规则：单向门、带锁的门、可踹下的梯子、行壁靴。</li>
+          <li>按 16 条玩家行为规律审查引导，改掉 6 处问题。</li>
+        </ul>
         <p class="cta" id="cta" hidden>
           <a class="btn" id="play-link" hidden><span data-l="en">Download the build (Windows)</span><span data-l="zh" lang="zh-CN">下载试玩包（Windows）</span></a>
           <a class="btn alt" id="video-link" hidden><span data-l="en">Watch the full run</span><span data-l="zh" lang="zh-CN">看完整通关视频</span></a>
@@ -654,14 +666,6 @@ footer{padding:0 0 32px;font-size:14.5px;color:var(--mute);display:flex;justify-
   <h2 id="more-h"><span data-l="en">Other work</span><span data-l="zh" lang="zh-CN">其他作品</span></h2>
   <ul class="works">
     <li>
-      <div><h3>SALTLINE</h3><p class="kind"><span data-l="en">Tactical map study, in progress</span><span data-l="zh" lang="zh-CN">战术地图研究，进行中</span></p></div>
-      <div>
-        <p data-l="en">An original tactical map set between an old harbor district and a desalination facility. Both sites take similar time to reach but cost differently: exposure on the A approach, commitment on the B approach, and a dry-canal mid route that trades information for rotation pressure.</p>
-        <p data-l="zh" lang="zh-CN">一张原创战术地图，场景在旧港区和海水淡化厂之间。到两个点位的时间相近，代价却不同：A 路暴露在长视线下，B 路进去就难退，中路的干渠能换来信息，但要承受转点压力。</p>
-      </div>
-      <p class="meta"><span data-l="en">Technical level design. Unreal Engine, layout studies.</span><span data-l="zh" lang="zh-CN">技术关卡设计。Unreal Engine，布局研究。</span><br><a href="https://wayne-liang-level-design-portfolio.zestywren16.chatgpt.site"><span data-l="en">Greybox and diagrams</span><span data-l="zh" lang="zh-CN">灰盒截图和设计图</span></a></p>
-    </li>
-    <li>
       <div><h3>Hollow Reach</h3><p class="kind"><span data-l="en">Action-exploration level, university project</span><span data-l="zh" lang="zh-CN">动作探索关卡，学校项目</span></p></div>
       <div>
         <p data-l="en">A multi-zone exploration level in Unreal Engine 5. I greyboxed the routes, spaced the encounters and landmarks, and scripted triggers, doors and hazards in Blueprints.</p>
@@ -736,6 +740,7 @@ footer{padding:0 0 32px;font-size:14.5px;color:var(--mute);display:flex;justify-
 // Links that appear on the Photo01 card once they exist. Leave empty to hide the button.
 var PLAY_URL='https://github.com/WAYNE1-L/portfolio/releases/latest/download/Photo01_Win64.zip';    // download page or file for the Windows build
 var VIDEO_URL='';   // full walkthrough video
+var SKIP_CLIPS=['beat2'];   // clips held back until they are re-recorded
 (function(){
   var root=document.documentElement, plan=document.getElementById('plan');
   var tabs=[].slice.call(document.querySelectorAll('#tabs [role="tab"]'));
@@ -832,14 +837,14 @@ var VIDEO_URL='';   // full walkthrough video
   }
   // Only the clip that is on screen plays: the card clip, and the current beat.
   function syncClips(){
-    [].forEach.call(document.querySelectorAll('.lv .thumb video,.beat video'),function(v){
+    [].forEach.call(document.querySelectorAll('.hero-media video,.beat video'),function(v){
       var art=v.closest?v.closest('article.beat'):null, show=!art||!art.hidden;
       if(show&&!reduce){ if(v.paused){var p=v.play(); if(p&&p.catch)p.catch(function(){v.controls=true;});} }
       else if(!v.paused){ v.pause(); }
     });
   }
-  var heroImg=document.querySelector('.lv .thumb img'); if(heroImg) clip(heroImg,'media/hero.mp4');
-  beats.forEach(function(a){var im=a.querySelector('figure img'); if(im) clip(im,'media/beat'+a.getAttribute('data-beat')+'.mp4');});
+  var heroImg=document.querySelector('.hero-media img'); if(heroImg) clip(heroImg,'media/hero.mp4');
+  beats.forEach(function(a){var n='beat'+a.getAttribute('data-beat'), im=a.querySelector('figure img'); if(im&&SKIP_CLIPS.indexOf(n)<0) clip(im,'media/'+n+'.mp4');});
 
   // Click a picture to see it full size.
   var dlg=document.getElementById('zoom');
