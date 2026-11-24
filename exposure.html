@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Exposure | Wayne Liang, Level Designer</title>
+<title data-zh="《曝光》| Wayne Liang，关卡设计师">Exposure | Wayne Liang, Level Designer</title>
 <meta name="description" content="Exposure: first-person photo puzzle level, single-player in Unreal Engine 5. Interactive walkthrough, paper plans, iteration and metrics.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Exposure | Wayne Liang, Level Designer">
@@ -14,6 +14,10 @@
 <meta name="theme-color" content="#0E1116">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%230E1116'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23F0A030'/%3E%3C/svg%3E">
 <link rel="preload" href="fonts/barlow-condensed-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/barlow-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<script>/* pick the language before the first paint: #zh, then the last choice, then the browser's language */
+(function(){var r=document.documentElement,s=null;try{s=localStorage.getItem('lang')}catch(e){}
+if(location.hash==='#zh'||s==='zh'||(s===null&&/^zh/i.test(navigator.language||''))){r.setAttribute('data-lang','zh');r.lang='zh-CN'}})();</script>
 <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
@@ -22,8 +26,9 @@
   <a class="name" href="index.html"><b>Wayne Liang</b><span><span data-l="en">Level Designer</span><span data-l="zh" lang="zh-CN">关卡设计师</span></span></a>
   <nav aria-label="Site">
     <a href="index.html#work"><span data-l="en">Work</span><span data-l="zh" lang="zh-CN">作品</span></a>
+    <a href="index.html#experience"><span data-l="en">Experience</span><span data-l="zh" lang="zh-CN">经历</span></a>
     <a href="index.html#about"><span data-l="en">About</span><span data-l="zh" lang="zh-CN">关于</span></a>
-    <a class="resume" href="Wayne_Liang_Resume.pdf"><span data-l="en">Resume</span><span data-l="zh" lang="zh-CN">简历</span></a>
+    <a class="resume" href="Wayne_Liang_Resume.pdf" target="_blank" rel="noopener"><span data-l="en">Resume</span><span data-l="zh" lang="zh-CN">简历</span></a>
   </nav>
   <div class="lang" role="group" aria-label="Language">
     <button type="button" id="lang-en" data-setlang="en" aria-pressed="true">EN</button>
@@ -51,7 +56,7 @@
           <li>把 268 盏灯减到 54 盏，删掉所有地面引导线，只靠灯光、发光的地标和空间对比带路。</li>
         </ul>
   </div>
-  <figure class="p-media"><img src="img/pt/hall.jpg" width="1280" height="720" alt="The reactor hall in Exposure: stairs and raised walkways around a pond, a yellow crane overhead.">
+  <figure class="p-media"><img style="view-transition-name:shot-exposure" src="img/pt/hall.jpg" width="1280" height="720" alt="The reactor hall in Exposure: stairs and raised walkways around a pond, a yellow crane overhead.">
     <figcaption><span data-l="en">The reactor hall: the pond, the crane and the raised walkways, with the core tower glowing at the far end.</span><span data-l="zh" lang="zh-CN">核电站大厅：池塘、吊车和高架走道，尽头是发光的堆芯塔。</span></figcaption></figure>
 </section>
   <dl class="facts">
@@ -279,7 +284,7 @@
       <li><span><span data-l="en">The lift ran both ways from the start, so the basement could be reached without the outer ring or the shaft.</span><span data-l="zh" lang="zh-CN">电梯一开始就上下都能坐，不走外圈和检修井也能到地下。</span></span>
         <span class="rule"><span data-l="en">Earn the shortcut</span><span data-l="zh" lang="zh-CN">捷径要自己挣</span></span>
         <span class="fix"><span data-l="en">The car starts at B1. The upper door stays shut behind a red lamp until the first ride up. After that it runs both ways.</span><span data-l="zh" lang="zh-CN">轿厢初始停在 B1。上层的门关着、亮红灯，直到第一次从下面坐上来；之后上下都能用。</span></span></li>
-      <li><span><span data-l="en">The keypad at the main gate stood on the floor in a bright yellow cabinet.</span><span data-l="zh" lang="zh-CN">D 大门的密码面板，是立在地上的一只亮黄色柜子。</span></span>
+      <li><span><span data-l="en">The keypad at the main gate stood on the floor in a bright yellow cabinet.</span><span data-l="zh" lang="zh-CN">主大门的密码面板，是立在地上的一只亮黄色柜子。</span></span>
         <span class="rule"><span data-l="en">Part of the place</span><span data-l="zh" lang="zh-CN">属于这个地方</span></span>
         <span class="fix"><span data-l="en">All three keypads hang on the wall by their door frames, each inside its own pool of light.</span><span data-l="zh" lang="zh-CN">三块面板都挂到门框旁的墙上，各有一盏灯罩住。</span></span></li>
       <li><span><span data-l="en">A fall sent the player back to the last rest point, up to 81 m away.</span><span data-l="zh" lang="zh-CN">掉下去会被送回上一个休息点，最远要重走 81 米。</span></span>
@@ -289,15 +294,15 @@
         <span class="rule"><span data-l="en">Visibility</span><span data-l="zh" lang="zh-CN">可见性</span></span>
         <span class="fix"><span data-l="en">Reader moved 2.7 m onto the fixed door frame. It is fully in view when the prompt appears, checked in the packaged build.</span><span data-l="zh" lang="zh-CN">读卡器平移 2.7 米，装到固定门框上。提示出现时整个读卡器都在画面里，并在打包版中复查过。</span></span></li>
     </ul>
-    <p class="kept" data-l="en"><strong>One flag I overruled.</strong> A cleanup pass listed the four standing pads in the gallery as floor patches to delete. I kept them. They are the only hint for where to stand, and each shares its color with a lamp on the vault door.</p>
-    <p class="kept" data-l="zh" lang="zh-CN"><strong>有一处我没有照改。</strong>清理时，观察廊里的四块站位踏板被列为该删的“地面补丁”。我把它们留下了：它们是“该站在哪”的唯一提示，颜色也和库房门上的四盏灯一一对应。</p>
+    <p class="kept" data-l="en"><strong>One thing I kept.</strong> While stripping out the floor guides, I nearly removed the four standing pads in the gallery too. I kept them. They are the only hint for where to stand, and each shares its color with a lamp on the vault door.</p>
+    <p class="kept" data-l="zh" lang="zh-CN"><strong>有一处我留了下来。</strong>删地面引导线时，观察廊里的四块站位踏板差点也一起删掉。我把它们留下了：它们是“该站在哪”的唯一提示，颜色也和库房门上的四盏灯一一对应。</p>
     <div class="figs">
       <figure><img src="img/pt/rest-before.jpg" width="1280" height="720" loading="lazy" alt="An earlier build: a desk and cabinet on a brightly lit landing, with warm light across the whole floor.">
         <figcaption><span data-l="en"><b>Before.</b> A rest point in an earlier build: a pale floor, and warm light spilling over the whole landing.</span><span data-l="zh" lang="zh-CN"><b>改前。</b>早期版本里的一个休息点：地面发白，暖光铺满整个平台。</span></figcaption></figure>
       <figure><img src="img/pt/rest-after.jpg" width="1280" height="720" loading="lazy" alt="The final build: a dark room with one warm pool of light at a desk and a white pool on a keypad by a door.">
         <figcaption><span data-l="en"><b>After.</b> A rest point in the final build: the floor is dark, the warm pool stops at the desk, and the keypad by the door has its own light.</span><span data-l="zh" lang="zh-CN"><b>改后。</b>最终版里的一个休息点：地面压暗，暖光只到桌边，门旁的密码面板另有一盏灯。</span></figcaption></figure>
       <figure><img src="img/pt/gate-before.jpg" width="1280" height="720" loading="lazy" alt="An earlier build of the main gate: a yellow keypad cabinet on the floor, hazard stripes and cables in front of the door.">
-        <figcaption><span data-l="en"><b>Before.</b> The main gate: a yellow keypad cabinet on the floor, hazard stripes, and cables leading up to the door.</span><span data-l="zh" lang="zh-CN"><b>改前。</b>D 大门：立在地上的黄色密码柜、黄黑条纹，还有一路通到门口的线缆。</span></figcaption></figure>
+        <figcaption><span data-l="en"><b>Before.</b> The main gate: a yellow keypad cabinet on the floor, hazard stripes, and cables leading up to the door.</span><span data-l="zh" lang="zh-CN"><b>改前。</b>主大门：立在地上的黄色密码柜、黄黑条纹，还有一路通到门口的线缆。</span></figcaption></figure>
       <figure><img src="img/pt/gate-after.jpg" width="1280" height="720" loading="lazy" alt="The final build of the same gate: a small dark keypad on the wall beside the door frame, lit by one spotlight.">
         <figcaption><span data-l="en"><b>After.</b> The same gate: the keypad is on the wall by the frame, in one pool of light. Nothing is on the floor.</span><span data-l="zh" lang="zh-CN"><b>改后。</b>同一扇门：面板挂在门框旁的墙上，一盏灯照着，地上什么都没有。</span></figcaption></figure>
     </div>
@@ -349,12 +354,13 @@
   <div>
     <p class="label acc"><span data-l="en">Open to level design roles</span><span data-l="zh" lang="zh-CN">正在找关卡设计方向的工作</span></p>
     <h2 id="contact-h" style="margin-top:10px"><span data-l="en">Let’s talk levels.</span><span data-l="zh" lang="zh-CN">聊聊关卡吧。</span></h2>
-    <a class="mail" href="mailto:liangweijun1103@gmail.com">liangweijun1103@gmail.com</a>
+    <p class="mail-row"><a class="mail" href="mailto:liangweijun1103@gmail.com">liangweijun1103@gmail.com</a>
+      <button type="button" class="copy" data-copy="liangweijun1103@gmail.com"><span class="idle"><span data-l="en">Copy</span><span data-l="zh" lang="zh-CN">复制</span></span><span class="done" aria-hidden="true"><span data-l="en">Copied ✓</span><span data-l="zh" lang="zh-CN">已复制 ✓</span></span></button></p>
   </div>
   <ul>
-    <li><a href="https://www.linkedin.com/in/weijun-liang-2b437a2a6/">LinkedIn</a></li>
-    <li><a href="https://github.com/WAYNE1-L">GitHub</a></li>
-    <li><a href="Wayne_Liang_Resume.pdf"><span data-l="en">Resume (PDF)</span><span data-l="zh" lang="zh-CN">简历（PDF）</span></a></li>
+    <li><a href="https://www.linkedin.com/in/weijun-liang-2b437a2a6/" target="_blank" rel="noopener">LinkedIn</a></li>
+    <li><a href="https://github.com/WAYNE1-L" target="_blank" rel="noopener">GitHub</a></li>
+    <li><a href="Wayne_Liang_Resume.pdf" target="_blank" rel="noopener"><span data-l="en">Resume (PDF)</span><span data-l="zh" lang="zh-CN">简历（PDF）</span></a></li>
   </ul>
 </section>
 </main>
@@ -363,7 +369,7 @@
   <span><span data-l="en">Salt Lake City, Utah</span><span data-l="zh" lang="zh-CN">美国犹他州盐湖城</span></span>
 </footer>
 </div>
-<dialog class="zoom" id="zoom" aria-label="Enlarged image"><img alt=""></dialog>
+<dialog class="zoom" id="zoom" aria-label="Enlarged image"><div class="zoom-stage"></div><p class="zoom-cap"></p><button type="button" class="zoom-x" aria-label="Close"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></dialog>
 <script src="assets/site.js"></script>
 </body>
 </html>

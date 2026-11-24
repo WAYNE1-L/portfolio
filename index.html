@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Wayne Liang | Level Designer</title>
+<title data-zh="Wayne Liang | 关卡设计师">Wayne Liang | Level Designer</title>
 <meta name="description" content="Wayne Liang, level designer. Two single-player levels in Unreal Engine 5, each with an interactive walkthrough, paper plans, iteration notes and metrics.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Wayne Liang | Level Designer">
@@ -14,6 +14,10 @@
 <meta name="theme-color" content="#0E1116">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%230E1116'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23F0A030'/%3E%3C/svg%3E">
 <link rel="preload" href="fonts/barlow-condensed-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/barlow-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<script>/* pick the language before the first paint: #zh, then the last choice, then the browser's language */
+(function(){var r=document.documentElement,s=null;try{s=localStorage.getItem('lang')}catch(e){}
+if(location.hash==='#zh'||s==='zh'||(s===null&&/^zh/i.test(navigator.language||''))){r.setAttribute('data-lang','zh');r.lang='zh-CN'}})();</script>
 <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
@@ -24,7 +28,7 @@
     <a href="#work" data-go="work"><span data-l="en">Work</span><span data-l="zh" lang="zh-CN">作品</span></a>
     <a href="#experience" data-go="experience"><span data-l="en">Experience</span><span data-l="zh" lang="zh-CN">经历</span></a>
     <a href="#about" data-go="about"><span data-l="en">About</span><span data-l="zh" lang="zh-CN">关于</span></a>
-    <a class="resume" href="Wayne_Liang_Resume.pdf"><span data-l="en">Resume</span><span data-l="zh" lang="zh-CN">简历</span></a>
+    <a class="resume" href="Wayne_Liang_Resume.pdf" target="_blank" rel="noopener"><span data-l="en">Resume</span><span data-l="zh" lang="zh-CN">简历</span></a>
   </nav>
   <div class="lang" role="group" aria-label="Language">
     <button type="button" id="lang-en" data-setlang="en" aria-pressed="true">EN</button>
@@ -49,7 +53,7 @@
       <li><span data-l="en"><b>University of Utah</b> · B.S. Games, May 2027</span><span data-l="zh" lang="zh-CN"><b>犹他大学</b> · 游戏专业，2027 年 5 月毕业</span></li>
     </ul>
     <p class="hero-cta">
-      <a class="btn" href="Wayne_Liang_Resume.pdf"><span data-l="en">Resume (PDF)</span><span data-l="zh" lang="zh-CN">简历（PDF）</span></a>
+      <a class="btn" href="Wayne_Liang_Resume.pdf" target="_blank" rel="noopener"><span data-l="en">Resume (PDF)</span><span data-l="zh" lang="zh-CN">简历（PDF）</span></a>
       <a class="btn alt" href="mailto:liangweijun1103@gmail.com"><span data-l="en">Email me</span><span data-l="zh" lang="zh-CN">发邮件</span></a>
     </p>
   </div>
@@ -58,7 +62,7 @@
 <section id="work" aria-label="Selected levels" class="sub">
 <div class="cards">
   <a class="card" href="exposure.html">
-    <figure><img src="img/pt/hall.jpg" width="1280" height="720" alt="The reactor hall in Exposure: stairs and raised walkways around a pond, a yellow crane overhead."><span class="num">01</span></figure>
+    <figure><img style="view-transition-name:shot-exposure" src="img/pt/hall.jpg" width="1280" height="720" alt="The reactor hall in Exposure: stairs and raised walkways around a pond, a yellow crane overhead."><span class="num">01</span></figure>
     <div class="card-body">
       <h3><span data-l="en">Exposure</span><span data-l="zh" lang="zh-CN">曝光</span></h3>
       <p class="kind"><span data-l="en">First-person photo puzzle level, single-player</span><span data-l="zh" lang="zh-CN">第一人称拍照解谜关卡，单人</span></p>
@@ -69,7 +73,7 @@
     </div>
   </a>
   <a class="card" href="lantern-court.html">
-    <figure><img src="img/b8.jpg" width="1280" height="720" alt="Gameplay from Lantern Court: the player crosses a pit along blue and red wall-run panels toward the goal." data-clip="media/hero.mp4"><span class="num">02</span></figure>
+    <figure><img style="view-transition-name:shot-lantern" src="img/b8.jpg" width="1280" height="720" alt="Gameplay from Lantern Court: the player crosses a pit along blue and red wall-run panels toward the goal." data-clip="media/hero.mp4"><span class="num">02</span></figure>
     <div class="card-body">
       <h3><span data-l="en">Lantern Court</span><span data-l="zh" lang="zh-CN">灯笼院</span></h3>
       <p class="kind"><span data-l="en">Interconnected shortcut level, single-player</span><span data-l="zh" lang="zh-CN">单人箱庭关卡，以捷径回环为核心</span></p>
@@ -85,18 +89,18 @@
   <h2 id="exp-h"><span data-l="en">Experience</span><span data-l="zh" lang="zh-CN">经历</span></h2>
   <ul class="rows">
     <li>
-      <div><h3><span data-l="en">Tencent IEG</span><span data-l="zh" lang="zh-CN">腾讯 IEG</span></h3><p class="kind"><span data-l="en">Internship · Market and User Research</span><span data-l="zh" lang="zh-CN">实习 · 市场与用户研究部</span></p></div>
-      <div>
-        <p data-l="en">Organized focus group interviews and reports to find player pain points. Analyzed open-world level flow, narrative and worldbuilding, FPS product positioning, and retention in a live-service PvE shooter.</p><p data-l="zh" lang="zh-CN">组织焦点小组访谈并撰写报告，找出玩家痛点；分析开放世界的关卡动线、叙事与世界观、FPS 产品定位，以及一款长线运营 PvE 射击游戏的留存。</p>
-      </div>
-      <p class="meta"><span data-l="en">May – Dec 2025</span><span data-l="zh" lang="zh-CN">2025 年 5 月 – 12 月</span></p>
-    </li>
-    <li>
       <div><h3><span data-l="en">Tencent Morefun Studios</span><span data-l="zh" lang="zh-CN">腾讯魔方工作室群</span></h3><p class="kind"><span data-l="en">Internship · FPS game design course</span><span data-l="zh" lang="zh-CN">实习 · FPS 游戏设计课程</span></p></div>
       <div>
         <p data-l="en">Designed a Cube-inspired FPS around level structure and movement flow, and studied level metrics and production workflows. Analyzed combat variables (time to kill, damage per second, recoil, accuracy) and the 3Cs.</p><p data-l="zh" lang="zh-CN">以《Cube》为灵感设计了一款 FPS，重点是关卡结构和移动动线，并学习关卡尺度与制作流程；分析了战斗变量（击杀时间、每秒伤害、后坐力、精度）和 3C。</p>
       </div>
       <p class="meta"><span data-l="en">Nov 2025 – Jan 2026</span><span data-l="zh" lang="zh-CN">2025 年 11 月 – 2026 年 1 月</span></p>
+    </li>
+    <li>
+      <div><h3><span data-l="en">Tencent IEG</span><span data-l="zh" lang="zh-CN">腾讯 IEG</span></h3><p class="kind"><span data-l="en">Internship · Market and User Research</span><span data-l="zh" lang="zh-CN">实习 · 市场与用户研究部</span></p></div>
+      <div>
+        <p data-l="en">Organized focus group interviews and reports to find player pain points. Analyzed open-world level flow, narrative and worldbuilding, FPS product positioning, and retention in a live-service PvE shooter.</p><p data-l="zh" lang="zh-CN">组织焦点小组访谈并撰写报告，找出玩家痛点；分析开放世界的关卡动线、叙事与世界观、FPS 产品定位，以及一款长线运营 PvE 射击游戏的留存。</p>
+      </div>
+      <p class="meta"><span data-l="en">May – Dec 2025</span><span data-l="zh" lang="zh-CN">2025 年 5 月 – 12 月</span></p>
     </li>
   </ul>
 </section>
@@ -148,12 +152,13 @@
   <div>
     <p class="label acc"><span data-l="en">Open to level design roles</span><span data-l="zh" lang="zh-CN">正在找关卡设计方向的工作</span></p>
     <h2 id="contact-h" style="margin-top:10px"><span data-l="en">Let’s talk levels.</span><span data-l="zh" lang="zh-CN">聊聊关卡吧。</span></h2>
-    <a class="mail" href="mailto:liangweijun1103@gmail.com">liangweijun1103@gmail.com</a>
+    <p class="mail-row"><a class="mail" href="mailto:liangweijun1103@gmail.com">liangweijun1103@gmail.com</a>
+      <button type="button" class="copy" data-copy="liangweijun1103@gmail.com"><span class="idle"><span data-l="en">Copy</span><span data-l="zh" lang="zh-CN">复制</span></span><span class="done" aria-hidden="true"><span data-l="en">Copied ✓</span><span data-l="zh" lang="zh-CN">已复制 ✓</span></span></button></p>
   </div>
   <ul>
-    <li><a href="https://www.linkedin.com/in/weijun-liang-2b437a2a6/">LinkedIn</a></li>
-    <li><a href="https://github.com/WAYNE1-L">GitHub</a></li>
-    <li><a href="Wayne_Liang_Resume.pdf"><span data-l="en">Resume (PDF)</span><span data-l="zh" lang="zh-CN">简历（PDF）</span></a></li>
+    <li><a href="https://www.linkedin.com/in/weijun-liang-2b437a2a6/" target="_blank" rel="noopener">LinkedIn</a></li>
+    <li><a href="https://github.com/WAYNE1-L" target="_blank" rel="noopener">GitHub</a></li>
+    <li><a href="Wayne_Liang_Resume.pdf" target="_blank" rel="noopener"><span data-l="en">Resume (PDF)</span><span data-l="zh" lang="zh-CN">简历（PDF）</span></a></li>
   </ul>
 </section>
 </main>
@@ -162,7 +167,7 @@
   <span><span data-l="en">Salt Lake City, Utah</span><span data-l="zh" lang="zh-CN">美国犹他州盐湖城</span></span>
 </footer>
 </div>
-<dialog class="zoom" id="zoom" aria-label="Enlarged image"><img alt=""></dialog>
+<dialog class="zoom" id="zoom" aria-label="Enlarged image"><div class="zoom-stage"></div><p class="zoom-cap"></p><button type="button" class="zoom-x" aria-label="Close"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></dialog>
 <script src="assets/site.js"></script>
 </body>
 </html>

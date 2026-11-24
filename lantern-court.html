@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Lantern Court | Wayne Liang, Level Designer</title>
+<title data-zh="《灯笼院》| Wayne Liang，关卡设计师">Lantern Court | Wayne Liang, Level Designer</title>
 <meta name="description" content="Lantern Court: interconnected shortcut level, single-player in Unreal Engine 5. Interactive walkthrough, paper plans, iteration and metrics.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Lantern Court | Wayne Liang, Level Designer">
@@ -14,6 +14,10 @@
 <meta name="theme-color" content="#0E1116">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%230E1116'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23F0A030'/%3E%3C/svg%3E">
 <link rel="preload" href="fonts/barlow-condensed-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/barlow-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<script>/* pick the language before the first paint: #zh, then the last choice, then the browser's language */
+(function(){var r=document.documentElement,s=null;try{s=localStorage.getItem('lang')}catch(e){}
+if(location.hash==='#zh'||s==='zh'||(s===null&&/^zh/i.test(navigator.language||''))){r.setAttribute('data-lang','zh');r.lang='zh-CN'}})();</script>
 <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
@@ -22,8 +26,9 @@
   <a class="name" href="index.html"><b>Wayne Liang</b><span><span data-l="en">Level Designer</span><span data-l="zh" lang="zh-CN">关卡设计师</span></span></a>
   <nav aria-label="Site">
     <a href="index.html#work"><span data-l="en">Work</span><span data-l="zh" lang="zh-CN">作品</span></a>
+    <a href="index.html#experience"><span data-l="en">Experience</span><span data-l="zh" lang="zh-CN">经历</span></a>
     <a href="index.html#about"><span data-l="en">About</span><span data-l="zh" lang="zh-CN">关于</span></a>
-    <a class="resume" href="Wayne_Liang_Resume.pdf"><span data-l="en">Resume</span><span data-l="zh" lang="zh-CN">简历</span></a>
+    <a class="resume" href="Wayne_Liang_Resume.pdf" target="_blank" rel="noopener"><span data-l="en">Resume</span><span data-l="zh" lang="zh-CN">简历</span></a>
   </nav>
   <div class="lang" role="group" aria-label="Language">
     <button type="button" id="lang-en" data-setlang="en" aria-pressed="true">EN</button>
@@ -51,11 +56,11 @@
           <li>按 16 条玩家行为规律审查引导，改掉 6 处问题。</li>
         </ul>
         <p class="cta" id="cta" hidden>
-          <a class="btn" id="play-link" hidden><span data-l="en">Download the build (Windows)</span><span data-l="zh" lang="zh-CN">下载试玩包（Windows）</span></a>
+          <a class="btn" id="play-link" hidden><span data-l="en">Download the build <small>Windows · 470 MB</small></span><span data-l="zh" lang="zh-CN">下载试玩包 <small>Windows · 470 MB</small></span></a>
           <a class="btn alt" id="video-link" hidden><span data-l="en">Watch the full run</span><span data-l="zh" lang="zh-CN">看完整通关视频</span></a>
         </p>
   </div>
-  <figure class="p-media"><img src="img/b8.jpg" width="1280" height="720" alt="Gameplay from Lantern Court: the player crosses a pit along blue and red wall-run panels toward the goal." data-clip="media/hero.mp4">
+  <figure class="p-media"><img style="view-transition-name:shot-lantern" src="img/b8.jpg" width="1280" height="720" alt="Gameplay from Lantern Court: the player crosses a pit along blue and red wall-run panels toward the goal." data-clip="media/hero.mp4">
     <figcaption><span data-l="en">The final wall-run to the goal.</span><span data-l="zh" lang="zh-CN">通向终点的最后一段附墙路线。</span></figcaption></figure>
 </section>
   <dl class="facts">
@@ -293,7 +298,7 @@
         <span class="fix"><span data-l="en">An 8.7 m pole with a lantern behind the goal, visible from the north loop and the courtyard.</span><span data-l="zh" lang="zh-CN">终点后立一根 8.7 米高、挂灯笼的旗杆，从北环和庭院都能看到。</span></span></li>
       <li><span><span data-l="en">Prompts were debug prints and vanished in packaged builds.</span><span data-l="zh" lang="zh-CN">提示用的是调试打印，打包之后不显示。</span></span>
         <span class="rule"><span data-l="en">Build check</span><span data-l="zh" lang="zh-CN">打包验证</span></span>
-        <span class="fix"><span data-l="en">Moved to UI prompts and verified in a Shipping build.</span><span data-l="zh" lang="zh-CN">换成界面提示，并在 Shipping 包里验证。</span></span></li>
+        <span class="fix"><span data-l="en">Moved to UI prompts and verified in a packaged build.</span><span data-l="zh" lang="zh-CN">换成界面提示，并在打包版里验证。</span></span></li>
     </ul>
     <p class="kept" data-l="en"><strong>One flag I overruled.</strong> The audit marked the gold key as invisible from below. I kept it hidden. Finding it is the reward for exploring that side path.</p>
     <p class="kept" data-l="zh" lang="zh-CN"><strong>有一处我没有照改。</strong>审查指出金钥匙从下层看不到。我保留了这个设计：它是留给愿意探索那条岔路的玩家的奖励。</p>
@@ -336,8 +341,8 @@
     </div>
     <div class="stack">
       <h3 class="h3d"><span data-l="en">How I worked</span><span data-l="zh" lang="zh-CN">工作方式</span></h3>
-      <p data-l="en">This was a solo project. I designed the layout, the mechanics and the flow, and decided what to fix and what to keep. Every change was checked in play-in-editor or a Shipping build before it stayed.</p>
-      <p data-l="zh" lang="zh-CN">这是我一个人的项目。布局、机关和流程由我设计，改什么、留什么也由我决定。每项改动都先在编辑器试玩或 Shipping 包里验证过，才保留下来。</p>
+      <p data-l="en">This was a solo project. I designed the layout, the mechanics and the flow, and decided what to fix and what to keep. Every change was checked in an editor playtest or a packaged build before it stayed.</p>
+      <p data-l="zh" lang="zh-CN">这是我一个人的项目。布局、机关和流程由我设计，改什么、留什么也由我决定。每项改动都先在编辑器试玩或打包版里验证过，才保留下来。</p>
       <h3 class="h3d"><span data-l="en">What's next</span><span data-l="zh" lang="zh-CN">接下来</span></h3>
       <ul class="next" data-l="en">
         <li>A narrated walkthrough video.</li>
@@ -367,12 +372,13 @@
   <div>
     <p class="label acc"><span data-l="en">Open to level design roles</span><span data-l="zh" lang="zh-CN">正在找关卡设计方向的工作</span></p>
     <h2 id="contact-h" style="margin-top:10px"><span data-l="en">Let’s talk levels.</span><span data-l="zh" lang="zh-CN">聊聊关卡吧。</span></h2>
-    <a class="mail" href="mailto:liangweijun1103@gmail.com">liangweijun1103@gmail.com</a>
+    <p class="mail-row"><a class="mail" href="mailto:liangweijun1103@gmail.com">liangweijun1103@gmail.com</a>
+      <button type="button" class="copy" data-copy="liangweijun1103@gmail.com"><span class="idle"><span data-l="en">Copy</span><span data-l="zh" lang="zh-CN">复制</span></span><span class="done" aria-hidden="true"><span data-l="en">Copied ✓</span><span data-l="zh" lang="zh-CN">已复制 ✓</span></span></button></p>
   </div>
   <ul>
-    <li><a href="https://www.linkedin.com/in/weijun-liang-2b437a2a6/">LinkedIn</a></li>
-    <li><a href="https://github.com/WAYNE1-L">GitHub</a></li>
-    <li><a href="Wayne_Liang_Resume.pdf"><span data-l="en">Resume (PDF)</span><span data-l="zh" lang="zh-CN">简历（PDF）</span></a></li>
+    <li><a href="https://www.linkedin.com/in/weijun-liang-2b437a2a6/" target="_blank" rel="noopener">LinkedIn</a></li>
+    <li><a href="https://github.com/WAYNE1-L" target="_blank" rel="noopener">GitHub</a></li>
+    <li><a href="Wayne_Liang_Resume.pdf" target="_blank" rel="noopener"><span data-l="en">Resume (PDF)</span><span data-l="zh" lang="zh-CN">简历（PDF）</span></a></li>
   </ul>
 </section>
 </main>
@@ -381,7 +387,7 @@
   <span><span data-l="en">Salt Lake City, Utah</span><span data-l="zh" lang="zh-CN">美国犹他州盐湖城</span></span>
 </footer>
 </div>
-<dialog class="zoom" id="zoom" aria-label="Enlarged image"><img alt=""></dialog>
+<dialog class="zoom" id="zoom" aria-label="Enlarged image"><div class="zoom-stage"></div><p class="zoom-cap"></p><button type="button" class="zoom-x" aria-label="Close"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></dialog>
 <script>var PLAY_URL='https://github.com/WAYNE1-L/portfolio/releases/latest/download/Photo01_Win64.zip', VIDEO_URL='';</script>
 <script src="assets/site.js"></script>
 </body>
