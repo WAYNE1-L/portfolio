@@ -323,6 +323,20 @@ table.metrics{border-collapse:collapse;width:100%;background:var(--panel);border
 .stack{display:flex;flex-direction:column;gap:12px}
 .stack p{color:#C9D2DD}
 
+/* a small chart drawn on paper */
+.chart{display:block;width:100%;height:auto;background:var(--sheet);border-radius:3px}
+.chart text{font:500 13px var(--body);fill:var(--ink)}
+.chart .k{font-weight:600;font-size:14px}
+.chart .n{fill:var(--mute);font-variant-numeric:tabular-nums}
+.chart .b0{fill:var(--shade)} .chart .b1{fill:var(--lantern)} .chart .b2{fill:var(--r1)}
+.chart .zero{stroke:var(--shade);stroke-width:1;stroke-dasharray:3 3}
+.chart .ax path{stroke:var(--ink);stroke-width:1.2;fill:none}
+.audit b{color:var(--text);font-weight:600}
+h4.h3d{margin-top:0}
+ol.next{padding-left:1.4em}
+.rows .more{margin-top:10px;font-weight:600}
+.spec{margin:6px 0 0;padding:16px 18px;background:var(--sheet);color:var(--ink);border-radius:3px;font:500 13.5px/1.55 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;overflow-x:auto;white-space:pre}
+
 /* next project */
 .nextp{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:stretch;background:var(--panel);border:1px solid var(--line);border-radius:4px;overflow:hidden;color:var(--text);text-decoration:none;}
 .nextp:hover{border-color:#4A5A70}

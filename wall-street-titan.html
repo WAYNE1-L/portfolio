@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title data-zh="Wall Street Titan | Wayne Liang，关卡设计师">Wall Street Titan | Wayne Liang, Level Designer</title>
+<meta name="description" content="Wall Street Titan: a satirical 28-day trading sim made in GameMaker by a team of four. Systems design: the economy, the market model, news events and the black market.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Wall Street Titan | Wayne Liang, Level Designer">
+<meta property="og:description" content="Wall Street Titan: a satirical 28-day trading sim made in GameMaker by a team of four. Systems design: the economy, the market model, news events and the black market.">
+<meta property="og:url" content="https://wayne1-l.github.io/portfolio/wall-street-titan.html">
+<meta property="og:image" content="https://wayne1-l.github.io/portfolio/img/wst/main.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0E1116">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%230E1116'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23F0A030'/%3E%3C/svg%3E">
+<link rel="preload" href="fonts/barlow-condensed-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/barlow-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<script>/* pick the language before the first paint: #zh, then the last choice, then the browser's language */
+(function(){var r=document.documentElement,s=null;try{s=localStorage.getItem('lang')}catch(e){}
+if(location.hash==='#zh'||s==='zh'||(s===null&&/^zh/i.test(navigator.language||''))){r.setAttribute('data-lang','zh');r.lang='zh-CN'}})();</script>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="bar-outer"><div class="wrap">
+<header class="bar">
+  <a class="name" href="index.html"><b>Wayne Liang</b><span><span data-l="en">Level Designer</span><span data-l="zh" lang="zh-CN">关卡设计师</span></span></a>
+  <nav aria-label="Site">
+    <a href="index.html#work"><span data-l="en">Work</span><span data-l="zh" lang="zh-CN">作品</span></a>
+    <a href="index.html#experience"><span data-l="en">Experience</span><span data-l="zh" lang="zh-CN">经历</span></a>
+    <a href="index.html#about"><span data-l="en">About</span><span data-l="zh" lang="zh-CN">关于</span></a>
+    <a class="resume" href="Wayne_Liang_Resume.pdf" target="_blank" rel="noopener"><span data-l="en">Resume</span><span data-l="zh" lang="zh-CN">简历</span></a>
+  </nav>
+  <div class="lang" role="group" aria-label="Language">
+    <button type="button" id="lang-en" data-setlang="en" aria-pressed="true">EN</button>
+    <button type="button" id="lang-zh" data-setlang="zh" aria-pressed="false" lang="zh-CN">中文</button>
+  </div>
+</header>
+</div></div>
+<div class="wrap">
+<section class="p-hero" aria-labelledby="p-h">
+  <div>
+    <a class="crumb" href="index.html#more">← <span data-l="en">All work</span><span data-l="zh" lang="zh-CN">全部作品</span></a>
+    <h1 id="p-h">Wall Street Titan</h1>
+    <p class="kind"><span data-l="en">Satirical trading sim, single-player · team of four · my part: systems design</span><span data-l="zh" lang="zh-CN">讽刺题材的交易模拟，单人游戏 · 四人团队 · 我负责系统设计</span></p>
+    <p class="intent" data-l="en">You start at the bottom of Wall Street with $3,720 and 28 days. Living costs rise every night, some of the news is a scam, and trading is the only way to stay alive. I designed the economy and the market that create that pressure.</p>
+<p class="intent" data-l="zh" lang="zh-CN">你带着 3,720 美元，从华尔街的最底层开始，一共 28 天。生活成本每晚都在涨，新闻里混着骗局，只有做交易才能活下去。这份压力背后的经济和市场，由我设计。</p>
+    <p class="label did-h"><span data-l="en">What I did</span><span data-l="zh" lang="zh-CN">我负责的部分</span></p>
+    <ul class="did" data-l="en">
+  <li>Designed the trading system and wrote the specs the engineer built from: wallet, inventory, buying, selling and the daily price update.</li>
+  <li>Built the market: 12 goods in four sectors and 35 news events, tagged so each headline moves the right goods.</li>
+  <li>Tuned the economy in GameMaker through the semester: rising daily costs, prices that pull back toward their base, a black market and three endings.</li>
+</ul>
+<ul class="did" data-l="zh" lang="zh-CN">
+  <li>设计交易系统，并写成规格说明交给程序实现：钱包、库存、买入、卖出和每日价格刷新。</li>
+  <li>搭建市场：四个板块共 12 种商品、35 条新闻事件，用标签让每条新闻只影响对应的商品。</li>
+  <li>整个学期在 GameMaker 里调数值：逐日上涨的生活成本、会向基础价回归的价格、黑市和三个结局。</li>
+</ul>
+  </div>
+  <figure class="p-media"><video controls playsinline preload="metadata" poster="img/wst/poster.jpg" src="media/wst.mp4" aria-label="The in-game tutorial for Wall Street Titan, one minute long."></video>
+    <figcaption><span data-l="en">The in-game tutorial, one minute.</span><span data-l="zh" lang="zh-CN">游戏内的教学视频，一分钟。</span></figcaption></figure>
+</section>
+  <dl class="facts">
+    <div><dt><span data-l="en">Role</span><span data-l="zh" lang="zh-CN">角色</span></dt><dd><span data-l="en">Systems design</span><span data-l="zh" lang="zh-CN">系统设计</span></dd></div>
+    <div><dt><span data-l="en">Team</span><span data-l="zh" lang="zh-CN">团队</span></dt><dd><span data-l="en">Four: artist, producer, engineer, and me</span><span data-l="zh" lang="zh-CN">四人：美术、制作人、程序和我</span></dd></div>
+    <div><dt><span data-l="en">Engine</span><span data-l="zh" lang="zh-CN">引擎</span></dt><dd><span data-l="en">GameMaker (GML)</span><span data-l="zh" lang="zh-CN">GameMaker（GML）</span></dd></div>
+    <div><dt><span data-l="en">Duration</span><span data-l="zh" lang="zh-CN">周期</span></dt><dd><span data-l="en">February to April 2026</span><span data-l="zh" lang="zh-CN">2026 年 2 月至 4 月</span></dd></div>
+    <div><dt><span data-l="en">Made for</span><span data-l="zh" lang="zh-CN">项目来源</span></dt><dd><span data-l="en">Course final project, Games program, University of Utah</span><span data-l="zh" lang="zh-CN">犹他大学游戏专业课程期末作品</span></dd></div>
+    <div><dt><span data-l="en">Result</span><span data-l="zh" lang="zh-CN">成绩</span></dt><dd><span data-l="en">59 out of 60, selected for the program showcase</span><span data-l="zh" lang="zh-CN">59/60，入选学院作品展</span></dd></div>
+    <div><dt><span data-l="en">Status</span><span data-l="zh" lang="zh-CN">状态</span></dt><dd><span data-l="en">Finished course build, playable from day 1 to day 28</span><span data-l="zh" lang="zh-CN">课程完成版，可以从第 1 天玩到第 28 天</span></dd></div>
+    <div><dt><span data-l="en">Contents</span><span data-l="zh" lang="zh-CN">内容</span></dt><dd><span data-l="en">12 goods, 35 news events, 5 black-market contracts, 3 endings</span><span data-l="zh" lang="zh-CN">12 种商品、35 条新闻事件、5 份黑市合约、3 个结局</span></dd></div>
+  </dl>
+</div>
+<div class="toc-outer"><div class="wrap"><nav class="toc" aria-label="Sections">
+    <a href="#w-goals" data-go="w-goals"><span data-l="en">Goals</span><span data-l="zh" lang="zh-CN">设计目标</span></a>
+    <a href="#w-loop" data-go="w-loop"><span data-l="en">Daily loop</span><span data-l="zh" lang="zh-CN">每日循环</span></a>
+    <a href="#w-market" data-go="w-market"><span data-l="en">Market</span><span data-l="zh" lang="zh-CN">市场</span></a>
+    <a href="#w-prices" data-go="w-prices"><span data-l="en">Prices</span><span data-l="zh" lang="zh-CN">价格</span></a>
+    <a href="#w-climb" data-go="w-climb"><span data-l="en">The climb</span><span data-l="zh" lang="zh-CN">向上爬</span></a>
+    <a href="#w-iter" data-go="w-iter"><span data-l="en">Iteration</span><span data-l="zh" lang="zh-CN">迭代</span></a>
+</nav></div></div>
+<div class="wrap"><main>
+<section class="block sub-wrap" style="border-top:0">
+  <div class="sub" id="w-goals">
+    <h3><span data-l="en">Design goals</span><span data-l="zh" lang="zh-CN">设计目标</span></h3>
+    <ol class="goals">
+      <li><h4><span data-l="en">Standing still costs money</span><span data-l="zh" lang="zh-CN">不动也在亏钱</span></h4>
+        <p data-l="en">The daily cost starts at $30 and grows every night. Holding cash is a slow loss, so every day asks for a decision.</p>
+<p data-l="zh" lang="zh-CN">每天的生活成本从 30 美元起步，每晚都涨。攥着现金就是慢慢亏，所以每一天都得做决定。</p></li>
+      <li><h4><span data-l="en">News you can read, and doubt</span><span data-l="zh" lang="zh-CN">新闻能读懂，也该怀疑</span></h4>
+        <p data-l="en">Tomorrow’s headlines are on screen today. Some hit once, some last for days, and some are rumors planted to trap you.</p>
+<p data-l="zh" lang="zh-CN">明天的新闻今天就能看到。有的只影响一天，有的持续好几天，还有的是专门骗人接盘的谣言。</p></li>
+      <li><h4><span data-l="en">The climb is the satire</span><span data-l="zh" lang="zh-CN">往上爬，就是讽刺本身</span></h4>
+        <p data-l="en">The richer you get, the more rules you are allowed to bend: a black market at $8,000 in total assets, a credit line at $15,000. The top ending calls you “the exact vampire you once hated.”</p>
+<p data-l="zh" lang="zh-CN">钱越多，能钻的空子越多：总资产到 8,000 美元开放黑市，到 15,000 美元给信用额度。最高一档的结局说，你变成了“自己曾经最讨厌的那种吸血鬼”。</p></li>
+    </ol>
+  </div>
+
+  <div class="sub" id="w-loop">
+    <h3><span data-l="en">One day, three steps</span><span data-l="zh" lang="zh-CN">一天三步</span></h3>
+    <p class="intro" data-l="en">Read tomorrow’s news, trade, then press Next Day. The whole game runs on one screen, and a run takes 28 presses of that button.</p>
+<p class="intro" data-l="zh" lang="zh-CN">看明天的新闻，交易，然后按“下一天”。整个游戏只有一个界面，一局就是按 28 次这个按钮。</p>
+    <div class="figs">
+      <figure><img src="img/wst/main.jpg" width="1280" height="600" loading="lazy" alt="The trading screen on day two: twelve goods in a grid, with cash, holdings and daily cost at the top right and three headlines for tomorrow below.">
+  <figcaption><span data-l="en">Day 2. Twelve goods on the left. On the right: cash, holdings, the daily cost, and three headlines that apply tomorrow.</span><span data-l="zh" lang="zh-CN">第 2 天。左边是 12 种商品；右边是现金、持仓市值、每日成本，以及明天生效的三条新闻。</span></figcaption></figure>
+      <figure><img src="img/wst/trade.jpg" width="1280" height="600" loading="lazy" alt="The item details window for a good, with four buy buttons and four sell buttons marked 25, 50, 75 percent and max.">
+  <figcaption><span data-l="en">Buying and selling take one press: 25%, 50%, 75% or everything.</span><span data-l="zh" lang="zh-CN">买卖只要按一下：25%、50%、75% 或全部。</span></figcaption></figure>
+    </div>
+    <div class="two" style="margin-top:28px">
+      <div>
+        <h4 class="h3d"><span data-l="en">The numbers</span><span data-l="zh" lang="zh-CN">关键数值</span></h4>
+        <table class="metrics">
+          <tr><th scope="row"><span data-l="en">Starting cash</span><span data-l="zh" lang="zh-CN">初始现金</span></th><td>$3,720</td></tr>
+          <tr><th scope="row"><span data-l="en">Daily cost</span><span data-l="zh" lang="zh-CN">每日成本</span></th><td><span data-l="en">$30 on day 1, then $10 more each night ($5 once you hold the credit line)</span><span data-l="zh" lang="zh-CN">第 1 天 30 美元，之后每晚加 10 美元（拿到信用额度后每晚加 5 美元）</span></td></tr>
+          <tr><th scope="row"><span data-l="en">News per day</span><span data-l="zh" lang="zh-CN">每天的新闻</span></th><td><span data-l="en">2 to 5 headlines, shown a day ahead</span><span data-l="zh" lang="zh-CN">2 到 5 条，提前一天显示</span></td></tr>
+          <tr><th scope="row"><span data-l="en">Black market opens</span><span data-l="zh" lang="zh-CN">黑市开放</span></th><td><span data-l="en">At $8,000 in total assets</span><span data-l="zh" lang="zh-CN">总资产达到 8,000 美元</span></td></tr>
+          <tr><th scope="row"><span data-l="en">Credit line</span><span data-l="zh" lang="zh-CN">信用额度</span></th><td><span data-l="en">At $15,000 in total assets, cash may go $5,000 below zero</span><span data-l="zh" lang="zh-CN">总资产达到 15,000 美元后，现金可以透支 5,000 美元</span></td></tr>
+          <tr><th scope="row"><span data-l="en">Length of a run</span><span data-l="zh" lang="zh-CN">一局长度</span></th><td><span data-l="en">28 days</span><span data-l="zh" lang="zh-CN">28 天</span></td></tr>
+        </table>
+      </div>
+      <div class="stack">
+        <h4 class="h3d"><span data-l="en">What Next Day does</span><span data-l="zh" lang="zh-CN">按下“下一天”之后</span></h4>
+        <ol class="next" data-l="en">
+  <li>The daily cost comes out of your cash, then goes up for tomorrow.</li>
+  <li>Every price moves: its own daily swing, plus the news that was shown the day before.</li>
+  <li>If cash is below zero, your goods are sold off to cover it, the most expensive first. With the credit line, this starts at $5,000 below zero.</li>
+  <li>Still short with nothing left to sell: the run ends.</li>
+  <li>After day 28, your total assets decide the ending.</li>
+</ol>
+<ol class="next" data-l="zh" lang="zh-CN">
+  <li>先从现金里扣掉当天的成本，明天的成本随即上调。</li>
+  <li>所有价格刷新：商品自身的日常波动，加上前一天预告的新闻影响。</li>
+  <li>现金低于零时，系统从最贵的商品开始强制卖出抵债；有信用额度的话，透支超过 5,000 美元才开始。</li>
+  <li>卖光了还是不够，这一局就结束。</li>
+  <li>第 28 天结束后，按总资产决定结局。</li>
+</ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub" id="w-market">
+    <h3><span data-l="en">Four sectors, twelve goods</span><span data-l="zh" lang="zh-CN">四个板块，十二种商品</span></h3>
+    <p class="intro" data-l="en">Each sector behaves differently, so where you put your money is a choice about how much risk to carry. Every good is a joke about something real.</p>
+<p class="intro" data-l="zh" lang="zh-CN">每个板块的脾气不同，钱放在哪里，就是在选承担多大风险。每种商品都在影射现实里的某样东西。</p>
+    <ul class="audit">
+  <li class="head" aria-hidden="true"><span><span data-l="en">Sector and goods</span><span data-l="zh" lang="zh-CN">板块与商品</span></span><span><span data-l="en">Normal swing</span><span data-l="zh" lang="zh-CN">日常波动</span></span><span><span data-l="en">Its job in the market</span><span data-l="zh" lang="zh-CN">在市场里的作用</span></span></li>
+  <li><span><span data-l="en"><b>Wall Street and big industry.</b> Quantum AI Chip, Diet Shot, Defense Contract</span><span data-l="zh" lang="zh-CN"><b>华尔街与大企业。</b>量子 AI 芯片、减肥神药、国防订单</span></span>
+    <span class="rule"><span data-l="en">Up to ±5% a day</span><span data-l="zh" lang="zh-CN">每天最多 ±5%</span></span>
+    <span class="fix"><span data-l="en">Steady. Where cautious money sits. Moves on policy, tech and war headlines.</span><span data-l="zh" lang="zh-CN">稳。谨慎的钱放在这里，受政策、科技和战争新闻影响。</span></span></li>
+  <li><span><span data-l="en"><b>Crypto casino.</b> Doge Rocket Coin, Bored Monkey NFT, Rug Pull Token</span><span data-l="zh" lang="zh-CN"><b>加密赌场。</b>狗头火箭币、无聊猴 NFT、跑路代币</span></span>
+    <span class="rule"><span data-l="en">Up to ±25% a day</span><span data-l="zh" lang="zh-CN">每天最多 ±25%</span></span>
+    <span class="fix"><span data-l="en">Wild. It can make a run or end one. The Rug Pull Token is the only good that can fall to zero.</span><span data-l="zh" lang="zh-CN">疯。能让你翻身，也能让你出局。跑路代币是唯一会归零的商品。</span></span></li>
+  <li><span><span data-l="en"><b>Trends.</b> Viral Indie Game, VR Headset, Cancel Insurance</span><span data-l="zh" lang="zh-CN"><b>潮流。</b>爆款独立游戏、VR 头显、取消文化保险</span></span>
+    <span class="rule"><span data-l="en">Up to ±10% a day</span><span data-l="zh" lang="zh-CN">每天最多 ±10%</span></span>
+    <span class="fix"><span data-l="en">Driven by hype. Quiet until a headline lands, then it moves fast.</span><span data-l="zh" lang="zh-CN">靠热度驱动。平时安静，新闻一来就动得很快。</span></span></li>
+  <li><span><span data-l="en"><b>Doomsday.</b> Gold Bar, 5.56mm Ammo, MRE Rations</span><span data-l="zh" lang="zh-CN"><b>末日储备。</b>金条、5.56 毫米子弹、军用口粮</span></span>
+    <span class="rule"><span data-l="en">Up to ±5% a day</span><span data-l="zh" lang="zh-CN">每天最多 ±5%</span></span>
+    <span class="fix"><span data-l="en">The hedge. Barely moves on a normal day, climbs on war and panic, and falls when peace breaks out.</span><span data-l="zh" lang="zh-CN">避险。平时几乎不动，战争和恐慌时上涨，世界和平时下跌。</span></span></li>
+</ul>
+    <div class="two" style="margin-top:28px">
+      <div class="stack">
+        <h4 class="h3d"><span data-l="en">Three kinds of news</span><span data-l="zh" lang="zh-CN">三种新闻</span></h4>
+        <p data-l="en">Each day draws 2 to 5 headlines from a pool of 35 and shows them a day early.</p>
+<p data-l="zh" lang="zh-CN">每天从 35 条里抽 2 到 5 条，提前一天显示。</p>
+        <ul class="next" data-l="en">
+  <li><b>Sudden</b> (10). Hits for one day, then it’s over.</li>
+  <li><b>Ongoing</b> (10). Keeps pushing the same goods for several days.</li>
+  <li><b>Rumor</b> (15). Promises a big rise, but each has a set chance of being a scam. If it is, the price goes the other way.</li>
+  <li>On top of these, there is a small chance each night of a <b>black swan</b>: one extra event with no warning.</li>
+</ul>
+<ul class="next" data-l="zh" lang="zh-CN">
+  <li><b>突发</b>（10 条）。只影响一天。</li>
+  <li><b>持续</b>（10 条）。连续几天推动同一批商品。</li>
+  <li><b>谣言</b>（15 条）。许诺大涨，但每条都有固定的概率是骗局；是骗局的话，价格反着走。</li>
+  <li>此外，每晚有很小的概率出现<b>黑天鹅</b>：一条没有预告的额外事件。</li>
+</ul>
+      </div>
+      <div class="stack">
+        <h4 class="h3d"><span data-l="en">Tags do the matching</span><span data-l="zh" lang="zh-CN">用标签配对</span></h4>
+        <p data-l="en">Every good carries two tags, such as Tech and Bubble, or Crypto and Scam. Every headline names the tags it hits. A new good or event only needs the right tags to join the system.</p>
+<p data-l="zh" lang="zh-CN">每种商品带两个标签，比如“科技”和“泡沫”，或“加密”和“骗局”。每条新闻写明它影响哪些标签。以后加新商品或新事件，只要标签对上就能接进系统。</p>
+<ul class="next" data-l="en">
+  <li><b>“Conflict Escalates in the Middle East.”</b> Hits War, Gold, Safe and Preppers for four days, +10% to +20% a day. Defense Contract, Gold Bar and 5.56mm Ammo climb.</li>
+  <li><b>“Historic Moment: Global Peace Treaty Signed!”</b> Hits Safe, War and Preppers for one day, −20% to −10%. The same three goods fall.</li>
+</ul>
+<ul class="next" data-l="zh" lang="zh-CN">
+  <li><b>“中东冲突升级。”</b>连续四天影响“战争”“黄金”“避险”“末日储备”标签，每天 +10% 到 +20%。国防订单、金条和 5.56 毫米子弹上涨。</li>
+  <li><b>“历史性时刻：全球和平条约签署！”</b>影响“避险”“战争”“末日储备”标签一天，−20% 到 −10%。同样这三种商品下跌。</li>
+</ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub" id="w-prices">
+    <h3><span data-l="en">How a price moves</span><span data-l="zh" lang="zh-CN">价格怎么动</span></h3>
+    <p class="intro" data-l="en">Every good has its own daily range. A headline adds a second range on top. The game adds the two together and rolls once inside the result. Strong news settles the direction, and the size stays a gamble.</p>
+<p class="intro" data-l="zh" lang="zh-CN">每种商品有自己的日常波动区间，新闻再叠加一个区间。游戏把两个区间相加，在结果里随机取一次。够强的新闻能定下方向，涨跌多少仍然要赌。</p>
+    <div class="two" style="margin-top:20px">
+      <figure><svg class="chart" viewBox="0 0 640 262" role="img" aria-label="A chip that normally moves between minus 5 and plus 5 percent a day, plus a headline worth plus 10 to plus 20, gives a range of plus 5 to plus 25 percent for tomorrow."><path class="zero" d="M190 14V222"/><text class="k" x="60" y="34" data-l="en">Quantum AI Chip on a normal day</text><text class="k" x="60" y="34" data-l="zh" lang="zh-CN">量子 AI 芯片，平常的一天</text><rect class="b0" x="125" y="42" width="130" height="22" rx="2"/><text class="n" x="117" y="58" text-anchor="end">-5%</text><text class="n" x="263" y="58">+5%</text><text class="k" x="60" y="100" data-l="en">Headline: “AI passes a new test”</text><text class="k" x="60" y="100" data-l="zh" lang="zh-CN">新闻：“AI 通过新测试”</text><rect class="b1" x="320" y="108" width="130" height="22" rx="2"/><text class="n" x="312" y="124" text-anchor="end">+10%</text><text class="n" x="458" y="124">+20%</text><text class="k" x="60" y="166" data-l="en">Tomorrow: the two ranges added, then one roll inside</text><text class="k" x="60" y="166" data-l="zh" lang="zh-CN">明天：两个区间相加，再在里面随机一次</text><rect class="b2" x="255" y="174" width="260" height="22" rx="2"/><text class="n" x="247" y="190" text-anchor="end">+5%</text><text class="n" x="523" y="190">+25%</text><g class="ax"><path d="M60 222H580"/><path d="M60 222v8"/><text class="n" x="60" y="248" text-anchor="middle">-10%</text><path d="M190 222v8"/><text class="n" x="190" y="248" text-anchor="middle">0</text><path d="M320 222v8"/><text class="n" x="320" y="248" text-anchor="middle">+10%</text><path d="M450 222v8"/><text class="n" x="450" y="248" text-anchor="middle">+20%</text><path d="M580 222v8"/><text class="n" x="580" y="248" text-anchor="middle">+30%</text></g></svg>
+        <figcaption><span data-l="en">A −5% to +5% good plus a +10% to +20% headline moves between +5% and +25% tomorrow. Two numbers per headline are all I need to tune it.</span><span data-l="zh" lang="zh-CN">日常波动 −5% 到 +5% 的商品，遇上 +10% 到 +20% 的新闻，明天的涨幅落在 +5% 到 +25% 之间。每条新闻只要调两个数。</span></figcaption></figure>
+      <div class="stack">
+        <h4 class="h3d"><span data-l="en">Rules that keep prices in bounds</span><span data-l="zh" lang="zh-CN">防止价格失控的规则</span></h4>
+        <ul class="next" data-l="en">
+  <li><b>Trends.</b> Without news, a good drifts one way for 2 to 4 days, then picks a new direction.</li>
+  <li><b>Pull to base.</b> More than 30% away from its base price, a good is pulled back, harder the further it has gone.</li>
+  <li><b>Rebound.</b> A crash of 38% or more in one day sets up a bounce the next day.</li>
+  <li><b>Ceiling.</b> No price passes 5 times its base, or 15 times for crypto. A good that touches the ceiling turns down.</li>
+  <li><b>Soft floor.</b> Below 15% of its base price, each drop is cushioned. Bad news can still push a price down to 5% of base. The one exception is the Rug Pull Token, which can hit zero.</li>
+</ul>
+<ul class="next" data-l="zh" lang="zh-CN">
+  <li><b>趋势。</b>没有新闻时，商品朝一个方向走 2 到 4 天，再重新选方向。</li>
+  <li><b>向基础价回归。</b>偏离基础价超过 30% 后会被往回拉，偏得越远拉得越狠。</li>
+  <li><b>反弹。</b>单日暴跌 38% 以上，第二天会有一次反弹。</li>
+  <li><b>价格上限。</b>任何价格不超过基础价的 5 倍，加密类是 15 倍；碰到上限就掉头。</li>
+  <li><b>软下限。</b>跌破基础价的 15% 后，跌幅会被缓冲；但坏消息仍能把价格压到基础价的 5%。唯一的例外是跑路代币，它可以直接归零。</li>
+</ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub" id="w-climb">
+    <h3><span data-l="en">The climb</span><span data-l="zh" lang="zh-CN">向上爬</span></h3>
+    <p class="intro" data-l="en">Progress in this game means getting access to worse behavior. Each step up changes what the player is allowed to do to the market.</p>
+<p class="intro" data-l="zh" lang="zh-CN">在这个游戏里，进步的意思是能做更坏的事。每上一级，玩家能对市场动的手脚就多一些。</p>
+    <ul class="audit">
+  <li class="head" aria-hidden="true"><span><span data-l="en">Black-market contract</span><span data-l="zh" lang="zh-CN">黑市合约</span></span><span><span data-l="en">Kind</span><span data-l="zh" lang="zh-CN">类型</span></span><span><span data-l="en">What it does</span><span data-l="zh" lang="zh-CN">效果</span></span></li>
+  <li><span><span data-l="en"><b>Botnet Targeter.</b> Fee: 25% of your cash, at least $1,500</span><span data-l="zh" lang="zh-CN"><b>僵尸网络。</b>费用：现金的 25%，最低 1,500 美元</span></span>
+    <span class="rule"><span data-l="en">Manipulation</span><span data-l="zh" lang="zh-CN">操纵</span></span>
+    <span class="fix"><span data-l="en">Crash one good by about 70% tomorrow, so you can buy it cheap. The day after, it rebounds to more than double the crashed price.</span><span data-l="zh" lang="zh-CN">让一种商品明天暴跌约 70%，方便你抄底；后天它会涨回暴跌价的两倍以上。</span></span></li>
+  <li><span><span data-l="en"><b>Blood Money.</b> No fee</span><span data-l="zh" lang="zh-CN"><b>血债。</b>不收费</span></span>
+    <span class="rule"><span data-l="en">Debt</span><span data-l="zh" lang="zh-CN">借债</span></span>
+    <span class="fix"><span data-l="en">$5,000 now for a $7,500 debt. If your total assets ever fall below the debt, the run ends.</span><span data-l="zh" lang="zh-CN">马上拿到 5,000 美元，背上 7,500 美元的债。总资产一旦低于这笔债，这一局就结束。</span></span></li>
+  <li><span><span data-l="en"><b>Mixer Escrow.</b> $300</span><span data-l="zh" lang="zh-CN"><b>混币托管。</b>300 美元</span></span>
+    <span class="rule"><span data-l="en">Gamble</span><span data-l="zh" lang="zh-CN">押注</span></span>
+    <span class="fix"><span data-l="en">Sell your best holding for 160% of its price. The money is locked for two days, with a 30% chance it never comes back.</span><span data-l="zh" lang="zh-CN">把最值钱的持仓按 160% 的价格卖出。钱锁两天，有 30% 的概率拿不回来。</span></span></li>
+  <li><span><span data-l="en"><b>Insider Tip.</b> $800</span><span data-l="zh" lang="zh-CN"><b>内幕消息。</b>800 美元</span></span>
+    <span class="rule"><span data-l="en">Information</span><span data-l="zh" lang="zh-CN">情报</span></span>
+    <span class="fix"><span data-l="en">Shows whether one of tomorrow’s rumors is real.</span><span data-l="zh" lang="zh-CN">告诉你明天的一条谣言是真是假。</span></span></li>
+  <li><span><span data-l="en"><b>Exit Liquidity.</b> $2,000</span><span data-l="zh" lang="zh-CN"><b>出货通道。</b>2,000 美元</span></span>
+    <span class="rule"><span data-l="en">Escape</span><span data-l="zh" lang="zh-CN">脱身</span></span>
+    <span class="fix"><span data-l="en">Sell every holding tagged Crypto or Meme at 130% of the current price.</span><span data-l="zh" lang="zh-CN">把手上所有带“加密”或“迷因”标签的持仓，按现价的 130% 卖出。</span></span></li>
+</ul>
+    <p class="kept" data-l="en"><strong>The black card.</strong> At $15,000 in total assets the game hands you a credit line: cash can go $5,000 below zero before anything is sold off, and the daily cost grows half as fast. It also takes 1.5% of your cash every night, so holding money still costs you.</p>
+<p class="kept" data-l="zh" lang="zh-CN"><strong>黑卡。</strong>总资产到 15,000 美元，游戏给你一条信用额度：现金可以透支 5,000 美元才会被强制卖出，每日成本的涨速也减半。但它每晚还会抽走现金的 1.5%，所以攥着钱照样在亏。</p>
+    <div class="figs">
+      <figure><img src="img/wst/darkweb.jpg" width="1280" height="600" loading="lazy" alt="The trading screen with a phone at the lower right showing a dark market app with no offer today.">
+  <figcaption><span data-l="en">The phone at the edge of the desk is the black market. It unlocks at $8,000 in total assets, and it does not have an offer every day.</span><span data-l="zh" lang="zh-CN">桌边的手机就是黑市，总资产到 8,000 美元时解锁。它不是每天都有合约可签。</span></figcaption></figure>
+      <div class="stack">
+        <h4 class="h3d"><span data-l="en">Three endings</span><span data-l="zh" lang="zh-CN">三个结局</span></h4>
+        <table class="metrics">
+          <tr><th scope="row"><span data-l="en">Under $20,000</span><span data-l="zh" lang="zh-CN">不到 20,000 美元</span></th><td><span data-l="en">Debt Slave. You survived, and the tax office takes the rest.</span><span data-l="zh" lang="zh-CN">债务奴隶。你活下来了，剩下的归税务局。</span></td></tr>
+          <tr><th scope="row"><span data-l="en">$20,000 to $49,999</span><span data-l="zh" lang="zh-CN">20,000 到 49,999 美元</span></th><td><span data-l="en">Offshore Account. Enough to disappear to a tax haven.</span><span data-l="zh" lang="zh-CN">离岸账户。够你躲去避税天堂。</span></td></tr>
+          <tr><th scope="row"><span data-l="en">$50,000 or more</span><span data-l="zh" lang="zh-CN">50,000 美元以上</span></th><td><span data-l="en">Capital Leviathan. You learned to move the market yourself, “becoming the exact vampire you once hated.”</span><span data-l="zh" lang="zh-CN">资本巨鳄。你学会了自己操纵市场，“变成了自己曾经最讨厌的那种吸血鬼”。</span></td></tr>
+        </table>
+        <p data-l="en">A run can also end early: out of cash with nothing to sell, or total assets below a Blood Money debt.</p>
+<p data-l="zh" lang="zh-CN">一局也可能提前结束：现金为负又没东西可卖，或者总资产低于“血债”。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub" id="w-iter">
+    <h3><span data-l="en">Iteration</span><span data-l="zh" lang="zh-CN">迭代</span></h3>
+    <p class="intro" data-l="en">Five changes from the semester, each from a problem that showed up once the game was playable.</p>
+<p class="intro" data-l="zh" lang="zh-CN">学期里的五处改动，每一处都来自游戏能玩之后才暴露的问题。</p>
+    <ul class="audit">
+  <li class="head" aria-hidden="true"><span><span data-l="en">Problem</span><span data-l="zh" lang="zh-CN">问题</span></span><span><span data-l="en">Rule</span><span data-l="zh" lang="zh-CN">对应原则</span></span><span><span data-l="en">Change</span><span data-l="zh" lang="zh-CN">改法</span></span></li>
+  <li><span><span data-l="en">In my first spec, a headline changed the <em>chance</em> of a rise, from 50% to 80%. Players couldn’t tell how big the move would be, and good news could still lose them money.</span><span data-l="zh" lang="zh-CN">第一版规格里，新闻改变的是上涨的<em>概率</em>，比如从 50% 提到 80%。玩家看不出会涨多少，好消息也可能让他们亏钱。</span></span>
+    <span class="rule"><span data-l="en">Readable news</span><span data-l="zh" lang="zh-CN">新闻要读得懂</span></span>
+    <span class="fix"><span data-l="en">Ranges instead of chances, as in the chart above. Strong news now settles the direction, and only the size is left to luck.</span><span data-l="zh" lang="zh-CN">把概率换成上面那张图里的区间叠加。够强的新闻现在能定下方向，只有涨跌多少还看运气。</span></span></li>
+  <li><span><span data-l="en">Bills were fixed: $100 a day, $1,000 rent each week, a $5,000 loan due on day 28. A player could sit on cash for two weeks, and the run came down to one final check.</span><span data-l="zh" lang="zh-CN">账单是固定的：每天 100 美元、每周房租 1,000 美元、第 28 天还 5,000 美元贷款。玩家可以攥着现金撑两周，一整局的胜负只看最后一次结算。</span></span>
+    <span class="rule"><span data-l="en">Pressure every day</span><span data-l="zh" lang="zh-CN">每天都有压力</span></span>
+    <span class="fix"><span data-l="en">One daily cost that starts at $30 and rises every night. The ending is read from total assets, in three tiers.</span><span data-l="zh" lang="zh-CN">只留一项每日成本，从 30 美元起步，每晚上涨。结局改成按总资产分三档。</span></span></li>
+  <li><span><span data-l="en">With trends and stacked news, a price could run far from where it started and never come back.</span><span data-l="zh" lang="zh-CN">趋势加上叠加的新闻，价格可以一路跑偏，再也回不来。</span></span>
+    <span class="rule"><span data-l="en">Prices come back</span><span data-l="zh" lang="zh-CN">价格要能回来</span></span>
+    <span class="fix"><span data-l="en">Added the pull toward base past 30%, and a ceiling on how high a price can climb.</span><span data-l="zh" lang="zh-CN">加上偏离 30% 后的回归拉力，再给价格设一个上限。</span></span></li>
+  <li><span><span data-l="en">A hard floor at 15% of base made the bottom safe. Bad news stopped mattering once a good reached it.</span><span data-l="zh" lang="zh-CN">基础价 15% 处的硬下限让底部变得安全：商品跌到这里，坏消息就不起作用了。</span></span>
+    <span class="rule"><span data-l="en">No safe bottom</span><span data-l="zh" lang="zh-CN">底部不能是安全区</span></span>
+    <span class="fix"><span data-l="en">Replaced it with the soft floor, so bad news still hurts at the bottom.</span><span data-l="zh" lang="zh-CN">换成软下限，底部照样怕坏消息。</span></span></li>
+  <li><span><span data-l="en">In team playtests, a black swan (a random event with no warning) hit three days in a row.</span><span data-l="zh" lang="zh-CN">团队试玩时，“黑天鹅”（没有预告的随机事件）连续三天触发。</span></span>
+    <span class="rule"><span data-l="en">Rare means rare</span><span data-l="zh" lang="zh-CN">罕见就该真的罕见</span></span>
+    <span class="fix"><span data-l="en">A teammate cut the chance to about 4% a night. I changed it to add to the day’s news, where it used to replace headlines the player had already read.</span><span data-l="zh" lang="zh-CN">队友把概率降到每晚约 4%。我把它改成在当天的新闻之外追加；原来它会顶掉玩家已经读过的新闻。</span></span></li>
+</ul>
+    <p class="kept" data-l="en"><strong>One critique I agree with.</strong> The project scored 59 out of 60. The point it lost was on theme: the mechanics could say more about manipulation, power and class. I agree, and it is where I would take the design next.</p>
+<p class="kept" data-l="zh" lang="zh-CN"><strong>一条我认同的批评。</strong>这个项目得了 59/60，丢的那一分在主题上：机制本身还可以更多地讲操纵、权力和阶层。我同意，这也是我接下来想继续做的方向。</p>
+    <div class="stack" style="margin-top:28px">
+      <h4 class="h3d"><span data-l="en">How I worked</span><span data-l="zh" lang="zh-CN">工作方式</span></h4>
+      <p data-l="en">We were four: an artist, a producer, an engineer, and me on systems. I started with written specs inside the project (data structures, formulas, and the price update step by step) so the engineer could build without guessing. Once the game ran, I tuned values and added rules directly in GameMaker, and we tested each change by playing full runs.</p>
+<p data-l="zh" lang="zh-CN">我们一共四个人：美术、制作人、程序，我负责系统。一开始我把规格写进工程里（数据结构、公式、价格刷新的每一步），让程序不用猜就能实现。游戏跑起来之后，我直接在 GameMaker 里调数值、加规则，每次改动都靠完整地玩一局来验证。</p>
+      <figure><pre class="spec">STEP 1: GET BASE RANGE
+   - Retrieve the item's static volatility range.
+   - Example: Stock A = [-5, 5] (Can drop 5% or rise 5%)
+
+STEP 2: APPLY EVENT MODIFIERS
+   - Loop through all ACTIVE events.
+   - If Event_Tag matches Item_Tag -&gt; Add Event Range to Base Range.
+     Final_Min = Base_Min + Event_Min_Mod
+     Final_Max = Base_Max + Event_Max_Mod
+   - Example: Base [-5, 5] + Event [+10, +20] = Final Range [+5, +25]
+
+STEP 3: ROLL THE DICE
+   - Pick a random percentage from [Final_Min, Final_Max].
+
+STEP 4: UPDATE PRICE
+   - New_Price = Old_Price * (1 + Percent_Change / 100)</pre>
+        <figcaption><span data-l="en">From the trading-logic spec I wrote for the engineer in February 2026: the daily price update.</span><span data-l="zh" lang="zh-CN">摘自我 2026 年 2 月写给程序的交易逻辑规格：每日价格刷新。</span></figcaption></figure>
+    </div>
+  </div>
+</section>
+<section class="block" aria-labelledby="next-h">
+  <p class="label" id="next-h" style="margin-bottom:14px"><span data-l="en">Level design work</span><span data-l="zh" lang="zh-CN">关卡设计作品</span></p>
+  <a class="nextp" href="exposure.html">
+    <div>
+      <h3><span data-l="en">Exposure</span><span data-l="zh" lang="zh-CN">曝光</span></h3>
+      <p class="soft"><span data-l="en">First-person photo puzzle level, single-player</span><span data-l="zh" lang="zh-CN">第一人称拍照解谜关卡，单人</span></p>
+      <span class="go arrow"><span data-l="en">Read the case study </span><span data-l="zh" lang="zh-CN">看完整拆解 </span></span>
+    </div>
+    <img src="img/pt/hall.jpg" width="1280" height="720" loading="lazy" alt="The reactor hall in Exposure: stairs and raised walkways around a pond, a yellow crane overhead.">
+  </a>
+</section>
+<section class="contact" id="contact" aria-labelledby="contact-h">
+  <div>
+    <p class="label acc"><span data-l="en">Open to level design roles</span><span data-l="zh" lang="zh-CN">正在找关卡设计方向的工作</span></p>
+    <h2 id="contact-h" style="margin-top:10px"><span data-l="en">Let’s talk levels.</span><span data-l="zh" lang="zh-CN">聊聊关卡吧。</span></h2>
+    <p class="mail-row"><a class="mail" href="mailto:liangweijun1103@gmail.com">liangweijun1103@gmail.com</a>
+      <button type="button" class="copy" data-copy="liangweijun1103@gmail.com"><span class="idle"><span data-l="en">Copy</span><span data-l="zh" lang="zh-CN">复制</span></span><span class="done" aria-hidden="true"><span data-l="en">Copied ✓</span><span data-l="zh" lang="zh-CN">已复制 ✓</span></span></button></p>
+  </div>
+  <ul>
+    <li><a href="https://www.linkedin.com/in/weijun-liang-2b437a2a6/" target="_blank" rel="noopener">LinkedIn</a></li>
+    <li><a href="https://github.com/WAYNE1-L" target="_blank" rel="noopener">GitHub</a></li>
+    <li><a href="Wayne_Liang_Resume.pdf" target="_blank" rel="noopener"><span data-l="en">Resume (PDF)</span><span data-l="zh" lang="zh-CN">简历（PDF）</span></a></li>
+  </ul>
+</section>
+</main>
+<footer>
+  <span>© 2026 Wayne Liang</span>
+  <span><span data-l="en">Salt Lake City, Utah</span><span data-l="zh" lang="zh-CN">美国犹他州盐湖城</span></span>
+</footer>
+</div>
+<dialog class="zoom" id="zoom" aria-label="Enlarged image"><div class="zoom-stage"></div><p class="zoom-cap"></p><button type="button" class="zoom-x" aria-label="Close"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></dialog>
+<script src="assets/site.js"></script>
+</body>
+</html>
