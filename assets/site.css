@@ -348,7 +348,7 @@ dialog.zoom::backdrop{background:rgba(5,7,10,.92)}
 .zoom-x{position:absolute;right:14px;top:14px;width:40px;height:40px;display:grid;place-items:center;border:0;border-radius:50%;background:rgba(29,36,46,.85);color:var(--text)}
 .zoom-x:hover{background:var(--panel2)}
 .zoom-x:active{transform:scale(.94);transition-duration:60ms}
-dialog.zoom.leaving .zoom-cap,dialog.zoom.leaving .zoom-x,dialog.zoom.entering .zoom-cap,dialog.zoom.entering .zoom-x{opacity:0}
+dialog.zoom.leaving .zoom-cap,dialog.zoom.leaving .zoom-x,dialog.zoom.entering .zoom-cap{opacity:0}
 .zoom-x{transition:opacity var(--t2) var(--ease),background-color var(--t1) var(--ease),transform var(--t2) var(--glide)}
 /* pictures that load late fade in instead of popping */
 img.ld{opacity:0}

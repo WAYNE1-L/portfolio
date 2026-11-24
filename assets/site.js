@@ -58,6 +58,7 @@ var SKIP_CLIPS=['beat2'];   // clips held back until they are re-recorded
   });
   window.addEventListener('hashchange',function(){ if(location.hash==='#zh') setLang(true); });
   var saved=null; try{ saved=localStorage.getItem('lang'); }catch(e){}
+  if(location.hash==='#zh'){ try{ localStorage.setItem('lang','zh'); }catch(e){} }
   setLang(location.hash==='#zh'||saved==='zh'||(saved===null&&/^zh/i.test(navigator.language||'')));
   // The other language's screenshots load quietly once the page is idle, so switching shows them at once.
   (window.requestIdleCallback||function(f){setTimeout(f,1500);})(function(){
@@ -160,6 +161,8 @@ var SKIP_CLIPS=['beat2'];   // clips held back until they are re-recorded
       var dir=!cur?'':n>cur?'from-next':n<cur?'from-prev':'';
       if(n===cur&&!opts.force) return;
       cur=n;
+      var lost=document.activeElement&&beats.some(function(a){ return a.contains(document.activeElement)&&Number(a.getAttribute('data-beat'))!==n; });
+      if(lost&&!opts.focusNext) opts.focus=true;
       beats.forEach(function(a){
         var on=Number(a.getAttribute('data-beat'))===n;
         a.classList.toggle('off',!on); a.inert=!on;
@@ -297,7 +300,7 @@ var SKIP_CLIPS=['beat2'];   // clips held back until they are re-recorded
   var dlg=document.getElementById('zoom'), makeZoomable=function(){};
   if(dlg&&dlg.showModal){
     var stage=dlg.querySelector('.zoom-stage'), cap=dlg.querySelector('.zoom-cap'), xBtn=dlg.querySelector('.zoom-x');
-    var from=null, big=null, anim=null, fade=null, closing=false;
+    var from=null, big=null, anim=null, fade=null, closing=false, token=0;
     var EASE='cubic-bezier(.32,.72,0,1)', DUR=340;
     function delta(){
       var a=from.getBoundingClientRect(), b=big.getBoundingClientRect();
@@ -306,9 +309,11 @@ var SKIP_CLIPS=['beat2'];   // clips held back until they are re-recorded
     function finish(){
       if(dlg.open) dlg.close();
       if(anim) anim.cancel(); if(fade) fade.cancel();
+      var back=from;
       if(from){ from.style.visibility=''; if(from._zoomed){ from._zoomed=false; syncClips(); } }
       stage.textContent=''; dlg.classList.remove('leaving','entering');
-      from=big=anim=fade=null; closing=false;
+      from=big=anim=fade=null; closing=false; token++;
+      if(back&&back.isConnected) back.focus({preventScroll:true});   // keyboard users carry on from the picture they opened
     }
     function copyOf(el){
       if(el.tagName==='IMG'){ var i=new Image(); i.src=el.currentSrc||el.src; i.alt=el.alt; return i; }
@@ -326,10 +331,14 @@ var SKIP_CLIPS=['beat2'];   // clips held back until they are re-recorded
       s.style.width='min(100%, calc((100vh - 72px) * '+ar+'))'; s.style.height='auto';
       return s;
     }
+    // cb(true) when the copy can be measured, cb(false) if it fails or takes too long (then it simply appears)
     function ready(el,cb){
-      if(el.tagName==='IMG'&&!(el.complete&&el.naturalWidth)) el.addEventListener('load',cb,{once:true});
-      else if(el.tagName==='VIDEO'&&el.readyState<1) el.addEventListener('loadedmetadata',cb,{once:true});
-      else cb();
+      var done=false, t; function go(ok){ if(done) return; done=true; clearTimeout(t); cb(ok); }
+      var ev=el.tagName==='IMG'?(el.complete&&el.naturalWidth?null:'load'):el.tagName==='VIDEO'&&el.readyState<1?'loadedmetadata':null;
+      if(!ev){ go(true); return; }
+      el.addEventListener(ev,function(){go(true);},{once:true});
+      el.addEventListener('error',function(){go(false);},{once:true});
+      t=setTimeout(function(){go(false);},1500);
     }
     function open(el){
       if(dlg.open) return;
@@ -342,8 +351,10 @@ var SKIP_CLIPS=['beat2'];   // clips held back until they are re-recorded
       xBtn.focus({preventScroll:true});
       if(reduce||!big.animate) return;
       dlg.classList.add('entering');
-      ready(big,function(){
-        if(!from||closing) return;
+      var mine=++token;
+      ready(big,function(ok){
+        if(mine!==token||!from||closing) return;
+        if(!ok){ dlg.classList.remove('entering'); return; }
         from.style.visibility='hidden';
         anim=big.animate([{transform:delta()},{transform:'none'}],{duration:DUR,easing:EASE});
         try{ fade=dlg.animate([{opacity:0},{opacity:1}],{duration:DUR*.7,easing:'ease-out',pseudoElement:'::backdrop'}); }catch(e){ fade=null; }
@@ -377,7 +388,8 @@ var SKIP_CLIPS=['beat2'];   // clips held back until they are re-recorded
     dlg.addEventListener('click',shut);
     dlg.addEventListener('cancel',function(e){ e.preventDefault(); shut(); });   // Esc
     onLang.push(function(zh){ xBtn.setAttribute('aria-label',zh?'关闭':'Close'); dlg.setAttribute('aria-label',zh?'放大的图片':'Enlarged image'); });
-    xBtn.setAttribute('aria-label',root.getAttribute('data-lang')==='zh'?'关闭':'Close');
+    var zhNow=root.getAttribute('data-lang')==='zh';
+    xBtn.setAttribute('aria-label',zhNow?'关闭':'Close'); dlg.setAttribute('aria-label',zhNow?'放大的图片':'Enlarged image');
   }
 
   // Walkthrough clips are set up after the zoom so their stills can hand over the zoom to the clip.
